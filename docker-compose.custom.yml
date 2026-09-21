@@ -1,0 +1,9 @@
+services:
+  coolify:
+    image: coolify:custom
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+      args:
+        COOLIFY_VERSION: ${COOLIFY_VERSION:-custom}
