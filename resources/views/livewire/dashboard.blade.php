@@ -1,6 +1,6 @@
 <div class="application-settings-form w-full">
     <x-slot:title>
-        Dashboard | Coolify
+        {{ __('common.dashboard') }} | Coolify
     </x-slot>
 
     @if (session('error'))
@@ -17,12 +17,12 @@
         <livewire:dashboard.active-deployments />
 
         <section class="mb-0! min-w-0">
-            <x-section-heading title="Projects" subtitle="Your deployment workspaces"
+            <x-section-heading :title="__('common.projects')" :subtitle="__('common.deployment_workspaces')"
                 :href="route('project.index')" />
 
             @if ($dashboardProjects->isEmpty())
-                <x-empty title="No projects yet"
-                    description="Use New to create your first deployment workspace."
+                <x-empty :title="__('common.no_projects_yet')"
+                    :description="__('common.first_deployment_workspace')"
                     icon-name="projects" size="sm" />
             @else
                 <div class="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -47,7 +47,7 @@
                             class="group relative flex min-h-28 min-w-0 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:shadow-md dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
                             <a href="{{ $project->navigateTo() }}" {{ wireNavigate() }}
                                 class="absolute inset-0 rounded-xl"
-                                aria-label="Open {{ $project->name }}"></a>
+                                aria-label="{{ __('common.open') }} {{ $project->name }}"></a>
 
                             <div class="flex min-w-0 items-start gap-3">
                                 <div
@@ -73,10 +73,9 @@
 
                             <div class="mt-auto flex items-center justify-between gap-3 pt-4">
                                 <p class="min-w-0 truncate text-[11px] text-neutral-500 dark:text-fg-dim">
-                                    {{ $project->environments->count() }}
-                                    {{ str('env')->plural($project->environments->count()) }}
+                                    {{ trans_choice('common.environments_count', $project->environments->count(), ['count' => $project->environments->count()]) }}
                                     <span class="px-1 text-neutral-300 dark:text-white/15">·</span>
-                                    {{ $resourceCount }} {{ str('resource')->plural($resourceCount) }}
+                                    {{ trans_choice('common.resources_count', $resourceCount, ['count' => $resourceCount]) }}
                                 </p>
 
                                 <div class="relative z-10 flex shrink-0 items-center gap-0.5">
@@ -88,8 +87,8 @@
                                             ]) }}"
                                                 {{ wireNavigate() }}
                                                 class="flex size-6.5 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                                title="Add resource"
-                                                aria-label="Add resource to {{ $project->name }}">
+                                                title="{{ __('common.add_resource') }}"
+                                                aria-label="{{ __('common.add_resource') }}: {{ $project->name }}">
                                                 <x-reicon name="plus" class="size-3" />
                                             </a>
                                         @endcan
@@ -98,8 +97,8 @@
                                         <a href="{{ route('project.edit', ['project_uuid' => $project->uuid]) }}"
                                             {{ wireNavigate() }}
                                             class="flex size-6.5 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                            title="Project settings"
-                                            aria-label="Open settings for {{ $project->name }}">
+                                            title="{{ __('common.project_settings') }}"
+                                            aria-label="{{ __('common.project_settings') }}: {{ $project->name }}">
                                             <x-reicon name="settings" class="size-3" />
                                         </a>
                                     @endcan
@@ -112,34 +111,34 @@
         </section>
 
         <section class="mb-0! min-w-0">
-            <x-section-heading title="Servers" subtitle="Infrastructure available for deployments"
+            <x-section-heading :title="__('common.servers')" :subtitle="__('common.infrastructure_deployments')"
                 :href="route('server.index')" />
 
             @if ($dashboardServers->isEmpty())
                 @if ($privateKeys->isEmpty())
-                    <x-empty title="A private key is required"
-                        description="Add an SSH private key before connecting your first server."
+                    <x-empty :title="__('common.private_key_required')"
+                        :description="__('common.add_ssh_private_key')"
                         icon-name="keys" size="sm">
                         @can('create', App\Models\PrivateKey::class)
                             <x-slot:contents>
                                 <a href="{{ route('security.private-key.index') }}" {{ wireNavigate() }}
                                     class="button button-highlighted">
                                     <x-reicon name="plus" class="size-3.5" />
-                                    Add private key
+                                    {{ __('common.add_private_key') }}
                                 </a>
                             </x-slot:contents>
                         @endcan
                     </x-empty>
                 @else
-                    <x-empty title="No servers yet"
-                        description="Connect infrastructure for your deployments."
+                    <x-empty :title="__('common.no_servers_yet')"
+                        :description="__('common.connect_infrastructure')"
                         icon-name="servers" size="sm">
                         @can('createAnyResource')
                             <x-slot:contents>
                                 <a href="{{ route('server.create') }}" {{ wireNavigate() }}
                                     class="button button-highlighted">
                                     <x-reicon name="plus" class="size-3.5" />
-                                    New server
+                                    {{ __('common.new_server') }}
                                 </a>
                             </x-slot:contents>
                         @endcan
@@ -153,17 +152,17 @@
                             $sentinelNeedsAttention = $server->isSentinelEnabled() && ! $server->isSentinelLive();
 
                             [$serverStatus, $serverStatusType] = match (true) {
-                                $server->settings->force_disabled => ['Disabled', 'error'],
-                                ! $server->settings->is_reachable && ! $server->settings->is_usable => ['Unavailable', 'error'],
-                                ! $server->settings->is_reachable => ['Unreachable', 'error'],
-                                ! $server->settings->is_usable => ['Not ready', 'warning'],
-                                $proxyNeedsAttention || $sentinelNeedsAttention => ['Attention required', 'warning'],
-                                default => ['Ready', 'success'],
+                                $server->settings->force_disabled => [__('common.disabled'), 'error'],
+                                ! $server->settings->is_reachable && ! $server->settings->is_usable => [__('common.unavailable'), 'error'],
+                                ! $server->settings->is_reachable => [__('common.unreachable'), 'error'],
+                                ! $server->settings->is_usable => [__('common.not_ready'), 'warning'],
+                                $proxyNeedsAttention || $sentinelNeedsAttention => [__('common.attention_required'), 'warning'],
+                                default => [__('common.ready'), 'success'],
                             };
                         @endphp
 
                         <a href="{{ route('server.show', ['server_uuid' => $server->uuid]) }}"
-                            {{ wireNavigate() }} aria-label="Open {{ $server->name }}"
+                            {{ wireNavigate() }} aria-label="{{ __('common.open') }} {{ $server->name }}"
                             class="group relative flex min-h-28 min-w-0 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:shadow-md dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
                             @if ($server->isMetricsEnabled())
                                 <livewire:dashboard.server-metrics-chart :server="$server"
@@ -186,7 +185,7 @@
                                 </div>
                                 @if ($serverStatusType !== 'success')
                                     <span data-tooltip="{{ $serverStatus }}"
-                                        aria-label="Server status: {{ $serverStatus }}"
+                                        aria-label="{{ __('common.server_status') }}: {{ $serverStatus }}"
                                         @class([
                                             'flex size-6 shrink-0 items-center justify-center rounded-md',
                                             'text-orange-500 dark:text-warning' => $serverStatusType === 'warning',

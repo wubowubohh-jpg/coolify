@@ -1,4 +1,4 @@
-@props(['variant' => 'full'])
+@props(['variant' => 'full', 'locale' => null])
 
 @php($checkPath = 'm2.5 6.25 2.1 2.1 4.9-5')
 
@@ -7,10 +7,10 @@
          all theme state/logic comes from the shared window.themeControls(). --}}
     <div x-data="themeControls()" class="grid gap-0.5">
         @foreach ([
-            ['value' => 'light', 'label' => 'Light'],
-            ['value' => 'system', 'label' => 'System'],
-            ['value' => 'dark', 'label' => 'Dark'],
-            ['value' => 'custom', 'label' => 'Custom'],
+            ['value' => 'light', 'label' => __('appearance.light')],
+            ['value' => 'system', 'label' => __('appearance.system')],
+            ['value' => 'dark', 'label' => __('appearance.dark')],
+            ['value' => 'custom', 'label' => __('appearance.custom')],
         ] as $option)
             @if ($option['value'] === 'custom')
                 <div class="relative" @click.outside="pickerOpen = false">
@@ -19,7 +19,7 @@
                         <span class="flex items-center gap-2">
                             <span class="size-3.5 rounded-full border border-white/20"
                                 :style="`background: ${themeColor}`"></span>
-                            Custom
+                            {{ __('appearance.custom') }}
                         </span>
                         <svg x-show="theme === 'custom'" class="size-3.5 text-coollabs dark:text-warning"
                             viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -44,11 +44,11 @@
         @endforeach
         <div class="my-1 h-px bg-neutral-200 dark:bg-white/[0.07]"></div>
         <div class="px-2 pt-1 pb-0.5 text-[10px] font-medium tracking-wide text-neutral-400 uppercase dark:text-fg-faint">
-            Page width
+            {{ __('appearance.page_width') }}
         </div>
         @foreach ([
-            ['value' => 'full', 'label' => 'Full width'],
-            ['value' => 'centered', 'label' => 'Centered'],
+            ['value' => 'full', 'label' => __('appearance.full_width')],
+            ['value' => 'centered', 'label' => __('appearance.centered')],
         ] as $option)
             <button type="button" @click="setWidth('{{ $option['value'] }}')"
                 class="flex h-8 w-full items-center justify-between rounded-md px-2 text-left text-xs text-neutral-600 transition-colors hover:bg-neutral-200 hover:text-neutral-950 dark:text-fg-dim dark:hover:bg-white/[0.06] dark:hover:text-fg">
@@ -68,16 +68,16 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>Color theme</h2>
-                    <p>Choose the color scheme used in this browser.</p>
+                    <h2>{{ __('appearance.color_theme') }}</h2>
+                    <p>{{ __('appearance.color_theme_description') }}</p>
                 </div>
             </div>
             <div class="application-settings-section-body grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
-                    ['value' => 'light', 'label' => 'Light', 'description' => 'Bright surfaces and dark text.', 'preview' => 'bg-white'],
-                    ['value' => 'system', 'label' => 'System', 'description' => 'Follow your operating system.', 'preview' => 'bg-gradient-to-r from-white via-neutral-400 to-[#050505]'],
-                    ['value' => 'dark', 'label' => 'Dark', 'description' => 'Dark surfaces and soft contrast.', 'preview' => 'bg-[#181818]'],
-                    ['value' => 'custom', 'label' => 'Custom', 'description' => 'Tint light or dark surfaces with any color.', 'preview' => ''],
+                    ['value' => 'light', 'label' => __('appearance.light'), 'description' => __('appearance.light_description'), 'preview' => 'bg-white'],
+                    ['value' => 'system', 'label' => __('appearance.system'), 'description' => __('appearance.system_description'), 'preview' => 'bg-gradient-to-r from-white via-neutral-400 to-[#050505]'],
+                    ['value' => 'dark', 'label' => __('appearance.dark'), 'description' => __('appearance.dark_description'), 'preview' => 'bg-[#181818]'],
+                    ['value' => 'custom', 'label' => __('appearance.custom'), 'description' => __('appearance.custom_description'), 'preview' => ''],
                 ] as $option)
                     @if ($option['value'] === 'custom')
                         {{-- Clicking the card opens the custom color picker popover (color + light/dark). --}}
@@ -145,14 +145,14 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>Page width</h2>
-                    <p>Choose how content uses the available browser width.</p>
+                    <h2>{{ __('appearance.page_width') }}</h2>
+                    <p>{{ __('appearance.page_width_description') }}</p>
                 </div>
             </div>
             <div class="application-settings-section-body grid gap-3 sm:grid-cols-2">
                 @foreach ([
-                    ['value' => 'full', 'label' => 'Full width', 'description' => 'Use all available space for page content.'],
-                    ['value' => 'centered', 'label' => 'Centered', 'description' => 'Keep content centered at a comfortable maximum width.'],
+                    ['value' => 'full', 'label' => __('appearance.full_width'), 'description' => __('appearance.full_width_description')],
+                    ['value' => 'centered', 'label' => __('appearance.centered'), 'description' => __('appearance.centered_description')],
                 ] as $option)
                     <button type="button" @click="setWidth('{{ $option['value'] }}')"
                         class="group overflow-hidden rounded-[10px] border border-neutral-200 bg-white text-left transition-[border-color,box-shadow] hover:border-neutral-300 hover:shadow-sm dark:border-white/[0.07] dark:bg-white/[0.05] dark:hover:border-white/[0.12]"
@@ -177,6 +177,31 @@
                             </div>
                             <p class="mt-1 text-xs leading-5 text-neutral-500 dark:text-fg-dim">{{ $option['description'] }}</p>
                         </div>
+                    </button>
+                @endforeach
+            </div>
+        </section>
+
+        <section class="application-settings-section">
+            <div class="application-settings-section-header">
+                <div>
+                    <h2>{{ __('settings.language') }}</h2>
+                    <p>{{ __('settings.language.description') }}</p>
+                </div>
+            </div>
+            <div class="application-settings-section-body grid gap-3 sm:grid-cols-2">
+                @foreach (config('app.supported_locales', []) as $value => $label)
+                    <button type="button" wire:click="setLocale('{{ $value }}')" wire:loading.attr="disabled"
+                        class="group flex min-h-20 items-center justify-between gap-3 rounded-[10px] border border-neutral-200 bg-white px-4 text-left transition-[border-color,box-shadow] hover:border-neutral-300 hover:shadow-sm dark:border-white/[0.07] dark:bg-white/[0.05] dark:hover:border-white/[0.12]"
+                        @class([
+                            'ring-1 ring-coollabs/30 border-coollabs/40 dark:ring-warning/30 dark:border-warning/40' => $locale === $value,
+                        ])>
+                        <span class="min-w-0">
+                            <span class="block text-sm font-semibold text-black dark:text-fg">{{ __($label) }}</span>
+                            <span class="mt-1 block text-xs text-neutral-500 dark:text-fg-dim">{{ $value }}</span>
+                        </span>
+                        <x-reicon name="check-circle" class="size-4 shrink-0 text-coollabs dark:text-warning"
+                            @class(['hidden' => $locale !== $value]) />
                     </button>
                 @endforeach
             </div>

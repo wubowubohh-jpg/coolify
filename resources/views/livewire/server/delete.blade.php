@@ -11,25 +11,24 @@
 
         <div class="application-settings-form w-full">
             @if (! $server->is_coolify_host)
-                <x-application.settings-section id="server-danger-section" title="Delete server"
-                    helper="Permanently remove this server and its configuration from Coolify."
+                <x-application.settings-section id="server-danger-section" :title="__('common.delete_server')"
+                    :helper="__('common.delete_server_description')"
                     class="server-danger-section">
-                    <x-danger-zone title="This action cannot be undone">
+                    <x-danger-zone :title="__('common.action_cannot_be_undone')">
                         <p>
-                        The server will be removed from Coolify.
+                        {{ __('common.server_removed_from_coolify') }}
                         @if ($server->definedResources()->count() > 0)
-                            It currently contains managed resources. Enable force deletion in the confirmation only
-                            if those resources should also be removed.
+                            {{ __('common.server_contains_resources') }}
                         @endif
                         </p>
-                        <p>Type the server name in the confirmation dialog to continue.</p>
+                        <p>{{ __('common.type_server_name_to_continue') }}</p>
                         <x-slot:action>
-                        <x-modal-confirmation title="Confirm Server Deletion?" isErrorButton
-                            buttonTitle="Delete server" submitAction="delete"
-                            :actions="['This server will be permanently deleted from Coolify.']"
+                        <x-modal-confirmation :title="__('common.confirm_server_deletion')" isErrorButton
+                            :buttonTitle="__('common.delete_server')" submitAction="delete"
+                            :actions="[__('common.server_delete_confirmation_action')]"
                             :checkboxes="$checkboxes" confirmationText="{{ $server->name }}"
-                            confirmationLabel="Please confirm by entering the Server Name below"
-                            shortConfirmationLabel="Server Name" />
+                            :confirmationLabel="__('common.enter_server_name')"
+                            :shortConfirmationLabel="__('common.server_name')" />
                         </x-slot:action>
                     </x-danger-zone>
                 </x-application.settings-section>

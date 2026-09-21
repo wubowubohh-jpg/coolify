@@ -1,6 +1,6 @@
 @props([
     'helper',
-    'label' => 'More information',
+    'label' => __('common.more_information'),
 ])
 
 <div x-data="{

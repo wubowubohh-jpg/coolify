@@ -33,38 +33,38 @@
     @endif
     <div class="flex flex-wrap items-center gap-2">
         <p class="min-w-0 flex-1 truncate text-[13px] text-neutral-500 dark:text-fg-dim">
-            {{ count($domainRows) }} domain{{ count($domainRows) === 1 ? '' : 's' }}
+            {{ trans_choice('common.domain_count', count($domainRows), ['count' => count($domainRows)]) }}
         </p>
         @if (count($domainRows) > 0)
-            <input type="search" x-model="domainSearch" aria-label="Search preview domains"
-                class="input h-8! w-full sm:w-64!" placeholder="Search services or domains" />
+            <input type="search" x-model="domainSearch" :aria-label="__('common.search_preview_domains')"
+                class="input h-8! w-full sm:w-64!" :placeholder="__('common.search_services_domains')" />
         @endif
         @can('update', $preview->application)
             @if (count($domainRows) > 0)
                 <x-forms.button wire:click="checkAllDns" :showLoadingIndicator="false" wire:loading.attr="disabled" wire:target="checkAllDns,checkDomainDns">
                     <x-reicon name="refresh" class="size-3.5" />
-                    Check all DNS
+                    {{ __('common.check_all_dns') }}
                 </x-forms.button>
             @endif
-            <x-modal-input title="Add domain" :closeOutside="false" :wireIgnore="false"
+            <x-modal-input :title="__('common.add_domain')" :closeOutside="false" :wireIgnore="false"
                 canGate="update" :canResource="$preview->application"
                 @close-preview-domain-add.window="if ($event.detail.previewId === {{ $preview->id }}) modalOpen = false">
                 <x-slot:content>
                     <button type="button" class="button button-highlighted">
                         <x-reicon name="plus" class="size-3.5" />
-                        Add domain
+                        {{ __('common.add_domain') }}
                     </button>
                 </x-slot:content>
                 <form wire:submit="addDomain" class="application-settings-form flex flex-col gap-4">
                     @if ($isCompose && count($composeServices) > 0)
-                        <x-forms.listbox id="newDomainService" label="Service" required
+                        <x-forms.listbox id="newDomainService" :label="__('common.service')" required
                             :options="collect($composeServices)->map(fn ($service) => ['value' => $service, 'label' => $service])->all()" />
                     @endif
                     <x-forms.domain-input id="newDomainParts" />
 
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                        <x-forms.button type="button" wire:click="generateDomain">Generate domain</x-forms.button>
-                        <x-forms.button type="submit" isHighlighted>Save</x-forms.button>
+                        <x-forms.button type="button" wire:click="generateDomain">{{ __('common.generate_domain') }}</x-forms.button>
+                        <x-forms.button type="submit" isHighlighted>{{ __('common.save') }}</x-forms.button>
                     </div>
                 </form>
             </x-modal-input>
@@ -73,19 +73,19 @@
 
     @if (count($domainRows) === 0)
         <div class="application-settings-section-body">
-            <x-empty size="sm" title="No domains configured"
-                description="Add a domain or generate one with the server wildcard domain." icon-name="globe" />
+            <x-empty size="sm" :title="__('common.no_domains_configured')"
+                :description="__('common.add_domain_wildcard_description')" icon-name="globe" />
         </div>
     @else
         <div class="application-settings-section-body is-flush overflow-visible">
             <div class="data-table-header service-domains-overview-grid">
-                <span>Domain</span>
-                <span>Protocol redirect</span>
-                <span>Domain redirect</span>
-                <span>Internal port</span>
-                <span>Search indexing</span>
-                <span>DNS status</span>
-                <span class="text-right">Actions</span>
+                <span>{{ __('common.domain') }}</span>
+                <span>{{ __('common.protocol_redirect') }}</span>
+                <span>{{ __('common.domain_redirect') }}</span>
+                <span>{{ __('common.internal_port') }}</span>
+                <span>{{ __('common.search_indexing') }}</span>
+                <span>{{ __('common.dns_status') }}</span>
+                <span class="text-right">{{ __('common.actions') }}</span>
             </div>
             @foreach (collect($domainRows)->groupBy(fn ($row) => $row['service'] ?? '', preserveKeys: true) as $serviceName => $rows)
                 @if ($isCompose)
@@ -105,7 +105,7 @@
                             'ok' => 'DNS matches',
                             'failed' => 'DNS mismatch',
                             'skipped' => 'DNS skipped',
-                            'checking' => 'Checking DNS...',
+                            'checking' => __('common.checking_dns'),
                             'pending' => 'Not checked',
                             default => 'DNS unknown',
                         };
@@ -125,17 +125,17 @@
                                         title="{{ getFqdnWithoutPort($row['url']) }}">{{ getFqdnWithoutPort($row['url']) }}</a>
                                 </div>
                             </div>
-                            <div class="service-domain-detail" title="Protocol redirect">
-                                <span class="service-domain-detail-label">Protocol redirect</span>
-                                <span>{{ str_starts_with($row['url'], 'https://') && $preview->application->isForceHttpsEnabled() ? 'HTTP → HTTPS' : 'Disabled' }}</span>
+                            <div class="service-domain-detail" :title="__('common.protocol_redirect')">
+                                <span class="service-domain-detail-label">{{ __('common.protocol_redirect') }}</span>
+                                <span>{{ str_starts_with($row['url'], 'https://') && $preview->application->isForceHttpsEnabled() ? __('common.http_to_https') : __('common.disabled') }}</span>
                             </div>
-                            <div class="service-domain-detail" title="Domain redirect">
-                                <span class="service-domain-detail-label">Domain redirect</span>
-                                <span>{{ match (($row['redirect'] ?? 'both')) { 'www' => 'non-www → www', 'non-www' => 'www → non-www', default => 'Disabled' } }}</span>
+                            <div class="service-domain-detail" :title="__('common.domain_redirect')">
+                                <span class="service-domain-detail-label">{{ __('common.domain_redirect') }}</span>
+                                <span>{{ match (($row['redirect'] ?? 'both')) { 'www' => __('common.non_www_to_www'), 'non-www' => __('common.www_to_non_www'), default => __('common.disabled') } }}</span>
                             </div>
                             <div class="service-domain-detail"
                                 title="{{ ($row['has_port_override'] ?? false) ? 'Custom internal port for this domain' : 'Inherited from the application or Compose service port' }}">
-                                <span class="service-domain-detail-label">Internal port</span>
+                                <span class="service-domain-detail-label">{{ __('common.internal_port') }}</span>
                                 @if (filled($row['internal_port'] ?? null))
                                     <span aria-label="Internal port {{ $row['internal_port'] }}">{{ $row['internal_port'] }}</span>
                                 @else
@@ -145,31 +145,31 @@
                                 @endif
                             </div>
                             <div class="service-domain-detail">
-                                <span class="service-domain-detail-label">Search indexing</span>
-                                <span role="img" aria-label="Search indexing blocked"
-                                    title="Search indexing blocked">
+                                <span class="service-domain-detail-label">{{ __('common.search_indexing') }}</span>
+                                <span role="img" :aria-label="__('common.search_indexing_blocked')"
+                                    :title="__('common.search_indexing_blocked')">
                                     <x-reicon name="x" class="size-4" />
                                 </span>
                             </div>
 
-                            <div class="service-domain-mobile-summary" aria-label="Domain routing summary">
+                            <div class="service-domain-mobile-summary" :aria-label="__('common.domain_routing_summary')">
                                 @if (str_starts_with($row['url'], 'https://') && $preview->application->isForceHttpsEnabled())
-                                    <span>HTTP → HTTPS</span>
+                                    <span>{{ __('common.http_to_https') }}</span>
                                 @endif
                                 @if (in_array($row['redirect'] ?? 'both', ['www', 'non-www'], true))
-                                    <span>{{ ($row['redirect'] ?? 'both') === 'www' ? 'non-www → www' : 'www → non-www' }}</span>
+                                    <span>{{ ($row['redirect'] ?? 'both') === 'www' ? __('common.non_www_to_www') : __('common.www_to_non_www') }}</span>
                                 @elseif (! str_starts_with($row['url'], 'https://') || ! $preview->application->isForceHttpsEnabled())
-                                    <span>No redirects</span>
+                                    <span>{{ __('common.no_redirects') }}</span>
                                 @endif
-                                <span>Port {{ $row['internal_port'] ?? 'missing' }}</span>
-                                <span>Noindex</span>
+                                <span>{{ __('common.port') }} {{ $row['internal_port'] ?? __('common.missing') }}</span>
+                                <span>{{ __('common.noindex') }}</span>
                             </div>
 
                             <div class="service-domain-dns flex min-w-0 items-center">
                                 @if ($row['dns_status'] === 'checking')
                                     <x-status-badge dynamic :title="$row['dns_message']">
-                                        <x-loading compact aria-label="Checking DNS" />
-                                        <span class="truncate">Checking DNS...</span>
+                                        <x-loading compact :aria-label="__('common.checking_dns')" />
+                                        <span class="truncate">{{ __('common.checking_dns') }}</span>
                                     </x-status-badge>
                                 @else
                                     <x-status-badge :status="$dnsLabel" :type="$dnsType" :title="$row['dns_message']" />
@@ -180,27 +180,27 @@
                                     <button type="button" wire:click="checkDomainDns({{ $index }})"
                                         wire:loading.attr="disabled"
                                         wire:target="checkDomainDns({{ $index }}),checkAllDns"
-                                        class="icon-button shrink-0" title="Check DNS" aria-label="Check DNS">
+                                        class="icon-button shrink-0" :title="__('common.check_dns')" :aria-label="__('common.check_dns')">
                                         <x-reicon name="refresh" class="size-3.5" />
                                     </button>
                                     <button type="button"
                                         @click="openEditDomain(@js($index), @js($row['url']), @js($editingParts), @js($row['service']))"
-                                        class="icon-button shrink-0" title="Domain settings" aria-label="Settings for {{ getFqdnWithoutPort($row['url']) }}">
+                                        class="icon-button shrink-0" :title="__('common.domain_settings')" aria-label="{{ __('common.domain_settings') }}: {{ getFqdnWithoutPort($row['url']) }}">
                                         <x-reicon name="settings" class="size-3.5" />
                                     </button>
-                                    <x-modal-confirmation class="!w-auto shrink-0" title="Remove domain?"
-                                        buttonTitle="Remove" isErrorButton
+                                    <x-modal-confirmation class="!w-auto shrink-0" :title="__('common.remove_domain_question')"
+                                        :buttonTitle="__('common.remove')" isErrorButton
                                         submitAction="removeDomainByKey({{ $domainKey }})"
                                         :actions="[
-                                            'This domain will be removed from the preview deployment.',
-                                            'Redeploy the preview to apply proxy changes.',
+                                            __('common.domain_removed_from_resource'),
+                                            __('common.redeploy_preview_proxy_changes'),
                                         ]"
                                         :confirmWithPassword="false" :confirmWithText="false"
-                                        step2ButtonText="Remove domain">
+                                        :step2ButtonText="__('common.remove_domain')">
                                         <x-slot:trigger>
                                             <button type="button"
                                                 class="icon-button shrink-0 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
-                                                title="Remove domain" aria-label="Remove domain">
+                                                :title="__('common.remove_domain')" :aria-label="__('common.remove_domain')">
                                                 <x-reicon name="trash" class="size-3.5" />
                                             </button>
                                         </x-slot:trigger>
@@ -212,7 +212,7 @@
                 @endforeach
             @endforeach
             <div x-cloak x-show="domainSearch.trim() && !@js(collect($domainRows)->map(fn ($row) => ($row['service'] ?? '').' '.$row['url'])->values()).some(value => matchesDomainSearch(value))" class="px-4 py-8">
-                <x-empty size="sm" title="No domains found" description="No service or domain matches your search." icon-name="search" />
+                <x-empty size="sm" :title="__('common.no_domains_found')" :description="__('common.no_domain_search_match')" icon-name="search" />
             </div>
         </div>
     @endif
@@ -224,7 +224,7 @@
                 <div x-show="editOpen" x-trap.inert.noscroll="editOpen"
                     data-preview-domain-dialog class="application-settings-form application-settings-section relative w-full max-w-3xl">
                     <header>
-                        <h3>Domain settings</h3>
+                        <h3>{{ __('common.domain_settings') }}</h3>
                         <button type="button" @click="closeEditDomain()" class="icon-button" aria-label="Close">
                             <x-reicon name="x" class="size-4" />
                         </button>
@@ -233,28 +233,28 @@
                         <form x-ref="editForm" wire:submit="updateDomain" class="flex flex-col gap-4">
                             <div x-show="editingServiceLabel" x-cloak>
                                 <div class="mb-1.5 flex h-4 items-center">
-                                    <label class="mb-0! leading-4">Service</label>
+                                    <label class="mb-0! leading-4">{{ __('common.service') }}</label>
                                 </div>
                                 <input type="text" class="input" readonly x-bind:value="editingServiceLabel" />
                             </div>
                             <x-forms.domain-input id="editingDomainParts" />
                             <div class="grid grid-cols-1 gap-4 border-t border-neutral-200 pt-4 sm:grid-cols-2 dark:border-white/10">
-                                <x-forms.listbox id="preview-domain-indexing-{{ $preview->id }}" label="Search engine indexing"
+                                <x-forms.listbox id="preview-domain-indexing-{{ $preview->id }}" :label="__('common.search_engine_indexing')"
                                     :wire="false" value="noindex" disabled
-                                    helper="Preview deployments are always excluded from search indexing."
-                                    :options="[['value' => 'noindex', 'label' => 'Noindex']]" />
-                                <x-forms.listbox id="preview-domain-direction-{{ $preview->id }}" label="www redirect"
+                                    :helper="__('common.preview_readonly_indexing')"
+                                    :options="[['value' => 'noindex', 'label' => __('common.noindex')]]" />
+                                <x-forms.listbox id="preview-domain-direction-{{ $preview->id }}" :label="__('common.www_redirect')"
                                     :wire="false" :value="$editingIndex !== null ? ($domainRows[$editingIndex]['redirect'] ?? 'both') : 'both'" disabled
-                                    helper="Read-only preview routing configuration."
+                                    :helper="__('common.preview_readonly_routing')"
                                     :options="[
-                                        ['value' => 'both', 'label' => 'No redirect'],
-                                        ['value' => 'www', 'label' => 'Redirect to www'],
-                                        ['value' => 'non-www', 'label' => 'Redirect to non-www'],
+                                        ['value' => 'both', 'label' => __('common.no_redirect')],
+                                        ['value' => 'www', 'label' => __('common.redirect_to_www')],
+                                        ['value' => 'non-www', 'label' => __('common.redirect_to_non_www')],
                                     ]" />
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 border-t border-neutral-200 pt-4 dark:border-white/10">
-                                <x-forms.button type="button" wire:click="regenerateEditingDomain">Regenerate hostname</x-forms.button>
-                                <x-forms.button type="submit" isHighlighted>Save</x-forms.button>
+                                <x-forms.button type="button" wire:click="regenerateEditingDomain">{{ __('common.regenerate_hostname') }}</x-forms.button>
+                                <x-forms.button type="submit" isHighlighted>{{ __('common.save') }}</x-forms.button>
                             </div>
                         </form>
                     </div>
@@ -275,7 +275,7 @@
                         class="application-settings-form application-settings-section relative w-full lg:min-w-[36rem] lg:max-w-2xl"
                         style="box-shadow: 0 0 0 1px var(--coollabs-hairline), var(--shadow-modal)">
                         <header>
-                            <h3>Use a different port?</h3>
+                            <h3>{{ __('common.use_different_port') }}</h3>
                             <button type="button"
                                 @click="modalOpen = false; $wire.call('cancelUseUnknownPort')"
                                 class="icon-button" aria-label="Close">
@@ -283,21 +283,19 @@
                             </button>
                         </header>
                         <div class="application-settings-section-body">
-                            <x-callout type="warning" title="Unrecognized internal port" class="mb-4">
-                                Port <strong>{{ $unrecognizedPort }}</strong> is not listed in Ports Exposes
-                                and is not used by any application domain. The proxy will still route to it,
-                                but the container may not be listening there.
+                            <x-callout type="warning" :title="__('common.unrecognized_internal_port')" class="mb-4">
+                                {!! __('common.internal_port_warning', ['port' => '<strong>'.$unrecognizedPort.'</strong>']) !!}
                             </x-callout>
 
                             <div class="mt-4 flex flex-wrap justify-end gap-2 border-t border-neutral-200 pt-4 dark:border-white/[0.08]">
                                 <x-forms.button type="button" canGate="update" :canResource="$preview->application"
                                     @click="modalOpen = false; $wire.call('cancelUseUnknownPort')">
-                                    Cancel
+                                    {{ __('common.cancel') }}
                                 </x-forms.button>
                                 <x-forms.button type="button" wire:click="confirmUseUnknownPort" canGate="update"
                                     :canResource="$preview->application"
                                     @click="modalOpen = false" isError>
-                                    Use this port anyway
+                                    {{ __('common.use_port_anyway') }}
                                 </x-forms.button>
                             </div>
                         </div>

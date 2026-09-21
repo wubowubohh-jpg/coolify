@@ -13,19 +13,19 @@
         ];
 
         $configurationItems = collect([
-            ['label' => 'General', 'route' => 'project.service.configuration', 'icon' => 'settings'],
-            ['label' => 'Domains', 'route' => 'project.service.domains', 'icon' => 'globe'],
-            ['label' => 'Environment Variables', 'route' => 'project.service.environment-variables', 'icon' => 'variables', 'hasWarning' => ! $service->isDeployable],
-            ['label' => 'Persistent Storage', 'route' => 'project.service.storages', 'icon' => 'storages'],
-            ['label' => 'Backups', 'route' => 'project.service.volume-backups.index', 'icon' => 'database'],
-            ['label' => 'Import Backup', 'route' => 'project.service.import-backup', 'icon' => 'upload', 'navigate' => false],
-            ['label' => 'Runtime Logs', 'route' => 'project.service.logs', 'icon' => 'unordered-list', 'navigate' => false],
-            ['label' => 'Terminal', 'route' => 'project.service.command', 'icon' => 'browser-terminal', 'navigate' => false, 'visible' => auth()->user()?->can('canAccessTerminal')],
-            ['label' => 'Scheduled Tasks', 'route' => 'project.service.scheduled-tasks.show', 'icon' => 'calendar'],
-            ['label' => 'Webhooks', 'route' => 'project.service.webhooks', 'icon' => 'notifications'],
-            ['label' => 'Resource Operations', 'route' => 'project.service.resource-operations', 'icon' => 'server-update'],
-            ['label' => 'Tags', 'route' => 'project.service.tags', 'icon' => 'tags'],
-            ['label' => 'Danger Zone', 'route' => 'project.service.danger', 'icon' => 'shield-alert'],
+            ['key' => 'general', 'label' => __('common.general'), 'route' => 'project.service.configuration', 'icon' => 'settings'],
+            ['key' => 'domains', 'label' => __('common.domains'), 'route' => 'project.service.domains', 'icon' => 'globe'],
+            ['key' => 'environment_variables', 'label' => __('common.environment_variables'), 'route' => 'project.service.environment-variables', 'icon' => 'variables', 'hasWarning' => ! $service->isDeployable],
+            ['key' => 'persistent_storage', 'label' => __('common.persistent_storage'), 'route' => 'project.service.storages', 'icon' => 'storages'],
+            ['key' => 'backups', 'label' => __('common.backups'), 'route' => 'project.service.volume-backups.index', 'icon' => 'database'],
+            ['key' => 'import_backup', 'label' => __('common.import_backup'), 'route' => 'project.service.import-backup', 'icon' => 'upload', 'navigate' => false],
+            ['key' => 'runtime_logs', 'label' => __('common.runtime_logs'), 'route' => 'project.service.logs', 'icon' => 'unordered-list', 'navigate' => false],
+            ['key' => 'terminal', 'label' => __('common.terminal'), 'route' => 'project.service.command', 'icon' => 'browser-terminal', 'navigate' => false, 'visible' => auth()->user()?->can('canAccessTerminal')],
+            ['key' => 'scheduled_tasks', 'label' => __('common.scheduled_tasks'), 'route' => 'project.service.scheduled-tasks.show', 'icon' => 'calendar'],
+            ['key' => 'webhooks', 'label' => __('common.webhooks'), 'route' => 'project.service.webhooks', 'icon' => 'notifications'],
+            ['key' => 'resource_operations', 'label' => __('common.resource_operations'), 'route' => 'project.service.resource-operations', 'icon' => 'server-update'],
+            ['key' => 'tags', 'label' => __('common.tags'), 'route' => 'project.service.tags', 'icon' => 'tags'],
+            ['key' => 'danger_zone', 'label' => __('common.danger_zone'), 'route' => 'project.service.danger', 'icon' => 'shield-alert'],
         ])->filter(fn (array $item): bool => $item['visible'] ?? true)->map(fn (array $item): array => [
             ...$item,
             'active' => $currentRoute === $item['route']
@@ -34,15 +34,15 @@
         ]);
 
         $menuGroups = [
-            'Settings' => ['General', 'Domains', 'Environment Variables', 'Persistent Storage'],
-            'Observe & troubleshoot' => ['Runtime Logs', 'Terminal'],
-            'Automation' => ['Scheduled Tasks', 'Webhooks', 'Backups', 'Import Backup'],
-            'Operations' => ['Resource Operations', 'Tags', 'Danger Zone'],
+            __('common.settings') => ['general', 'domains', 'environment_variables', 'persistent_storage'],
+            __('common.observe_troubleshoot') => ['runtime_logs', 'terminal'],
+            __('common.automation') => ['scheduled_tasks', 'webhooks', 'backups', 'import_backup'],
+            __('common.operations') => ['resource_operations', 'tags', 'danger_zone'],
         ];
 
         $groupedItems = collect($menuGroups)
             ->map(fn (array $labels) => collect($labels)
-                ->map(fn (string $label) => $configurationItems->firstWhere('label', $label))
+                ->map(fn (string $key) => $configurationItems->firstWhere('key', $key))
                 ->filter()
                 ->values())
             ->filter(fn ($items) => $items->isNotEmpty());
@@ -58,7 +58,7 @@
     <section class="application-settings-workspace mt-4 w-full max-w-none lg:mt-0">
         <div class="grid min-w-0 gap-8 xl:grid-cols-[210px_minmax(0,1fr)] xl:gap-8">
             <aside class="application-settings-navigation min-w-0 xl:self-start">
-                <nav aria-label="Service settings"
+                <nav aria-label="{{ __('common.service_settings') }}"
                     class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
                     @foreach ($groupedItems as $groupLabel => $groupItems)
                         @unless ($loop->first)
@@ -76,7 +76,7 @@
                                 <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
                                 <span class="menu-item-label">{{ $menuItem['label'] }}</span>
                                 @if ($menuItem['hasWarning'] ?? false)
-                                    <span class="ml-auto size-2 shrink-0 rounded-full bg-error" title="Required environment variables missing"></span>
+                                    <span class="ml-auto size-2 shrink-0 rounded-full bg-error" title="{{ __('common.required_environment_variables_missing') }}"></span>
                                 @endif
                             </a>
                             @if ($menuItem['active'] && $menuItem['route'] === 'project.service.storages' && $storageSections->isNotEmpty())
@@ -110,9 +110,9 @@
                     }">
                         <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h2 class="text-base font-semibold text-black dark:text-fg">Compose resources</h2>
+                                <h2 class="text-base font-semibold text-black dark:text-fg">{{ __('common.compose_resources') }}</h2>
                                 <p class="mt-1 text-sm text-neutral-500 dark:text-fg-dim">
-                                    Applications and databases defined in this service.
+                                    {{ __('common.compose_resources_description') }}
                                 </p>
                             </div>
                             <div class="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
@@ -123,7 +123,7 @@
                                         :class="viewMode === 'table'
                                             ? 'control-selected'
                                             : 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                                        aria-label="Table view" title="Table view">
+                                        aria-label="{{ __('common.table_view') }}" title="{{ __('common.table_view') }}">
                                         <x-reicon name="unordered-list" class="size-3.5" />
                                     </button>
                                     <button type="button" x-on:click="setViewMode('grid')"
@@ -131,7 +131,7 @@
                                         :class="viewMode === 'grid'
                                             ? 'control-selected'
                                             : 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                                        aria-label="Grid view" title="Grid view">
+                                        aria-label="{{ __('common.grid_view') }}" title="{{ __('common.grid_view') }}">
                                         <x-reicon name="grid" class="size-3.5" />
                                     </button>
                                 </div>
@@ -148,9 +148,9 @@
                             @if ($applications->isNotEmpty() || $databases->isNotEmpty())
                                 <div x-cloak x-show="viewMode === 'table'"
                                     class="grid min-w-[48rem] grid-cols-[minmax(14rem,1fr)_minmax(12rem,1fr)_12rem_5rem] gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[11px] font-medium text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                                    <div>Resource</div>
-                                    <div>Image</div>
-                                    <div class="justify-self-start">Status</div>
+                                    <div>{{ __('common.resource_label') }}</div>
+                                    <div>{{ __('common.image') }}</div>
+                                    <div class="justify-self-start">{{ __('common.status') }}</div>
                                     <div></div>
                                 </div>
                             @endif
@@ -158,8 +158,8 @@
                             @if ($applications->isEmpty() && $databases->isEmpty())
                                 <div
                                     class="application-settings-section overflow-hidden sm:col-span-2">
-                                    <x-empty title="No compose resources"
-                                        description="No applications or databases are defined in this Docker Compose file."
+                                    <x-empty :title="__('common.no_compose_resources')"
+                                        :description="__('common.compose_file_no_resources')"
                                         icon-name="grid" />
                                 </div>
                             @endif
@@ -184,7 +184,7 @@
                     <div class="space-y-6">
                         <div
                             class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] leading-5 text-amber-800 dark:border-warning/15 dark:bg-warning/[0.07] dark:text-amber-300/90">
-                            Service volume mounts are read-only here. Edit the Docker Compose file and reload it to change volumes.
+                            {{ __('common.service_volume_mounts_readonly') }}
                         </div>
                         @foreach ($applications as $application)
                             <livewire:project.service.storage wire:key="application-{{ $application->id }}"

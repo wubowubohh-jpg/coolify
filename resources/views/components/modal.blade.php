@@ -21,11 +21,11 @@
                     @else
                         <div class="flex gap-4 mt-4">
                             <x-forms.button class="w-24 bg-coolgray-200 hover:bg-coolgray-100" type="button"
-                                onclick="{{ $modalId }}.close()">Cancel
+                                onclick="{{ $modalId }}.close()">{{ __('common.cancel') }}
                             </x-forms.button>
                             <div class="flex-1"></div>
                             <x-forms.button class="w-24" isError type="button"
-                                wire:click.prevent='{{ $action }}' onclick="{{ $modalId }}.close()">Continue
+                                wire:click.prevent='{{ $action }}' onclick="{{ $modalId }}.close()">{{ __('common.continue') }}
                             </x-forms.button>
                         </div>
                     @endif
@@ -51,6 +51,6 @@
     @endif
 
     <form method="dialog" class="modal-backdrop">
-        <button>close</button>
+        <button>{{ __('common.close') }}</button>
     </form>
 </dialog>

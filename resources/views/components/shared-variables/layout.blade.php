@@ -6,24 +6,31 @@
         ['label' => 'Environments', 'route' => 'shared-variables.environment.index', 'icon' => 'layers', 'active' => request()->routeIs('shared-variables.environment.*')],
         ['label' => 'Servers', 'route' => 'shared-variables.server.index', 'icon' => 'servers', 'active' => request()->routeIs('shared-variables.server.*')],
     ];
+    $sharedVariableTranslations = [
+        'Overview' => 'common.overview',
+        'Team' => 'common.team',
+        'Projects' => 'common.projects',
+        'Environments' => 'common.environments',
+        'Servers' => 'common.servers',
+    ];
 @endphp
 
 <section class="w-full max-w-none">
     <header class="mb-6 xl:hidden">
-        <h1 class="text-[24px]! leading-7! font-semibold! tracking-tight!">Shared variables</h1>
-        <p class="mt-1 text-[13px] text-neutral-500 dark:text-fg-dim">Reusable environment variables across resources</p>
+        <h1 class="text-[24px]! leading-7! font-semibold! tracking-tight!">{{ __('common.shared_variables') }}</h1>
+        <p class="mt-1 text-[13px] text-neutral-500 dark:text-fg-dim">{{ __('common.shared_variables_description') }}</p>
     </header>
 
     <div class="grid min-w-0 gap-8 xl:grid-cols-[210px_minmax(0,1fr)] xl:gap-10">
         <aside class="min-w-0 xl:self-start">
-            <nav aria-label="Shared variables"
+            <nav aria-label="{{ __('common.shared_variables') }}"
                 class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
                 @foreach ($sharedVariablesMenuItems as $menuItem)
                     <a wire:key="shared-variables-{{ str($menuItem['label'])->slug() }}"
                         @class(['menu-item', 'menu-item-active' => $menuItem['active']])
                         {{ wireNavigate() }} href="{{ route($menuItem['route']) }}">
                         <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                        <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                        <span class="menu-item-label">{{ __($sharedVariableTranslations[$menuItem['label']] ?? $menuItem['label']) }}</span>
                     </a>
                 @endforeach
             </nav>

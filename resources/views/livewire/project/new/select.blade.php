@@ -1,11 +1,11 @@
 <div class="application-settings-form" x-data x-init="$wire.loadServers">
     <div x-data="searchResources()">
         @if ($current_step === 'type')
-            <x-application.settings-section title="Choose a resource" flush>
+            <x-application.settings-section :title="__('common.choose_resource')" flush>
                 <x-slot:actions>
                     <button type="button" class="button" :disabled="loading" @click="loadResources">
                         <x-reicon name="refresh" class="size-3.5" />
-                        Reload
+                        {{ __('common.reload') }}
                     </button>
                 </x-slot:actions>
                 <div
@@ -14,7 +14,7 @@
                         <x-reicon name="search"
                             class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                         <input autocomplete="off" x-ref="searchInput" x-model="search" type="search"
-                            placeholder="Search resources"
+                            :placeholder="__('common.search_resources')"
                             class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint"
                             @keydown.window.slash.prevent="$refs.searchInput.focus()">
                     </div>
@@ -24,11 +24,11 @@
                             <x-slot:trigger><button type="button" class="button"
                                 aria-haspopup="listbox" :aria-expanded="open">
                                 <x-reicon name="filter" class="size-3.5" />
-                                Filter
+                                {{ __('common.filter') }}
                             </button></x-slot:trigger>
                                 <div
                                     class="px-2 py-1 text-[10px] font-semibold tracking-wide text-neutral-400 uppercase dark:text-fg-faint">
-                                    Resource type
+                                    {{ __('common.resource_type') }}
                                 </div>
                                 <template x-for="option in resourceTypeOptions" :key="option.value">
                                     <button type="button" class="listbox-option" role="option"
@@ -47,9 +47,9 @@
                                 @click="categoryOpen = !categoryOpen; $nextTick(() => categoryOpen && $refs.categorySearchInput.focus())"
                                 aria-haspopup="listbox" aria-controls="resource-category-options"
                                 :aria-expanded="categoryOpen"
-                                :title="selectedCategory === '' ? 'All categories' : selectedCategory">
+                                :title="selectedCategory === '' ? @js(__('common.all_categories')) : selectedCategory">
                                 <span class="listbox-trigger-label capitalize"
-                                    x-text="selectedCategory === '' ? 'All categories' : selectedCategory"></span>
+                                    x-text="selectedCategory === '' ? @js(__('common.all_categories')) : selectedCategory"></span>
                                 <svg class="size-3.5 shrink-0 opacity-60" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -57,12 +57,12 @@
                                 </svg>
                             </button>
                             <div id="resource-category-options" x-show="categoryOpen" x-cloak
-                                x-transition.opacity.duration.120ms role="listbox" aria-label="Service category"
+                                x-transition.opacity.duration.120ms role="listbox" :aria-label="@js(__('common.service_category'))"
                                 @keydown.escape.stop="closeCategoryFilter(true)"
                                 class="listbox-panel left-auto! right-0! z-[90]! min-w-56!">
                                 <div class="border-b border-neutral-200 p-2 dark:border-white/[0.08]">
                                     <input type="search" x-ref="categorySearchInput" x-model="categorySearch"
-                                        placeholder="Search categories"
+                                        :placeholder="@js(__('common.search_categories'))"
                                         class="h-8! w-full rounded-md! border-neutral-200! bg-neutral-50! px-2.5! py-0! text-[12px]! shadow-none! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.04]! dark:text-fg!"
                                         @click.stop>
                                 </div>
@@ -70,7 +70,7 @@
                                     <button type="button" class="listbox-option" role="option"
                                         :aria-selected="selectedCategory === ''"
                                         @click="selectedCategory = ''; categorySearch = ''; categoryOpen = false">
-                                        <span>All categories</span>
+                                        <span>{{ __('common.all_categories') }}</span>
                                         <x-reicon name="check-circle" class="size-3.5 text-accent"
                                             x-show="selectedCategory === ''" />
                                     </button>
@@ -93,7 +93,7 @@
             </x-application.settings-section>
 
             <div x-show="loading" class="flex items-center justify-center py-8">
-                <x-loading text="Loading resources..." />
+                <x-loading :text="__('common.loading_resources')" />
             </div>
             <div x-show="!loading" class="mt-6 flex flex-col gap-6">
                 <section
@@ -102,7 +102,7 @@
                     <div class="application-settings-section-header">
                         <div class="flex items-center gap-2">
                             <x-reicon name="globe" class="size-4 text-neutral-400 dark:text-fg-faint" />
-                            <h2>Applications</h2>
+                            <h2>{{ __('common.applications') }}</h2>
                         </div>
                     </div>
                     <div
@@ -131,7 +131,7 @@
                                         <h3 class="truncate text-[13px] font-semibold text-black dark:text-fg"
                                             x-text="application.name"></h3>
                                         <p class="mt-0.5 text-[11px] text-neutral-500 dark:text-fg-faint">
-                                            Git source
+                                            {{ __('common.git_source') }}
                                         </p>
                                     </div>
                                 </div>
@@ -143,10 +143,10 @@
                                     class="mt-auto flex items-center gap-1.5 border-t border-neutral-200 pt-3 dark:border-white/[0.07]">
                                     <a class="button" :href="application.documentation" target="_blank"
                                         rel="noopener noreferrer" @click.stop>
-                                        Docs
+                                        {{ __('common.documentation') }}
                                     </a>
                                     <span class="button button-highlighted ml-auto">
-                                        Deploy
+                                        {{ __('common.deploy') }}
                                         <x-reicon name="arrow-right" class="size-3.5" />
                                     </span>
                                 </div>
@@ -167,7 +167,7 @@
                                         <h3 class="truncate text-[13px] font-semibold text-black dark:text-fg"
                                             x-text="application.name"></h3>
                                         <p class="mt-0.5 text-[11px] text-neutral-500 dark:text-fg-faint">
-                                            Docker source
+                                            {{ __('common.docker_source') }}
                                         </p>
                                     </div>
                                 </div>
@@ -179,10 +179,10 @@
                                     class="mt-auto flex items-center gap-1.5 border-t border-neutral-200 pt-3 dark:border-white/[0.07]">
                                     <a class="button" :href="application.documentation" target="_blank"
                                         rel="noopener noreferrer" @click.stop>
-                                        Docs
+                                        {{ __('common.documentation') }}
                                     </a>
                                     <span class="button button-highlighted ml-auto">
-                                        Deploy
+                                        {{ __('common.deploy') }}
                                         <x-reicon name="arrow-right" class="size-3.5" />
                                     </span>
                                 </div>
@@ -197,7 +197,7 @@
                     <div class="application-settings-section-header">
                         <div class="flex items-center gap-2">
                             <x-reicon name="database" class="size-4 text-neutral-400 dark:text-fg-faint" />
-                            <h2>Databases</h2>
+                            <h2>{{ __('common.databases') }}</h2>
                         </div>
                     </div>
                     <div
@@ -240,14 +240,14 @@
                                     class="mt-auto flex items-center gap-1.5 border-t border-neutral-200 pt-3 dark:border-white/[0.07]">
                                     <a :href="databaseDocsUrl(database)" target="_blank" rel="noopener noreferrer"
                                         class="button" @click.stop>
-                                        Docs
+                                        {{ __('common.documentation') }}
                                     </a>
                                     <a :href="databaseWebsiteUrl(database)" target="_blank" rel="noopener noreferrer"
                                         class="button" @click.stop>
-                                        Website
+                                        {{ __('common.website') }}
                                     </a>
                                     <span class="button button-highlighted ml-auto">
-                                        Deploy
+                                        {{ __('common.deploy') }}
                                         <x-reicon name="arrow-right" class="size-3.5" />
                                     </span>
                                 </div>
@@ -262,19 +262,18 @@
                     <div class="application-settings-section-header" x-init="loadResources">
                         <div class="flex items-center gap-2">
                             <x-reicon name="layers" class="size-4 text-neutral-400 dark:text-fg-faint" />
-                            <h2>Services</h2>
+                            <h2>{{ __('common.services') }}</h2>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <div x-show="serviceTemplatesLastUpdated"
                                 class="text-[11px] text-neutral-500 dark:text-fg-faint">
-                                Updated <span x-text="serviceTemplatesLastUpdated"></span>
+                                {{ __('common.updated') }} <span x-text="serviceTemplatesLastUpdated"></span>
                             </div>
                         </div>
                     </div>
                     <div class="application-settings-section-body">
-                        <x-callout type="info" title="Trademarks policy" class="mb-4">
-                            The respective trademarks mentioned here are owned by the respective companies, and use of them
-                            does not imply any affiliation or endorsement.
+                        <x-callout type="info" :title="__('common.trademarks_policy')" class="mb-4">
+                            {{ __('common.trademarks_policy_description') }}
                         </x-callout>
 
                         <div class="grid grid-cols-1 justify-start gap-3 text-left md:grid-cols-2 xl:grid-cols-3">
@@ -294,17 +293,17 @@
                                             <h3 class="truncate text-[13px] font-semibold text-black dark:text-fg"
                                                 x-text="service.name"></h3>
                                             <p class="mt-0.5 truncate text-[11px] text-neutral-500 dark:text-fg-faint">
-                                                <span x-show="service.templateLastUpdated">Updated </span>
-                                                <span x-text="service.templateLastUpdated || 'Template ready'"></span>
+                                                <span x-show="service.templateLastUpdated">{{ __('common.updated') }} </span>
+                                                <span x-text="service.templateLastUpdated || @js(__('common.template_ready'))"></span>
                                             </p>
                                         </div>
                                         <span x-show="service.amd_only || service.arm_only"
                                             class="shrink-0 rounded-md border border-amber-300/50 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:border-warning/20 dark:bg-warning/10 dark:text-warning"
-                                            x-text="service.arm_only ? 'ARM only' : 'AMD only'"></span>
+                                            x-text="service.arm_only ? @js(__('common.arm_only')) : @js(__('common.amd_only'))"></span>
                                     </div>
 
                                     <p class="mt-3 line-clamp-2 text-[12px] leading-5 text-neutral-600 dark:text-fg-dim"
-                                        x-text="service.slogan || service.description || 'Deploy this service with a ready-to-use Coolify template.'">
+                                         x-text="service.slogan || service.description || @js(__('common.deploy_ready_service'))">
                                     </p>
 
                                     <div
@@ -312,14 +311,14 @@
                                         <a :href="getDocLink(service) || coolifyDocsUrl(service)" target="_blank"
                                             rel="noopener noreferrer" @mouseenter="resolveDocLink(service)" @click.stop
                                             class="button" :class="{ 'opacity-60': docCheckInProgress[service.name] }">
-                                            Docs
+                                            {{ __('common.documentation') }}
                                         </a>
                                         <a x-show="serviceWebsiteUrl(service)" :href="serviceWebsiteUrl(service)"
                                             target="_blank" rel="noopener noreferrer" class="button" @click.stop>
-                                            Website
+                                            {{ __('common.website') }}
                                         </a>
                                         <span class="button button-highlighted ml-auto">
-                                            Deploy
+                                            {{ __('common.deploy') }}
                                             <x-reicon name="arrow-right" class="size-3.5" />
                                         </span>
                                     </div>
@@ -329,7 +328,7 @@
                     </div>
                 </section>
                 <div x-show="visibleResourceCount === 0 && loading === false">
-                    <x-empty title="No resources found" description="Try a different search or resource type."
+                    <x-empty :title="__('common.no_resources_found')" :description="__('common.try_resource_search')"
                         icon-name="layers" size="sm" />
                 </div>
             </div>
@@ -617,13 +616,12 @@
         @endif
     </div>
     @if ($current_step === 'servers')
-        <x-application.settings-section title="Select a server"
-            description="Choose the machine that will host this resource." flush>
+        <x-application.settings-section :title="__('common.select_server')"
+            :description="__('common.choose_host_server')" flush>
             @if ($onlyBuildServerAvailable)
-                <x-callout type="warning" title="No deployment server" class="m-4">
-                    Only build servers are available. Add or reconfigure a server before continuing.
-                    <a class="font-medium underline" href="{{ route('server.index') }}" {{ wireNavigate() }}>Open
-                        servers</a>
+                <x-callout type="warning" :title="__('common.no_deployment_server')" class="m-4">
+                    {{ __('common.only_build_servers_available') }}
+                    <a class="font-medium underline" href="{{ route('server.index') }}" {{ wireNavigate() }}>{{ __('common.open_servers') }}</a>
                 </x-callout>
             @endif
             <div class="divide-y divide-neutral-200 dark:divide-white/[0.07]">
@@ -642,16 +640,15 @@
                                 {{ $server->description ?: $server->ip }}
                             </span>
                         </span>
-                        <x-status-badge status="running" text="Ready" />
+                        <x-status-badge status="running" :text="__('common.ready')" />
                     </button>
                 @empty
                     @if ($buildServers?->isEmpty() && ! $onlyBuildServerAvailable)
-                        <x-empty title="No available servers"
-                            description="Validate a reachable server before creating this resource."
+                        <x-empty :title="__('common.no_servers_available')"
+                            :description="__('common.validate_server_before_resource')"
                             icon-name="servers" size="sm">
                             <x-slot:actions>
-                                <a class="button" href="{{ route('server.index') }}" {{ wireNavigate() }}>Open
-                                    servers</a>
+                                <a class="button" href="{{ route('server.index') }}" {{ wireNavigate() }}>{{ __('common.open_servers') }}</a>
                             </x-slot:actions>
                         </x-empty>
                     @endif
@@ -666,20 +663,19 @@
                         <span class="min-w-0 flex-1">
                             <span
                                 class="block truncate text-[13px] font-semibold text-black dark:text-fg">{{ $buildServer->name }}</span>
-                            <span class="block text-[11px] text-neutral-500 dark:text-fg-faint">Build-only servers
-                                cannot host resources.</span>
+                            <span class="block text-[11px] text-neutral-500 dark:text-fg-faint">{{ __('common.build_only_servers') }}</span>
                         </span>
-                        <x-status-badge status="exited" text="Build only" />
+                        <x-status-badge status="exited" :text="__('common.build_only')" />
                         <a href="{{ route('server.show', ['server_uuid' => $buildServer->uuid]) }}"
-                            {{ wireNavigate() }} class="button">Settings</a>
+                            {{ wireNavigate() }} class="button">{{ __('common.settings') }}</a>
                     </div>
                 @endforeach
             </div>
         </x-application.settings-section>
     @endif
     @if ($current_step === 'destinations')
-        <x-application.settings-section title="Select a destination"
-            description="Destinations separate resources by Docker network. Use the default destination when unsure."
+        <x-application.settings-section :title="__('common.select_destination')"
+            :description="__('common.destination_selection_description')"
             flush>
             <div class="divide-y divide-neutral-200 dark:divide-white/[0.07]">
                 @if ($server->isSwarm())
@@ -693,8 +689,7 @@
                             <span class="min-w-0 flex-1">
                                 <span
                                     class="block truncate text-[13px] font-semibold text-black dark:text-fg">{{ $swarmDocker->name }}</span>
-                                <span class="block text-[11px] text-neutral-500 dark:text-fg-faint">Docker Swarm
-                                    destination</span>
+                                <span class="block text-[11px] text-neutral-500 dark:text-fg-faint">{{ __('common.docker_swarm_destination') }}</span>
                             </span>
                             <x-deprecated-badge />
                         </button>
@@ -710,10 +705,10 @@
                             <span class="min-w-0 flex-1">
                                 <span
                                     class="block truncate text-[13px] font-semibold text-black dark:text-fg">{{ $standaloneDocker->name }}</span>
-                                <span class="block truncate text-[11px] text-neutral-500 dark:text-fg-faint">Network:
+                                <span class="block truncate text-[11px] text-neutral-500 dark:text-fg-faint">{{ __('common.network_label') }}:
                                     {{ $standaloneDocker->network }}</span>
                             </span>
-                            <x-status-badge status="running" text="Standalone Docker" />
+                            <x-status-badge status="running" :text="__('common.standalone_docker')" />
                         </button>
                     @endforeach
                 @endif
@@ -723,9 +718,8 @@
     @if ($current_step === 'select-postgresql-type')
         <div x-data="{ selecting: false }">
             <div class="mb-4">
-                <h2 class="text-[15px]! font-semibold!">Select a PostgreSQL image</h2>
-                <p class="mt-1 text-[12px] text-neutral-500 dark:text-fg-dim">Use PostgreSQL 18 unless the workload
-                    needs bundled extensions.</p>
+                <h2 class="text-[15px]! font-semibold!">{{ __('common.select_postgresql_image') }}</h2>
+                <p class="mt-1 text-[12px] text-neutral-500 dark:text-fg-dim">{{ __('common.postgresql_image_description') }}</p>
             </div>
             <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
                 <div class="group relative flex min-h-24 items-center gap-3 rounded-[10px] border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-300 hover:bg-neutral-50 dark:border-white/[0.07] dark:bg-surface dark:hover:border-white/[0.12] dark:hover:bg-white/[0.035]"
@@ -734,16 +728,16 @@
                     :disabled="selecting">
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PostgreSQL 18 <span
-                                class="ml-1 rounded-full bg-coollabs/10 px-2 py-0.5 text-[10px] font-medium text-coollabs dark:bg-warning/15 dark:text-warning">Default</span>
+                                class="ml-1 rounded-full bg-coollabs/10 px-2 py-0.5 text-[10px] font-medium text-coollabs dark:bg-warning/15 dark:text-warning">{{ __('common.default') }}</span>
                         </div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PostgreSQL is a powerful, open-source object-relational database system (no extensions).
+                            {{ __('common.postgresql_description') }}
                         </div>
                     </div>
                     <a href="https://hub.docker.com/_/postgres/" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -758,13 +752,13 @@
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PostgreSQL 17</div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PostgreSQL is a powerful, open-source object-relational database system (no extensions).
+                            {{ __('common.postgresql_description') }}
                         </div>
                     </div>
                     <a href="https://hub.docker.com/_/postgres/" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -779,13 +773,13 @@
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PostgreSQL 16</div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PostgreSQL is a powerful, open-source object-relational database system (no extensions).
+                            {{ __('common.postgresql_description') }}
                         </div>
                     </div>
                     <a href="https://hub.docker.com/_/postgres/" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -800,13 +794,13 @@
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">Supabase PostgreSQL</div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            Supabase is a modern, open-source alternative to PostgreSQL with lots of extensions.
+                            {{ __('common.supabase_postgresql_description') }}
                         </div>
                     </div>
                     <a href="https://github.com/supabase/postgres" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -820,16 +814,16 @@
                     :disabled="selecting">
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PostGIS <span
-                                class="ml-1 text-[10px] font-medium text-amber-600 dark:text-amber-300">AMD only</span>
+                                class="ml-1 text-[10px] font-medium text-amber-600 dark:text-amber-300">{{ __('common.amd_only') }}</span>
                         </div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PostGIS is a PostgreSQL extension for geographic objects.
+                            {{ __('common.postgis_description') }}
                         </div>
                     </div>
                     <a href="https://github.com/postgis/docker-postgis" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -844,13 +838,13 @@
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PGVector 18</div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PGVector is a PostgreSQL extension for vector data types.
+                            {{ __('common.pgvector_description') }}
                         </div>
                     </div>
                     <a href="https://github.com/pgvector/pgvector" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -865,13 +859,13 @@
                     <div class="flex flex-col">
                         <div class="text-[13px] font-semibold text-black dark:text-fg">PGVector 17</div>
                         <div class="mt-1 pr-8 text-[11px] leading-4 text-neutral-500 dark:text-fg-faint">
-                            PGVector is a PostgreSQL extension for vector data types.
+                            {{ __('common.pgvector_description') }}
                         </div>
                     </div>
                     <a href="https://github.com/pgvector/pgvector" target="_blank"
                         @click.stop
                         class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                        title="View documentation">
+                        :title="__('common.view_documentation')">
                         <svg class="w-4 h-4 text-neutral-600 dark:text-neutral-400" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -883,14 +877,14 @@
         </div>
     @endif
     @if ($current_step === 'existing-postgresql')
-        <x-application.settings-section title="Connect an existing PostgreSQL database"
-            description="Provide the connection URL for the database Coolify should use.">
+        <x-application.settings-section :title="__('common.existing_postgresql')"
+            :description="__('common.existing_postgresql_description')">
             <form wire:submit="addExistingPostgresql" class="flex flex-col gap-3 sm:flex-row sm:items-end">
                 <div class="min-w-0 flex-1">
-                    <x-forms.input placeholder="postgres://username:password@database:5432" label="Database URL"
+                    <x-forms.input placeholder="postgres://username:password@database:5432" :label="__('common.database_url')"
                         id="existingPostgresqlUrl" />
                 </div>
-                <x-forms.button type="submit">Add database</x-forms.button>
+                <x-forms.button type="submit">{{ __('common.add_database') }}</x-forms.button>
             </form>
         </x-application.settings-section>
     @endif

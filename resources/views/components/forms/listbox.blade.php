@@ -5,8 +5,8 @@
     'helper' => null,
     'required' => false,
     'options' => [], // list of ['value' => ..., 'label' => ..., 'disabled' => bool]
-    'placeholder' => 'Select…',
-    'emptyText' => 'No options available.',
+    'placeholder' => null,
+    'emptyText' => null,
     'live' => false,
     'onChange' => null, // optional $wire method to call after a selection
     'onChangeArgs' => null, // optional arguments followed by the selected value
@@ -28,6 +28,8 @@
 
     $triggerId = ($htmlId ?? $id).'-trigger';
     $panelId = ($htmlId ?? $id).'-panel';
+    $placeholder ??= __('common.select');
+    $emptyText ??= __('common.no_options_available');
 @endphp
 
 <div class="w-full min-w-0">

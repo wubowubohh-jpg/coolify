@@ -1,9 +1,14 @@
 @props([
-    'title' => 'Team',
-    'subtitle' => 'Members, roles, and team settings',
+    'title' => null,
+    'subtitle' => null,
     // Hide family H1 only at xl+; keep create in the layer-2 bar.
     'titleOnDesktop' => false,
 ])
+
+@php
+    $title ??= __('common.team');
+    $subtitle ??= __('common.team_description');
+@endphp
 
 <x-dashboard.navbar section="team" :title="$title" :subtitle="$subtitle" :titleOnDesktop="$titleOnDesktop">
     @isset($titleActions)
@@ -15,12 +20,12 @@
         @isset($actions)
             {{ $actions }}
         @else
-            <x-modal-input title="New Team">
+            <x-modal-input :title="__('common.new_team')">
                 <x-slot:content>
                     <button type="button"
                         class="button button-highlighted">
                         <x-reicon name="plus" class="size-3.5" />
-                        New team
+                        {{ __('common.new_team_lower') }}
                     </button>
                 </x-slot:content>
                 <livewire:team.create />

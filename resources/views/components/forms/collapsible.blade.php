@@ -1,7 +1,9 @@
 @props([
-    'title' => 'Advanced settings',
+    'title' => null,
     'contentClass' => '',
 ])
+
+@php($title ??= __('common.advanced_settings'))
 
 <div x-data="{ open: false }" {{ $attributes->class(['flex flex-col gap-4']) }}>
     <button type="button" x-on:click="open = !open"

@@ -21,16 +21,15 @@
                     class="application-settings-form application-settings-section relative w-full lg:min-w-[36rem] lg:max-w-2xl"
                     style="box-shadow: 0 0 0 1px var(--coollabs-hairline), var(--shadow-modal)">
                     <header>
-                        <h3>Domain already in use</h3>
+                        <h3>{{ __('common.domain_already_in_use') }}</h3>
                         <button @click="modalOpen = false; $wire.set('showDomainConflictModal', false)"
                             class="flex size-7 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg">
                             <x-reicon name="x" class="size-4" />
                         </button>
                     </header>
                     <div class="application-settings-section-body">
-                        <x-callout type="danger" title="Domain conflict detected" class="mb-4">
-                            The following domain(s) are already in use by other resources. Using the same domain for
-                            multiple resources can cause routing conflicts and unpredictable behavior.
+                        <x-callout type="danger" :title="__('common.domain_conflict_detected')" class="mb-4">
+                            {{ __('common.domain_conflict_description') }}
                         </x-callout>
 
                         <div class="mb-4">
@@ -38,7 +37,7 @@
                                 @foreach ($conflicts as $conflict)
                                     <li class="flex items-start text-[12px] leading-5 text-red-600 dark:text-red-400">
                                         <div>
-                                            <strong>{{ $conflict['domain'] }}</strong> is used by
+                                            <strong>{{ $conflict['domain'] }}</strong> {{ __('common.is_used_by') }}
                                             @if ($conflict['resource_type'] === 'instance')
                                                 <strong>{{ $conflict['resource_name'] }}</strong>
                                             @else
@@ -54,25 +53,25 @@
                             </ul>
                         </div>
 
-                        <x-callout type="warning" title="What will happen if you continue?" class="mb-4">
+                        <x-callout type="warning" :title="__('common.what_happens_continue')" class="mb-4">
                             @if (isset($consequences))
                                 {{ $consequences }}
                             @else
                                 <ul class="mt-2 ml-4 list-disc">
-                                    <li>Only one resource will be accessible at this domain</li>
-                                    <li>The routing behavior will be unpredictable</li>
-                                    <li>You may experience service disruptions</li>
-                                    <li>SSL certificates might not work correctly</li>
+                                    <li>{{ __('common.only_one_resource_accessible') }}</li>
+                                    <li>{{ __('common.routing_unpredictable') }}</li>
+                                    <li>{{ __('common.service_disruptions') }}</li>
+                                    <li>{{ __('common.ssl_certificates_might_fail') }}</li>
                                 </ul>
                             @endif
                         </x-callout>
 
                         <div class="mt-4 flex flex-wrap justify-end gap-2 border-t border-neutral-200 pt-4 dark:border-white/[0.08]">
                             <x-forms.button @click="modalOpen = false; $wire.set('showDomainConflictModal', false)">
-                                Cancel
+                                {{ __('common.cancel') }}
                             </x-forms.button>
                             <x-forms.button wire:click="{{ $confirmAction }}" @click="modalOpen = false" isError>
-                                Proceed anyway
+                                {{ __('common.proceed_anyway') }}
                             </x-forms.button>
                         </div>
                     </div>

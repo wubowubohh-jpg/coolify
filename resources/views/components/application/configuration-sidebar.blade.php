@@ -173,6 +173,70 @@
                 ->values())
             ->filter(fn ($items) => $items->isNotEmpty());
 
+        $configurationTranslations = [
+            'General' => 'common.general',
+            'Domains' => 'common.domains',
+            'Advanced' => 'common.advanced',
+            'Swarm' => 'common.swarm',
+            'Environment Variables' => 'common.environment_variables',
+            'Persistent Storage' => 'common.persistent_storage',
+            'Backups' => 'common.backups',
+            'Terminal' => 'common.terminal',
+            'Deployment Logs' => 'common.deployment_logs',
+            'Runtime Logs' => 'common.runtime_logs',
+            'Git Source' => 'common.git_source',
+            'Servers' => 'common.servers',
+            'Scheduled Tasks' => 'common.scheduled_tasks',
+            'Webhooks' => 'common.webhooks',
+            'Preview Deployments' => 'common.preview_deployments',
+            'Healthcheck' => 'common.healthcheck',
+            'Rollback' => 'common.rollback',
+            'Resource Limits' => 'common.resource_limits',
+            'Resource Operations' => 'common.resource_operations',
+            'Metrics' => 'common.metrics',
+            'Tags' => 'common.tags',
+            'Danger Zone' => 'common.danger_zone',
+            'Settings' => 'common.settings',
+            'Observe & troubleshoot' => 'common.observe_troubleshoot',
+            'Deploy' => 'common.deploy',
+            'Automation' => 'common.automation',
+            'Operations' => 'common.operations',
+            'Application details' => 'common.application_details',
+            'Access' => 'common.access',
+            'Build pipeline' => 'common.build_pipeline',
+            'Container image' => 'common.container_image',
+            'Networking' => 'common.networking',
+            'Runtime' => 'common.runtime',
+            'Security' => 'common.security',
+            'Deployment lifecycle' => 'common.deployment_lifecycle',
+            'Container labels' => 'common.container_labels',
+            'Build' => 'common.build',
+            'Container' => 'common.container',
+            'Deployment' => 'common.deployment',
+            'Git' => 'common.git',
+            'Docker compose' => 'common.docker_compose',
+            'Proxy' => 'common.proxy',
+            'Logs' => 'common.logs',
+            'GPU' => 'common.gpu',
+            'Deploy webhook' => 'common.deploy_webhook',
+            'Manual Git webhooks' => 'common.manual_git_webhooks',
+            'URL template' => 'common.url_template',
+            'Manual preview' => 'common.manual_preview',
+            'Deployments' => 'common.deployments',
+            'Configuration' => 'common.configuration',
+            'Command' => 'common.command',
+            'HTTP request' => 'common.http_request',
+            'Timing and retries' => 'common.timing_retries',
+            'Image retention' => 'common.image_retention',
+            'Available images' => 'common.available_images',
+            'CPU' => 'common.cpu',
+            'Memory' => 'common.memory',
+            'Clone destination' => 'common.clone_destination',
+            'Clone environment' => 'common.clone_environment',
+            'Move resource' => 'common.move_resource',
+        ];
+        $translateConfigurationLabel = fn (string $label): string => __($configurationTranslations[$label] ?? $label);
+
         // In-page sections (cards) shown as sub-items under the active page
         $isComposeApp = $application->build_pack === 'dockercompose';
         $pageSections = [
@@ -239,13 +303,13 @@
     'application-settings-navigation min-w-0 xl:self-start',
     'is-flush' => $flush,
 ])>
-                <nav aria-label="Configuration sections"
+                <nav aria-label="{{ __('common.configuration') }}"
                     class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
                     @foreach ($groupedMenuItems as $groupLabel => $groupItems)
                         @unless ($loop->first)
                             <div class="my-2 hidden border-t border-neutral-200 xl:block dark:border-white/[0.06]" aria-hidden="true"></div>
                         @endunless
-                        <div class="nav-section hidden xl:block">{{ $groupLabel }}</div>
+                        <div class="nav-section hidden xl:block">{{ $translateConfigurationLabel($groupLabel) }}</div>
                         @foreach ($groupItems as $menuItem)
                             @php $sections = $pageSections[$menuItem['route']] ?? []; @endphp
                             <div wire:key="application-settings-group-{{ str($menuItem['label'])->slug() }}">
@@ -258,7 +322,7 @@
                                     href="{{ route($menuItem['route'], $applicationRouteParameters) }}"
                                     >
                                     <x-reicon :name="$menuIcons[$menuItem['label']] ?? 'settings'" class="menu-item-icon" />
-                                    <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                                    <span class="menu-item-label">{{ $translateConfigurationLabel($menuItem['label']) }}</span>
                                     @if ($menuItem['badge'] ?? false)
                                         <span class="shrink-0">
                                             <livewire:project.application.server-status-badge :application="$application"
@@ -274,13 +338,13 @@
                                                 <button type="button" class="menu-subitem"
                                                     :class="activeSection === '{{ $section['id'] }}' && 'menu-subitem-active'"
                                                     x-on:click="activeSection = '{{ $section['id'] }}'; history.replaceState(null, '', '#{{ $section['id'] }}'); window.scrollToSettingsSection?.('{{ $section['id'] }}')">
-                                                    <span class="menu-item-label text-left">{{ $section['label'] }}</span>
+                                                    <span class="menu-item-label text-left">{{ $translateConfigurationLabel($section['label']) }}</span>
                                                 </button>
                                             @else
                                                 <a class="menu-subitem"
                                                     href="{{ route($menuItem['route'], $applicationRouteParameters) }}#{{ $section['id'] }}"
                                                     {{ wireNavigate() }}>
-                                                    <span class="menu-item-label text-left">{{ $section['label'] }}</span>
+                                                    <span class="menu-item-label text-left">{{ $translateConfigurationLabel($section['label']) }}</span>
                                                 </a>
                                             @endif
                                         @endforeach

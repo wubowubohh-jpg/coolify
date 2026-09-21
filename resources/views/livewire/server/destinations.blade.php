@@ -17,10 +17,10 @@
                         <div class="flex items-center gap-2">
                             <x-forms.button canGate="update" :canResource="$server" wire:click="scan">
                                 <x-reicon name="refresh" class="size-3.5" />
-                                Scan networks
+                                {{ __('common.scan_networks') }}
                             </x-forms.button>
                             @can('update', $server)
-                                <x-modal-input buttonTitle="+ Add" title="New Destination">
+                                <x-modal-input :buttonTitle="__('common.add')" :title="__('common.new_destination')">
                                     <livewire:destination.new.docker :server_id="$server->id" />
                                 </x-modal-input>
                             @endcan
@@ -40,20 +40,20 @@
                                     {{ data_get($destination, 'network') }}
                                 </p>
                                 <p class="mt-0.5 text-xs text-neutral-500 dark:text-fg-dim">
-                                    {{ $server->swarmDockers->contains('id', data_get($destination, 'id')) ? 'Docker Swarm' : 'Standalone Docker' }}
+                                    {{ $server->swarmDockers->contains('id', data_get($destination, 'id')) ? __('common.docker_swarm') : __('common.standalone_docker') }}
                                 </p>
                             </div>
                         </a>
                     @empty
-                        <x-empty size="sm" title="No destinations"
-                            description="Add a destination or scan the server for existing Docker networks."
+                        <x-empty size="sm" :title="__('common.no_destinations_yet')"
+                            :description="__('common.add_or_scan_destinations')"
                             icon-name="destinations" />
                     @endforelse
                 </x-application.settings-section>
 
                 @if ($networks->count() > 0)
-                    <x-application.settings-section id="server-found-networks-section" title="Discovered networks"
-                        helper="Networks found on the server that are not registered as Coolify destinations."
+                    <x-application.settings-section id="server-found-networks-section" :title="__('common.discovered_networks')"
+                        :helper="__('common.discovered_networks_description')"
                         flush>
                         @foreach ($networks as $network)
                             <div
@@ -62,21 +62,21 @@
                                     <p class="text-sm font-medium text-neutral-950 dark:text-fg">
                                         {{ data_get($network, 'Name') }}
                                     </p>
-                                    <p class="mt-0.5 text-xs text-neutral-500 dark:text-fg-dim">Docker network</p>
+                                    <p class="mt-0.5 text-xs text-neutral-500 dark:text-fg-dim">{{ __('common.docker_network') }}</p>
                                 </div>
                                 <x-forms.button canGate="update" :canResource="$server"
                                     wire:click="add('{{ data_get($network, 'Name') }}')">
-                                    Add destination
+                                    {{ __('common.add_destination') }}
                                 </x-forms.button>
                             </div>
                         @endforeach
                     </x-application.settings-section>
                 @endif
             @else
-                <x-application.settings-section title="Destinations"
-                    helper="Docker networks used to isolate and connect resources on this server.">
-                    <x-empty size="sm" title="Server validation required"
-                        description="Validate this server before managing its destinations."
+                <x-application.settings-section :title="__('common.destinations')"
+                    :helper="__('common.server_destinations_description')">
+                    <x-empty size="sm" :title="__('common.server_validation_required')"
+                        :description="__('common.validate_server_before_destinations')"
                         icon-name="destinations" />
                 </x-application.settings-section>
             @endif

@@ -7,16 +7,16 @@
 <div class="data-table w-full">
     @if ($showHeader)
         <div class="data-table-header {{ $gridClass }}">
-            <span>Domain</span>
+            <span>{{ __('common.domain') }}</span>
             @if ($showServiceColumn)
-                <span>Service</span>
+                <span>{{ __('common.service') }}</span>
             @endif
-            <span>Protocol redirect</span>
-                <span>Domain redirect</span>
-                <span>Internal port</span>
-                <span>Search indexing</span>
-                <span>DNS status</span>
-            <span class="text-right">Actions</span>
+                <span>{{ __('common.protocol_redirect') }}</span>
+                <span>{{ __('common.domain_redirect') }}</span>
+                <span>{{ __('common.internal_port') }}</span>
+                <span>{{ __('common.search_indexing') }}</span>
+                <span>{{ __('common.dns_status') }}</span>
+            <span class="text-right">{{ __('common.actions') }}</span>
         </div>
     @endif
     @foreach ($rows as $row)
@@ -34,12 +34,12 @@
                 default => 'neutral',
             };
             $dnsLabel = match ($row['dns_status']) {
-                'ok' => 'DNS matches',
-                'failed' => 'DNS mismatch',
-                'skipped' => 'DNS skipped',
-                'checking' => 'Checking DNS...',
-                'pending' => 'Not checked',
-                default => 'DNS unknown',
+                'ok' => __('common.dns_matches'),
+                'failed' => __('common.dns_mismatch'),
+                'skipped' => __('common.dns_skipped'),
+                'checking' => __('common.checking_dns'),
+                'pending' => __('common.not_checked'),
+                default => __('common.dns_unknown'),
             };
             $serviceLabel = filled($row['service_name'] ?? null)
                 ? \Illuminate\Support\Str::headline($row['service_name'])
@@ -49,9 +49,9 @@
             $isNoindexed = $service->applications->firstWhere('id', $row['service_application_id'])?->isDomainNoindexed($row['url']);
             $rowDirection = $serviceRedirects[$row['service_application_id']] ?? 'both';
             $directionLabel = match ($rowDirection) {
-                'www' => 'Redirect to www',
-                'non-www' => 'Redirect to non-www',
-                default => 'Both www and non-www',
+                'www' => __('common.redirect_to_www_title'),
+                'non-www' => __('common.redirect_to_non_www_title'),
+                default => __('common.both_www_non_www'),
             };
             $faviconUrl = is_array($domainParts) && isset($domainParts['scheme'], $domainParts['host'])
                 ? $domainParts['scheme'].'://'.$domainParts['host'].(isset($domainParts['port']) ? ':'.$domainParts['port'] : '').'/favicon.ico'
@@ -75,7 +75,7 @@
                         @if ($isSuggested)
                             <span
                                 class="min-w-0 text-[13px] text-black sm:truncate dark:text-white"
-                                title="{{ $row['url'] }} (not configured yet)">
+                                title="{{ $row['url'] }} ({{ __('common.not_configured_yet') }})">
                                 {{ $row['url'] }}
                             </span>
                         @else
@@ -116,48 +116,48 @@
                     </div>
                 @endif
 
-                <div class="service-domain-detail" title="Protocol redirect">
-                    <span class="service-domain-detail-label">Protocol redirect</span>
-                    <span>{{ str_starts_with($row['url'], 'https://') && ($forceHttpsRedirects[$row['service_application_id']] ?? true) ? 'HTTP → HTTPS' : 'Disabled' }}</span>
+                <div class="service-domain-detail" title="{{ __('common.protocol_redirect') }}">
+                    <span class="service-domain-detail-label">{{ __('common.protocol_redirect') }}</span>
+                    <span>{{ str_starts_with($row['url'], 'https://') && ($forceHttpsRedirects[$row['service_application_id']] ?? true) ? __('common.http_to_https') : __('common.disabled') }}</span>
                 </div>
                 <div class="service-domain-detail" title="{{ $directionLabel }}">
-                    <span class="service-domain-detail-label">Domain redirect</span>
-                    <span>{{ match ($rowDirection) { 'www' => 'non-www → www', 'non-www' => 'www → non-www', default => 'Disabled' } }}</span>
+                    <span class="service-domain-detail-label">{{ __('common.domain_redirect') }}</span>
+                    <span>{{ match ($rowDirection) { 'www' => __('common.non_www_to_www'), 'non-www' => __('common.www_to_non_www'), default => __('common.disabled') } }}</span>
                 </div>
                 <div class="service-domain-detail"
-                    title="{{ ($row['has_port_override'] ?? false) ? 'Custom internal port for this domain' : 'Inherited from the Coolify service port' }}">
-                    <span class="service-domain-detail-label">Internal port</span>
-                    <span @if (filled($row['internal_port'] ?? null)) aria-label="Internal port {{ $row['internal_port'] }}" @endif>{{ $row['internal_port'] ?? '—' }}</span>
+                    :title="($row['has_port_override'] ?? false) ? __('common.custom_internal_port_for_domain') : __('common.inherited_coolify_service_port')">
+                    <span class="service-domain-detail-label">{{ __('common.internal_port') }}</span>
+                    <span @if (filled($row['internal_port'] ?? null)) aria-label="{{ __('common.internal_port_aria', ['port' => $row['internal_port']]) }}" @endif>{{ $row['internal_port'] ?? '-' }}</span>
                 </div>
                 <div class="service-domain-detail">
-                    <span class="service-domain-detail-label">Search indexing</span>
-                    <span role="img" aria-label="{{ $isNoindexed ? 'Search indexing blocked' : 'Search indexing allowed' }}"
-                        title="{{ $isNoindexed ? 'Search indexing blocked' : 'Search indexing allowed' }}">
+                    <span class="service-domain-detail-label">{{ __('common.search_indexing') }}</span>
+                    <span role="img" aria-label="{{ $isNoindexed ? __('common.search_indexing_blocked') : __('common.search_indexing_allowed') }}"
+                        title="{{ $isNoindexed ? __('common.search_indexing_blocked') : __('common.search_indexing_allowed') }}">
                         <x-reicon :name="$isNoindexed ? 'x' : 'check'" class="size-4" />
                     </span>
                 </div>
 
-                <div class="service-domain-mobile-summary" aria-label="Domain routing summary">
+                <div class="service-domain-mobile-summary" aria-label="{{ __('common.domain_routing_summary') }}">
                     @if (str_starts_with($row['url'], 'https://') && ($forceHttpsRedirects[$row['service_application_id']] ?? true))
-                        <span>HTTP → HTTPS</span>
+                        <span>{{ __('common.http_to_https') }}</span>
                     @endif
                     @if (in_array($rowDirection, ['www', 'non-www'], true))
-                        <span>{{ $rowDirection === 'www' ? 'non-www → www' : 'www → non-www' }}</span>
+                <span>{{ $rowDirection === 'www' ? __('common.non_www_to_www') : __('common.www_to_non_www') }}</span>
                     @elseif (! str_starts_with($row['url'], 'https://') || ! ($forceHttpsRedirects[$row['service_application_id']] ?? true))
-                        <span>No redirects</span>
+                        <span>{{ __('common.no_redirects') }}</span>
                     @endif
-                    <span>Port {{ $row['internal_port'] ?? 'missing' }}</span>
-                    <span>{{ $isNoindexed ? 'Noindex' : 'Indexable' }}</span>
+                    <span>{{ __('common.port') }} {{ $row['internal_port'] ?? __('common.missing') }}</span>
+                    <span>{{ $isNoindexed ? __('common.noindex') : __('common.indexable') }}</span>
                 </div>
 
                 <div class="service-domain-dns flex min-w-0 items-center">
                     @if ($row['dns_status'] === 'failed')
                         <x-status-badge as="button" @click="$dispatch('open-dns-records-modal')" :status="$dnsLabel" :type="$dnsType"
-                            title="View DNS records to fix" class="cursor-pointer hover:bg-neutral-200 dark:hover:bg-white/[0.1]" />
+                            :title="__('common.view_dns_records_to_fix')" class="cursor-pointer hover:bg-neutral-200 dark:hover:bg-white/[0.1]" />
                     @elseif ($row['dns_status'] === 'checking')
                         <x-status-badge dynamic :title="$row['dns_message']">
-                            <x-loading compact aria-label="Checking DNS" />
-                            <span class="truncate">Checking DNS...</span>
+                        <x-loading compact :aria-label="__('common.checking_dns')" />
+                        <span class="truncate">{{ __('common.checking_dns') }}</span>
                         </x-status-badge>
                     @else
                         <x-status-badge :status="$dnsLabel" :type="$dnsType"
@@ -170,7 +170,7 @@
                         <button type="button" wire:click="checkDomainDns({{ $index }})"
                             wire:loading.attr="disabled"
                             wire:target="checkDomainDns({{ $index }}),checkAllDns"
-                            class="icon-button shrink-0" title="Check DNS" aria-label="Check DNS">
+                            class="icon-button shrink-0" title="{{ __('common.check_dns') }}" aria-label="{{ __('common.check_dns') }}">
                             <x-reicon name="refresh" class="size-3.5" />
                         </button>
                         @if ($isSuggested)
@@ -178,31 +178,31 @@
                                 <x-forms.button canGate="update" :canResource="$service"
                                     wire:click="addSuggestedDomain({{ $index }})" isError
                                     class="h-7! px-2! text-[12px]!">
-                                    Continue
+                                    {{ __('common.continue') }}
                                 </x-forms.button>
                             @else
                                 <x-forms.button canGate="update" :canResource="$service"
                                     wire:click="addSuggestedDomain({{ $index }})" isHighlighted
                                     class="h-7! shrink-0 px-2.5! text-[12px]!">
-                                    Add domain
+                                    {{ __('common.add_domain') }}
                                 </x-forms.button>
                             @endif
                         @else
-                            <button type="button" class="icon-button shrink-0" title="Domain settings" aria-label="Settings for {{ $publicUrl }}"
+                            <button type="button" class="icon-button shrink-0" title="{{ __('common.domain_settings') }}" aria-label="{{ __('common.domain_settings') }}: {{ $publicUrl }}"
                                 @click="openEditDomain(@js($index), @js($row['url']), @js($editingParts), @js((int) $row['service_application_id']), @js($serviceLabel), @js($isNoindexed ? 'noindex' : 'index'), @js($rowDirection))">
                                 <x-reicon name="settings" class="size-3.5" />
                             </button>
-                            <x-modal-confirmation class="!w-auto shrink-0" title="Remove domain?"
-                                buttonTitle="Remove" isErrorButton
+                        <x-modal-confirmation class="!w-auto shrink-0" :title="__('common.remove_domain_question')"
+                            :buttonTitle="__('common.remove')" isErrorButton
                                 submitAction="removeDomainByKey({{ $domainKey }})" :actions="[
-                                    'This domain will be removed from the service application.',
-                                    'Redeploy or restart may be required for proxy changes.',
+                                __('common.domain_removed_from_resource'),
+                                __('common.redeploy_proxy_changes'),
                                 ]" :confirmWithPassword="false" :confirmWithText="false"
-                                step2ButtonText="Remove domain">
+                            :step2ButtonText="__('common.remove_domain')">
                                 <x-slot:trigger>
                                     <button type="button"
                                         class="icon-button shrink-0 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
-                                        title="Remove domain" aria-label="Remove domain">
+                                        title="{{ __('common.remove_domain') }}" aria-label="{{ __('common.remove_domain') }}">
                                         <x-reicon name="trash" class="size-3.5" />
                                     </button>
                                 </x-slot:trigger>

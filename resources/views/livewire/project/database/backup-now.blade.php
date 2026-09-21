@@ -1,3 +1,3 @@
 <x-forms.button wire:click="backupNow"
     :disabled="! str($backup->database->status)->startsWith('running')"
-    :tooltip="! str($backup->database->status)->startsWith('running') ? 'The database must be running to start a backup.' : null">Back up now</x-forms.button>
+    :tooltip="! str($backup->database->status)->startsWith('running') ? __('common.database_must_running_backup') : null">{{ __('common.back_up_now') }}</x-forms.button>

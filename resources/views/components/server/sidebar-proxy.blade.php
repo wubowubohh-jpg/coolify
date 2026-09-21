@@ -30,9 +30,9 @@
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Proxy sections"
+    <nav aria-label="{{ __('common.proxy') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-        <div class="nav-section hidden xl:block">Proxy</div>
+        <div class="nav-section hidden xl:block">{{ __('common.proxy') }}</div>
         @foreach ($proxyMenuItems as $menuItem)
             <a wire:key="server-proxy-link-{{ str($menuItem['label'])->slug() }}"
                 @class([
@@ -42,7 +42,7 @@
                 @if ($menuItem['navigate'] ?? true) {{ wireNavigate() }} @endif
                 href="{{ route($menuItem['route'], $parameters) }}">
                 <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                <span class="menu-item-label">{{ $menuItem['label'] === 'Configuration' ? __('common.configuration') : ($menuItem['label'] === 'Dynamic Configurations' ? __('common.dynamic_configurations') : __('common.logs')) }}</span>
             </a>
         @endforeach
     </nav>

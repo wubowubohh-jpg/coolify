@@ -22,7 +22,7 @@
             parallelChunkUploads: false,
             init: function () {
                 let button = this.element.querySelector('button');
-                button.innerText = 'Select or drop a backup file here.'
+                button.innerText = @js(__('common.select_or_drop_backup'))
                 this.on('sending', function (file, xhr, formData) {
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                     formData.append("_token", token);
@@ -48,58 +48,58 @@
     </script>
     @endscript
         <div class="application-settings-workspace flex flex-col gap-6">
-            <x-callout type="danger" title="Existing data will be replaced">
-                Restoring a backup is destructive. Review the source and import command before continuing.
+            <x-callout type="danger" :title="__('common.existing_data_replaced')">
+                {{ __('common.restore_backup_destructive') }}
             </x-callout>
 
-            <x-application.settings-section title="Restore configuration"
-                description="Configure how the selected backup is applied to this database.">
+            <x-application.settings-section :title="__('common.restore_configuration')"
+                :description="__('common.restore_configuration_description')">
                 <div class="space-y-4">
             @if ($resourceDbType === 'standalone-postgresql')
                 @if ($dumpAll)
-                            <x-callout type="warning" title="Full restore overwrites administrator passwords">
-                                The backup replaces PostgreSQL administrator role passwords, including the destination administrator password.
-                                <span class="mt-1 block">If the administrator password changes, update it in Coolify's database configuration after the restore.</span>
+                            <x-callout type="warning" :title="__('common.full_restore_overwrites_admin_passwords')">
+                                {{ __('common.backup_replaces_postgres_passwords') }}
+                                <span class="mt-1 block">{{ __('common.administrator_password_change_update_config') }}</span>
                             </x-callout>
-                            <x-forms.textarea rows="6" readonly label="Import command"
+                            <x-forms.textarea rows="6" readonly :label="__('common.import_command')"
                                 wire:model="restoreCommandText" canGate="update"
                                 :canResource="$this->resource" />
                 @else
-                            <x-forms.input label="Import command"
-                                helper="Add --clean to replace conflicting objects or --verbose for detailed logs."
+                            <x-forms.input :label="__('common.import_command')"
+                                :helper="__('common.import_command_helper')"
                                 wire:model="postgresqlRestoreCommand" canGate="update"
                                 :canResource="$this->resource" />
                 @endif
             @elseif ($resourceDbType === 'standalone-mysql')
                 @if ($dumpAll)
-                            <x-forms.textarea rows="10" readonly label="Import command"
+                            <x-forms.textarea rows="10" readonly :label="__('common.import_command')"
                                 wire:model="restoreCommandText" canGate="update"
                                 :canResource="$this->resource" />
                 @else
-                            <x-forms.input label="Import command" wire:model="mysqlRestoreCommand"
+                            <x-forms.input :label="__('common.import_command')" wire:model="mysqlRestoreCommand"
                                 canGate="update" :canResource="$this->resource" />
                 @endif
             @elseif ($resourceDbType === 'standalone-mariadb')
                 @if ($dumpAll)
-                            <x-forms.textarea rows="10" readonly label="Import command"
+                            <x-forms.textarea rows="10" readonly :label="__('common.import_command')"
                                 wire:model="restoreCommandText" canGate="update"
                                 :canResource="$this->resource" />
                 @else
-                            <x-forms.input label="Import command" wire:model="mariadbRestoreCommand"
+                            <x-forms.input :label="__('common.import_command')" wire:model="mariadbRestoreCommand"
                                 canGate="update" :canResource="$this->resource" />
                 @endif
             @endif
                     <div class="max-w-sm">
-                        <x-forms.listbox id="dumpAll" label="Backup contents" live :options="[
-                            ['value' => true, 'label' => 'Backup contains all databases'],
-                            ['value' => false, 'label' => 'Backup contains one database'],
+                        <x-forms.listbox id="dumpAll" :label="__('common.backup_contents')" live :options="[
+                            ['value' => true, 'label' => __('common.backup_contains_all_databases')],
+                            ['value' => false, 'label' => __('common.backup_contains_one_database')],
                         ]" />
                     </div>
                 </div>
             </x-application.settings-section>
 
-            <x-application.settings-section title="Backup source"
-                description="Choose a local file or an object stored in S3.">
+            <x-application.settings-section :title="__('common.backup_source')"
+                :description="__('common.backup_source_description')">
                 <div class="grid gap-3 sm:grid-cols-2">
                     <button type="button" @click="restoreType = 'file'"
                         class="flex min-h-20 items-center gap-3 rounded-[10px] border p-3 text-left transition-colors"
@@ -111,9 +111,8 @@
                             <x-reicon name="file" class="size-4" />
                         </span>
                         <span>
-                            <span class="block text-[13px] font-semibold">File</span>
-                            <span class="mt-0.5 block text-[11px] text-neutral-500 dark:text-fg-faint">Upload a
-                                backup or use a server path.</span>
+                            <span class="block text-[13px] font-semibold">{{ __('common.file') }}</span>
+                            <span class="mt-0.5 block text-[11px] text-neutral-500 dark:text-fg-faint">{{ __('common.upload_or_use_server_path') }}</span>
                         </span>
                     </button>
 
@@ -128,9 +127,8 @@
                                 <x-reicon name="storages" class="size-4" />
                             </span>
                             <span>
-                                <span class="block text-[13px] font-semibold">S3 storage</span>
-                                <span class="mt-0.5 block text-[11px] text-neutral-500 dark:text-fg-faint">Download
-                                    a backup from an S3 bucket.</span>
+                                <span class="block text-[13px] font-semibold">{{ __('common.s3_storage') }}</span>
+                                <span class="mt-0.5 block text-[11px] text-neutral-500 dark:text-fg-faint">{{ __('common.download_backup_s3') }}</span>
                             </span>
                         </button>
                 @endif
@@ -142,18 +140,18 @@
                     class="mt-4 rounded-[10px] border border-neutral-200 bg-neutral-50 p-4 dark:border-white/[0.08] dark:bg-white/[0.05]">
                     <form class="flex flex-col gap-3 sm:flex-row sm:items-end">
                         <div class="min-w-0 flex-1">
-                            <x-forms.input label="File path on the server"
+                            <x-forms.input :label="__('common.file_path_on_server')"
                                 placeholder="/home/user/backup.sql.gz" wire:model="customLocation"
                                 x-model="$wire.customLocation" canGate="update"
                                 :canResource="$this->resource" />
                         </div>
                         <x-forms.button wire:click="checkFile" x-bind:disabled="!$wire.customLocation"
-                            canGate="update" :canResource="$this->resource">Check file</x-forms.button>
+                            canGate="update" :canResource="$this->resource">{{ __('common.check_file') }}</x-forms.button>
                     </form>
 
                     <div class="my-4 flex items-center gap-3 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-fg-faint">
                         <span class="h-px flex-1 bg-neutral-200 dark:bg-white/[0.08]"></span>
-                        or upload
+                        {{ __('common.or_upload') }}
                         <span class="h-px flex-1 bg-neutral-200 dark:bg-white/[0.08]"></span>
                     </div>
 
@@ -175,17 +173,17 @@
                                 x-show="filesize" x-text="filesize"></p>
                         </div>
                         <div class="shrink-0">
-                            <x-modal-confirmation title="Restore Database from File?" buttonTitle="Restore from File"
+                            <x-modal-confirmation :title="__('common.restore_database_from_file')" :buttonTitle="__('common.restore_from_file')"
                                 submitAction="runImport" isErrorButton>
                                 <x-slot:button-title>
-                                    Restore from file
+                                    {{ __('common.restore_from_file') }}
                                 </x-slot:button-title>
-                                This will:
+                                {{ __('common.this_will') }}
                                 <ul class="list-disc list-inside pt-2">
-                                    <li>Copy backup file to database container</li>
-                                    <li>Execute restore command</li>
+                                    <li>{{ __('common.copy_backup_to_database_container') }}</li>
+                                    <li>{{ __('common.execute_restore_command') }}</li>
                                 </ul>
-                                <p class="pt-2 font-semibold text-error">All existing data will be replaced.</p>
+                                <p class="pt-2 font-semibold text-error">{{ __('common.all_existing_data_replaced') }}</p>
                             </x-modal-confirmation>
                         </div>
                     </div>
@@ -208,11 +206,11 @@
                     <div x-cloak x-show="restoreType === 's3'"
                         class="mt-4 rounded-[10px] border border-neutral-200 bg-neutral-50 p-4 dark:border-white/[0.08] dark:bg-white/[0.05]">
                         <div class="grid gap-4 sm:grid-cols-2">
-                            <x-forms.listbox id="s3StorageId" label="S3 storage" :options="$s3StorageOptions"
-                                placeholder="Select storage" live />
+                            <x-forms.listbox id="s3StorageId" :label="__('common.s3_storage')" :options="$s3StorageOptions"
+                                :placeholder="__('common.select_storage')" live />
 
-                            <x-forms.input label="File path"
-                                helper="Path to the backup file in your S3 bucket, e.g., /backups/database-2025-01-15.gz"
+                            <x-forms.input :label="__('common.file_path')"
+                                :helper="__('common.s3_backup_path_helper')"
                                 placeholder="/backups/database-backup.gz" wire:model.blur="s3Path"
                                 wire:keydown.enter="checkS3File" canGate="update"
                                 :canResource="$this->resource" />
@@ -221,7 +219,7 @@
                         <div class="mt-3 flex justify-end">
                             <x-forms.button wire:click="checkS3File" x-bind:disabled="!s3StorageId || !s3Path"
                                 canGate="update" :canResource="$this->resource">
-                                Check file
+                                {{ __('common.check_file') }}
                             </x-forms.button>
                         </div>
 
@@ -234,18 +232,18 @@
                                         {{ formatBytes($s3FileSize ?? 0) }}</p>
                                 </div>
                                 <div class="shrink-0">
-                                        <x-modal-confirmation title="Restore Database from S3?" buttonTitle="Restore from S3"
+                                        <x-modal-confirmation :title="__('common.restore_database_from_s3')" :buttonTitle="__('common.restore_from_s3')"
                                             submitAction="restoreFromS3" isErrorButton>
                                             <x-slot:button-title>
-                                            Restore from S3
+                                            {{ __('common.restore_from_s3') }}
                                             </x-slot:button-title>
-                                        This will:
+                                        {{ __('common.this_will') }}
                                             <ul class="list-disc list-inside pt-2">
-                                                <li>Download backup from S3 storage</li>
-                                                <li>Copy file into database container</li>
-                                                <li>Execute restore command</li>
+                                                <li>{{ __('common.download_backup_from_s3') }}</li>
+                                                <li>{{ __('common.copy_file_into_database_container') }}</li>
+                                                <li>{{ __('common.execute_restore_command') }}</li>
                                             </ul>
-                                        <p class="pt-2 font-semibold text-error">All existing data will be replaced.</p>
+                                        <p class="pt-2 font-semibold text-error">{{ __('common.all_existing_data_replaced') }}</p>
                                         </x-modal-confirmation>
                                 </div>
                             </div>
@@ -257,10 +255,10 @@
         </div>
 
             <x-process-dialog @databaserestore.window="processDialogOpen = true" closeWithX size="xl">
-                <x-slot:title>Database Restore Output</x-slot:title>
+                <x-slot:title>{{ __('common.database_restore_output') }}</x-slot:title>
                 <x-slot:content>
                     <div class="flex h-full min-h-0 flex-col" wire:ignore>
-                        <livewire:activity-monitor wire:key="database-restore-{{ $resourceUuid }}" header="Logs" fullHeight />
+                        <livewire:activity-monitor wire:key="database-restore-{{ $resourceUuid }}" :header="__('common.logs')" fullHeight />
                     </div>
                 </x-slot:content>
             </x-process-dialog>

@@ -2,22 +2,22 @@
     <form wire:submit="submit" class="flex flex-col gap-6">
         <x-unsaved-bar action="submit" />
 
-        <x-application.settings-section title="Repository"
-            description="Configure the Git repository, branch, and commit Coolify deploys.">
+        <x-application.settings-section :title="__('common.repository')"
+            :description="__('common.repository_description')">
             <x-slot:actions>
                 <div class="flex flex-wrap items-center gap-2">
                     <a target="_blank" class="button" href="{{ $application?->gitBranchLocation }}">
-                        Repository
+                        {{ __('common.repository') }}
                         <x-external-link />
                     </a>
                     @if (data_get($application, 'source.is_public') === false && $application->source instanceof \App\Models\GithubApp)
                         <a target="_blank" class="button" href="{{ getInstallationPath($application->source) }}">
-                            Git app
+                            {{ __('common.git_source') }}
                             <x-external-link />
                         </a>
                     @endif
                     <a target="_blank" class="button" href="{{ $application?->gitCommits }}">
-                        Commits
+                        {{ __('common.commits') }}
                         <x-external-link />
                     </a>
                 </div>
@@ -26,30 +26,30 @@
             @if (blank($privateKeyId))
                 <div
                     class="mb-4 flex items-center justify-between gap-3 rounded-lg bg-neutral-50 px-3 py-2.5 ring-1 ring-neutral-200 dark:bg-white/[0.05] dark:ring-white/[0.07]">
-                    <span class="text-[12px] text-neutral-500 dark:text-fg-dim">Connected source</span>
+                    <span class="text-[12px] text-neutral-500 dark:text-fg-dim">{{ __('common.connected_source') }}</span>
                     <span class="text-[12px] font-medium text-neutral-900 dark:text-fg">
-                        {{ data_get($application, 'source.name', 'No source connected') }}
+                        {{ data_get($application, 'source.name', __('common.no_source_connected')) }}
                     </span>
                 </div>
             @endif
 
             <div class="grid gap-4 lg:grid-cols-2">
-                <x-forms.input placeholder="coollabsio/coolify-example" id="gitRepository" label="Repository"
+                <x-forms.input placeholder="coollabsio/coolify-example" id="gitRepository" :label="__('common.repository')"
                     canGate="update" :canResource="$application" />
-                <x-forms.input placeholder="main" id="gitBranch" label="Branch" canGate="update"
+                <x-forms.input placeholder="main" id="gitBranch" :label="__('common.branch')" canGate="update"
                     :canResource="$application" />
-                <x-forms.input placeholder="HEAD" id="gitCommitSha" label="Commit SHA" canGate="update"
+                <x-forms.input placeholder="HEAD" id="gitCommitSha" :label="__('common.commit_sha')" canGate="update"
                     :canResource="$application" />
             </div>
         </x-application.settings-section>
     </form>
 
     @if (filled($privateKeyId))
-        <x-application.settings-section title="Deploy key"
-            description="The SSH key Coolify uses to clone this private repository.">
+        <x-application.settings-section :title="__('common.deploy_key')"
+            :description="__('common.deploy_key_description')">
             <div
                 class="mb-4 flex items-center justify-between gap-3 rounded-lg bg-neutral-50 px-3 py-2.5 ring-1 ring-neutral-200 dark:bg-white/[0.05] dark:ring-white/[0.07]">
-                <span class="text-[12px] text-neutral-500 dark:text-fg-dim">Attached private key</span>
+                <span class="text-[12px] text-neutral-500 dark:text-fg-dim">{{ __('common.attached_private_key') }}</span>
                 <span class="text-[12px] font-medium text-neutral-900 dark:text-fg">{{ $privateKeyName }}</span>
             </div>
             @can('update', $application)
@@ -60,8 +60,8 @@
                             {{ $key->name }}
                         </button>
                     @empty
-                        <x-empty title="No alternative private keys"
-                            description="Add another private key from Keys & Tokens before switching."
+                        <x-empty :title="__('common.no_alternative_private_keys')"
+                            :description="__('common.add_private_key_before_switching')"
                             icon-name="keys" size="sm" />
                     @endforelse
                 </div>
@@ -82,8 +82,8 @@
                     default => 'Connected source',
                 };
             @endphp
-            <x-application.settings-section title="Git source"
-                description="Switch the Git provider App Coolify uses to clone this repository.">
+            <x-application.settings-section :title="__('common.git_source')"
+                :description="__('common.switch_git_provider')">
                 <div class="grid gap-2 sm:grid-cols-2">
                     @if ($currentSource)
                         <div
@@ -97,7 +97,7 @@
                                 <div class="flex min-w-0 flex-wrap items-center gap-2">
                                     <span
                                         class="truncate text-[13px] font-semibold text-black dark:text-fg">{{ $currentSource->name }}</span>
-                                    <x-status-badge label="Current" type="success" />
+                                    <x-status-badge :label="__('common.current')" type="success" />
                                 </div>
                                 <p class="mt-0.5 truncate text-[11px] text-neutral-500 dark:text-fg-faint">
                                     {{ $currentSourceSubtitle }}
@@ -121,12 +121,12 @@
                                 default => 'Git source',
                             };
                         @endphp
-                        <x-modal-confirmation title="Change Git source?"
-                            :actions="['Change Git source to ' . $source->name]" :buttonFullWidth="true"
+                        <x-modal-confirmation :title="__('common.change_git_source')"
+                            :actions="[__('common.change_git_source_to', ['name' => $source->name])]" :buttonFullWidth="true"
                             submitAction="changeSource({{ $source->id }}, {{ $sourceMorph }})"
-                            :confirmWithText="true" confirmationText="Change Git Source"
-                            confirmationLabel="Enter the text below to confirm changing the Git source."
-                            shortConfirmationLabel="Confirmation text" :confirmWithPassword="false">
+                            :confirmWithText="true" :confirmationText="__('common.change_git_source')"
+                            :confirmationLabel="__('common.enter_confirmation_change_git_source')"
+                            :shortConfirmationLabel="__('common.confirmation_text')" :confirmWithPassword="false">
                             <x-slot:trigger>
                                 <button type="button"
                                     class="group flex w-full min-h-16 items-center gap-3 rounded-xl border border-neutral-200 bg-white p-3 text-left shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14] dark:hover:bg-white/[0.05]">
@@ -148,12 +148,12 @@
                     @empty
                         @if (! $currentSource)
                             <div class="col-span-full">
-                                <x-empty title="No other sources"
-                                    description="Connect another Git source before moving this application."
+                                <x-empty :title="__('common.no_other_sources')"
+                                    :description="__('common.connect_another_source')"
                                     icon-name="sources" size="sm">
                                     <x-slot:contents>
                                         <a href="{{ route('source.all') }}" {{ wireNavigate() }} class="button">
-                                            Connect source
+                                            {{ __('common.connect_source') }}
                                         </a>
                                     </x-slot:contents>
                                 </x-empty>
@@ -163,11 +163,11 @@
                 </div>
                 @if ($currentSource && $sources->isEmpty())
                     <p class="mt-3 text-[12px] leading-5 text-neutral-500 dark:text-fg-dim">
-                        No other sources available.
+                        {{ __('common.no_other_sources_available') }}
                         <a href="{{ route('source.all') }}" {{ wireNavigate() }}
-                            class="font-medium text-coollabs underline-offset-2 hover:underline dark:text-warning">Connect
-                            another source</a>
-                        to switch providers.
+                            class="font-medium text-coollabs underline-offset-2 hover:underline dark:text-warning">{{ __('common.connect_source') }}
+                            {{ __('common.another_source') }}</a>
+                        {{ __('common.switch_providers') }}
                     </p>
                 @endif
             </x-application.settings-section>

@@ -58,22 +58,53 @@
             ['id' => 'initialization-scripts-section', 'label' => 'Initialization scripts'],
         ]
         : [];
+
+    $databaseTranslations = [
+        'General' => 'common.general',
+        'Environment Variables' => 'common.environment_variables',
+        'Persistent Storage' => 'common.persistent_storage',
+        'Backups' => 'common.backups',
+        'Import Backup' => 'common.import_backup',
+        'Servers' => 'common.servers',
+        'Runtime Logs' => 'common.runtime_logs',
+        'Terminal' => 'common.terminal',
+        'Webhooks' => 'common.webhooks',
+        'Healthcheck' => 'common.healthcheck',
+        'Resource Limits' => 'common.resource_limits',
+        'Resource Operations' => 'common.resource_operations',
+        'Metrics' => 'common.metrics',
+        'Tags' => 'common.tags',
+        'Danger Zone' => 'common.danger_zone',
+        'Settings' => 'common.settings',
+        'Observe & troubleshoot' => 'common.observe_troubleshoot',
+        'Deploy' => 'common.deploy',
+        'Automation' => 'common.automation',
+        'Operations' => 'common.operations',
+        'Database details' => 'common.database_details',
+        'Credentials' => 'common.credentials',
+        'Initialization' => 'common.initialization',
+        'Runtime and network' => 'common.runtime_and_network',
+        'Public access' => 'common.public_access',
+        'Configuration' => 'common.configuration',
+        'Log delivery' => 'common.log_delivery',
+        'Initialization scripts' => 'common.initialization_scripts',
+    ];
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Database settings"
+    <nav aria-label="{{ __('common.database_settings') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
         @foreach ($groupedItems as $groupLabel => $groupItems)
             @unless ($loop->first)
                 <div class="my-2 hidden border-t border-neutral-200 xl:block dark:border-white/[0.06]" aria-hidden="true"></div>
             @endunless
-            <div class="nav-section hidden xl:block">{{ $groupLabel }}</div>
+            <div class="nav-section hidden xl:block">{{ __($databaseTranslations[$groupLabel] ?? $groupLabel) }}</div>
             @foreach ($groupItems as $menuItem)
                 <a @class(['menu-item', 'menu-item-active' => $menuItem['active']])
                     @if ($menuItem['navigate'] ?? true) {{ wireNavigate() }} @endif
                     href="{{ route($menuItem['route'], $databaseRouteParameters) }}">
                     <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                    <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                    <span class="menu-item-label">{{ __($databaseTranslations[$menuItem['label']] ?? $menuItem['label']) }}</span>
                 </a>
                 @if ($menuItem['active'] && $menuItem['route'] === 'project.database.configuration' && $pageSections !== [])
                     <div class="nav-children hidden flex-col gap-0.5 py-1 xl:flex"
@@ -88,7 +119,7 @@
                             <button type="button" class="menu-subitem"
                                 :class="activeSection === '{{ $section['id'] }}' && 'menu-subitem-active'"
                                 @click="scrollToSection('{{ $section['id'] }}')">
-                                <span class="menu-item-label text-left">{{ $section['label'] }}</span>
+                                <span class="menu-item-label text-left">{{ __($databaseTranslations[$section['label']] ?? $section['label']) }}</span>
                             </button>
                         @endforeach
                     </div>

@@ -1,7 +1,7 @@
 <x-layout>
     @if ($private_keys->count() === 0)
-        <h1>Create Private Key</h1>
-        <div class="subtitle">You need to create a private key before you can create a server.</div>
+        <h1>{{ __('common.create_private_key') }}</h1>
+        <div class="subtitle">{{ __('common.private_key_required_before_server') }}</div>
         <livewire:private-key.create from="server" />
     @else
         <livewire:server.new.by-ip :private_keys="$private_keys" :limit_reached="$limit_reached" />

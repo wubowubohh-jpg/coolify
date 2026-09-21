@@ -1,6 +1,6 @@
 <div>
     <x-slot:title>
-        Scheduled Jobs | Coolify
+        {{ __('settings.scheduled_jobs') }} | Coolify
     </x-slot>
 
     <x-settings.layout>
@@ -15,7 +15,7 @@
             history.replaceState(null, '', `#${tab}`);
         }
     }">
-        <x-application.settings-section title="Scheduler activity" flush>
+        <x-application.settings-section :title="__('settings.scheduler_activity')" flush>
             <x-slot:actions>
                 <div
                     class="flex items-center gap-0.5 rounded-[10px] border border-neutral-200 bg-neutral-100 p-1 dark:border-white/[0.07] dark:bg-white/[0.035]">
@@ -23,24 +23,24 @@
                         :class="activeTab === 'executions' &&
                             'bg-coollabs/10 text-coollabs ring-1 ring-coollabs/25 dark:bg-warning/15 dark:text-warning dark:ring-warning/25'"
                         @click="select('executions')">
-                        Failures <span class="ml-1 opacity-60">{{ $executions->count() }}</span>
+                        {{ __('settings.failures') }} <span class="ml-1 opacity-60">{{ $executions->count() }}</span>
                     </button>
                     <button type="button" class="app-tab"
                         :class="activeTab === 'scheduler-runs' &&
                             'bg-coollabs/10 text-coollabs ring-1 ring-coollabs/25 dark:bg-warning/15 dark:text-warning dark:ring-warning/25'"
                         @click="select('scheduler-runs')">
-                        Scheduler runs <span class="ml-1 opacity-60">{{ $managerRuns->count() }}</span>
+                        {{ __('settings.scheduler_runs') }} <span class="ml-1 opacity-60">{{ $managerRuns->count() }}</span>
                     </button>
                     <button type="button" class="app-tab"
                         :class="activeTab === 'skipped-jobs' &&
                             'bg-coollabs/10 text-coollabs ring-1 ring-coollabs/25 dark:bg-warning/15 dark:text-warning dark:ring-warning/25'"
                         @click="select('skipped-jobs')">
-                        Skipped <span class="ml-1 opacity-60">{{ $skipTotalCount }}</span>
+                        {{ __('settings.skipped') }} <span class="ml-1 opacity-60">{{ $skipTotalCount }}</span>
                     </button>
                 </div>
                 <x-forms.button type="button" wire:click="refresh">
                     <x-reicon name="refresh" class="size-3.5" />
-                    Refresh
+                    {{ __('settings.refresh') }}
                 </x-forms.button>
             </x-slot:actions>
             <div
@@ -51,7 +51,7 @@
                         <x-reicon name="search"
                             class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                         <input wire:model.live.debounce.250ms="search" type="search"
-                            placeholder="Search scheduled jobs"
+                            placeholder="{{ __('settings.search_scheduled_jobs') }}"
                             class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-3! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                     </div>
 
@@ -59,13 +59,13 @@
                         <x-table.dropdown panel-class="w-52!">
                             <x-slot:trigger><button type="button" class="button" aria-haspopup="listbox" :aria-expanded="open">
                                 <x-reicon name="filter" class="size-3.5" />
-                                Filter
+                                {{ __('settings.filter') }}
                             </button></x-slot:trigger>
                                 <div
                                     class="px-2 py-1 text-[10px] font-semibold tracking-wide text-neutral-400 uppercase dark:text-fg-faint">
-                                    Type
+                                    {{ __('settings.type') }}
                                 </div>
-                                @foreach (['all' => 'All types', 'backup' => 'Backups', 'task' => 'Tasks', 'cleanup' => 'Docker cleanup'] as $value => $label)
+                                @foreach (['all' => __('settings.all_types'), 'backup' => __('settings.backups'), 'task' => __('settings.tasks'), 'cleanup' => __('settings.docker_cleanup')] as $value => $label)
                                     <button type="button" class="listbox-option"
                                         wire:click="$set('filterType', '{{ $value }}')"
                                         @click="close()">
@@ -77,9 +77,9 @@
                                 @endforeach
                                 <div
                                     class="mt-1 border-t border-neutral-200 px-2 pt-2 pb-1 text-[10px] font-semibold tracking-wide text-neutral-400 uppercase dark:border-white/[0.08] dark:text-fg-faint">
-                                    Time range
+                                    {{ __('settings.time_range') }}
                                 </div>
-                                @foreach (['last_24h' => 'Last 24 hours', 'last_7d' => 'Last 7 days', 'last_30d' => 'Last 30 days', 'all' => 'All time'] as $value => $label)
+                                @foreach (['last_24h' => __('settings.last_24h'), 'last_7d' => __('settings.last_7d'), 'last_30d' => __('settings.last_30d'), 'all' => __('settings.all_time')] as $value => $label)
                                     <button type="button" class="listbox-option"
                                         wire:click="$set('filterDate', '{{ $value }}')"
                                         @click="close()">
@@ -94,9 +94,9 @@
                         <x-table.dropdown panel-class="w-44!">
                             <x-slot:trigger><button type="button" class="button" aria-haspopup="listbox" :aria-expanded="open">
                                 <x-reicon name="sort-direction" class="size-3.5" />
-                                Sort
+                                {{ __('settings.sort') }}
                             </button></x-slot:trigger>
-                                @foreach (['newest' => 'Newest first', 'oldest' => 'Oldest first'] as $value => $label)
+                                @foreach (['newest' => __('settings.newest_first'), 'oldest' => __('settings.oldest_first')] as $value => $label)
                                     <button type="button" class="listbox-option"
                                         wire:click="$set('sortOrder', '{{ $value }}')"
                                         @click="close()">
@@ -113,8 +113,8 @@
 
             <div x-cloak x-show="activeTab === 'executions'">
                 @if ($executions->isEmpty())
-                    <x-empty title="No failures"
-                        description="No failed scheduled executions match the current filters."
+                    <x-empty :title="__('settings.no_failures')"
+                        :description="__('settings.no_failures_description')"
                         icon-name="check-circle" size="sm" />
                 @else
                     <div x-data="{
@@ -128,19 +128,19 @@
                     }">
                         <div class="data-table">
                             <div class="data-table-header scheduled-executions-table-grid">
-                                <span>Type</span>
-                                <span>Resource</span>
-                                <span>Server</span>
-                                <span>Started</span>
-                                <span>Duration</span>
-                                <span>Message</span>
+                                <span>{{ __('settings.type') }}</span>
+                                <span>{{ __('settings.resource') }}</span>
+                                <span>{{ __('settings.server') }}</span>
+                                <span>{{ __('settings.started') }}</span>
+                                <span>{{ __('settings.duration') }}</span>
+                                <span>{{ __('settings.message') }}</span>
                             </div>
                             @foreach ($executions as $execution)
                                 @php
                                     $typeLabel = match ($execution['type']) {
-                                        'backup' => 'Backup',
-                                        'task' => 'Task',
-                                        'cleanup' => 'Cleanup',
+                                        'backup' => __('settings.backup_type'),
+                                        'task' => __('settings.task_type'),
+                                        'cleanup' => __('settings.cleanup_type'),
                                         default => ucfirst($execution['type']),
                                     };
                                 @endphp
@@ -194,8 +194,8 @@
 
             <div x-cloak x-show="activeTab === 'scheduler-runs'">
                 @if ($managerRuns->isEmpty())
-                    <x-empty title="No manager runs"
-                        description="Scheduler manager activity appears here after its next run."
+                    <x-empty :title="__('settings.no_manager_runs')"
+                        :description="__('settings.manager_runs_description')"
                         icon-name="refresh" size="sm" />
                 @else
                     <div x-data="{
@@ -209,11 +209,11 @@
                     }">
                         <div class="data-table">
                             <div class="data-table-header scheduler-runs-table-grid">
-                                <span>Time</span>
-                                <span>Event</span>
-                                <span>Duration</span>
-                                <span>Dispatched</span>
-                                <span>Skipped</span>
+                                <span>{{ __('settings.time') }}</span>
+                                <span>{{ __('settings.event') }}</span>
+                                <span>{{ __('settings.duration') }}</span>
+                                <span>{{ __('settings.dispatched') }}</span>
+                                <span>{{ __('settings.skipped_count') }}</span>
                             </div>
                             @foreach ($managerRuns as $run)
                                 <div wire:key="run-{{ md5(serialize($run)) }}"
@@ -248,27 +248,27 @@
 
             <div x-cloak x-show="activeTab === 'skipped-jobs'">
                 @if ($skipLogs->isEmpty())
-                    <x-empty title="No skipped jobs"
-                        description="All scheduled jobs met their dispatch conditions."
+                    <x-empty :title="__('settings.no_skipped_jobs')"
+                        :description="__('settings.skipped_jobs_description')"
                         icon-name="check-circle" size="sm" />
                 @else
                     <div class="data-table">
                         <div class="data-table-header skipped-jobs-table-grid">
-                            <span>Time</span>
-                            <span>Type</span>
-                            <span>Resource</span>
-                            <span>Reason</span>
+                            <span>{{ __('settings.time') }}</span>
+                            <span>{{ __('settings.type') }}</span>
+                            <span>{{ __('settings.resource') }}</span>
+                            <span>{{ __('settings.reason') }}</span>
                         </div>
                         @foreach ($skipLogs as $skip)
                             @php
                                 $reasonLabel = match ($skip['reason']) {
-                                    'server_not_functional' => 'Server not functional',
-                                    'subscription_unpaid' => 'Subscription unpaid',
-                                    'database_deleted' => 'Database deleted',
-                                    'server_deleted' => 'Server deleted',
-                                    'resource_deleted' => 'Resource deleted',
-                                    'application_not_running' => 'Application not running',
-                                    'service_not_running' => 'Service not running',
+                                    'server_not_functional' => __('settings.server_not_functional'),
+                                    'subscription_unpaid' => __('settings.subscription_unpaid'),
+                                    'database_deleted' => __('settings.database_deleted'),
+                                    'server_deleted' => __('settings.server_deleted'),
+                                    'resource_deleted' => __('settings.resource_deleted'),
+                                    'application_not_running' => __('settings.application_not_running'),
+                                    'service_not_running' => __('settings.service_not_running'),
                                     default => ucfirst(str_replace('_', ' ', $skip['reason'])),
                                 };
                             @endphp
@@ -280,7 +280,12 @@
                                 <div>
                                     <span
                                         class="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium capitalize text-neutral-600 dark:bg-white/[0.06] dark:text-fg-dim">
-                                        {{ str_replace('_', ' ', $skip['type']) }}
+                                        {{ match ($skip['type']) {
+                                            'backup' => __('settings.backup_type'),
+                                            'task' => __('settings.task_type'),
+                                            'cleanup' => __('settings.cleanup_type'),
+                                            default => str_replace('_', ' ', $skip['type']),
+                                        } }}
                                     </span>
                                 </div>
                                 <div class="min-w-0 truncate text-[12px] text-black dark:text-fg">
@@ -290,7 +295,7 @@
                                             {{ $skip['resource_name'] }}
                                         </a>
                                     @else
-                                        {{ $skip['resource_name'] ?? $skip['context']['task_name'] ?? $skip['context']['server_name'] ?? 'Deleted resource' }}
+                                        {{ $skip['resource_name'] ?? $skip['context']['task_name'] ?? $skip['context']['server_name'] ?? __('settings.deleted_resource') }}
                                     @endif
                                 </div>
                                 <div class="min-w-0 truncate text-[11px] text-neutral-500 dark:text-fg-dim">

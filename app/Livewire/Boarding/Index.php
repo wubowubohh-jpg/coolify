@@ -194,7 +194,7 @@ class Index extends Component
             $this->createdServer = Server::find(0);
             $this->selectedExistingServer = 0;
             if (! $this->createdServer) {
-                return $this->dispatch('error', 'Localhost server is not found. Something went wrong during installation. Please try to reinstall or contact support.');
+                return $this->dispatch('error', __('onboarding.localhost_not_found'));
             }
             $this->serverPublicKey = $this->createdServer->privateKey->getPublicKey();
 
@@ -244,7 +244,7 @@ class Index extends Component
     public function selectExistingPrivateKey()
     {
         if (is_null($this->selectedExistingPrivateKey)) {
-            $this->dispatch('error', 'Please select a private key.');
+            $this->dispatch('error', __('onboarding.select_private_key'));
 
             return;
         }
@@ -292,7 +292,7 @@ class Index extends Component
             $this->createdPrivateKey = $privateKey;
             $this->currentState = 'create-server';
         } catch (\Exception $e) {
-            $this->addError('privateKey', 'Failed to save private key: '.$e->getMessage());
+            $this->addError('privateKey', __('onboarding.save_private_key_failed', ['message' => $e->getMessage()]));
         }
     }
 
@@ -310,10 +310,10 @@ class Index extends Component
         $foundServer = Server::whereIp($this->remoteServerHost)->first();
         if ($foundServer) {
             if ($foundServer->team_id === currentTeam()->id) {
-                return $this->dispatch('error', 'A server with this IP/Domain already exists in your team.');
+                return $this->dispatch('error', __('onboarding.server_exists_team'));
             }
 
-            return $this->dispatch('error', 'A server with this IP/Domain is already in use by another team.');
+            return $this->dispatch('error', __('onboarding.server_exists_other_team'));
         }
         $this->createdServer = Server::create([
             'name' => $this->remoteServerName,
@@ -364,7 +364,10 @@ class Index extends Component
                 // Check if we've exceeded max attempts
                 if ($this->prerequisiteInstallAttempts >= $this->maxPrerequisiteInstallAttempts) {
                     $missingCommands = implode(', ', $validationResult['missing']);
-                    throw new \Exception("Prerequisites ({$missingCommands}) could not be installed after {$this->maxPrerequisiteInstallAttempts} attempts. Please install them manually.");
+                    throw new \Exception(__('onboarding.prerequisites_failed', [
+                        'commands' => $missingCommands,
+                        'attempts' => $this->maxPrerequisiteInstallAttempts,
+                    ]));
                 }
 
                 // Start async installation and wait for completion via ActivityMonitor
@@ -393,7 +396,10 @@ class Index extends Component
                 $missingCommands = implode(', ', $validationResult['missing']);
 
                 if ($this->prerequisiteInstallAttempts >= $this->maxPrerequisiteInstallAttempts) {
-                    throw new \Exception("Prerequisites ({$missingCommands}) could not be installed after {$this->maxPrerequisiteInstallAttempts} attempts. Please install them manually.");
+                    throw new \Exception(__('onboarding.prerequisites_failed', [
+                        'commands' => $missingCommands,
+                        'attempts' => $this->maxPrerequisiteInstallAttempts,
+                    ]));
                 }
 
                 // Try again
@@ -418,7 +424,7 @@ class Index extends Component
             $dockerVersion = checkMinimumDockerEngineVersion($dockerVersion);
             if (is_null($dockerVersion)) {
                 $this->currentState = 'validate-server';
-                throw new \Exception('Docker not found or old version is installed.');
+                throw new \Exception(__('onboarding.docker_not_found'));
             }
             $this->createdServer->settings()->update([
                 'is_usable' => true,
@@ -459,7 +465,7 @@ class Index extends Component
     {
         $this->createdProject = Project::ownedByCurrentTeam()->find($this->selectedProject);
         if (! $this->createdProject) {
-            return $this->dispatch('error', 'Project not found.');
+            return $this->dispatch('error', __('onboarding.project_not_found'));
         }
         $this->currentState = 'create-resource';
     }

@@ -17,9 +17,9 @@
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
     @can('viewSentinel', $server)
-        <nav aria-label="Sentinel sections"
+        <nav aria-label="{{ __('common.sentinel') }}"
             class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-            <div class="nav-section hidden xl:block">Sentinel</div>
+            <div class="nav-section hidden xl:block">{{ __('common.sentinel') }}</div>
             @foreach ($sentinelMenuItems as $menuItem)
                 <a wire:key="server-sentinel-link-{{ str($menuItem['label'])->slug() }}"
                     @class([
@@ -29,7 +29,7 @@
                     {{ wireNavigate() }}
                     href="{{ route($menuItem['route'], $parameters) }}">
                     <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                    <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                    <span class="menu-item-label">{{ $menuItem['label'] === 'Configuration' ? __('common.configuration') : __('common.logs') }}</span>
                 </a>
             @endforeach
         </nav>

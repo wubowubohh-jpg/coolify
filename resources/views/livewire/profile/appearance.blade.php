@@ -1,4 +1,4 @@
 <div>
-    <x-slot:title>Appearance | Coolify</x-slot>
-    <x-theme-controls variant="full" />
+    <x-slot:title>{{ __('appearance.title') }} | Coolify</x-slot>
+    <x-theme-controls variant="full" :locale="$locale" />
 </div>

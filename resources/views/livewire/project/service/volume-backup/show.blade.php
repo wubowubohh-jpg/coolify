@@ -1,6 +1,6 @@
 <div>
     <x-slot:title>
-        {{ data_get_str($service, 'name')->limit(10) }} > Storage Backups | Coolify
+        {{ data_get_str($service, 'name')->limit(10) }} > {{ __('common.backups') }} | Coolify
     </x-slot>
 
     <livewire:project.service.heading :service="$service" :parameters="$parameters" :query="request()->query()"
@@ -18,13 +18,13 @@
                             {{ wireNavigate() }}
                             href="{{ route('project.service.volume-backups.index', collect($parameters)->except('backup_uuid')->all()) }}">
                             <x-reicon name="arrow-right" class="size-3.5 rotate-180" />
-                            Back to backups
+                            {{ __('common.back_to_backups') }}
                         </a>
                         <h1 class="mt-2 text-xl font-semibold text-neutral-950 dark:text-fg">
                             {{ $backup->targetName() }} backup
                         </h1>
                         <p class="mt-1 text-[13px] text-neutral-500 dark:text-fg-dim">
-                            {{ $backup->frequency }} schedule
+                            {{ __('common.backup_schedule', ['frequency' => $backup->frequency]) }}
                         </p>
                     </div>
 

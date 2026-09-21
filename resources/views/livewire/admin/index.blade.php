@@ -1,9 +1,9 @@
 <div>
-    <x-slot:title>Admin | Coolify</x-slot>
+    <x-slot:title>{{ __('common.admin_title') }} | Coolify</x-slot>
     <div class="mt-8 flex w-full max-w-none flex-col gap-6 lg:mt-3">
         <section class="grid gap-3 sm:grid-cols-3">
             <div class="rounded-[10px] border border-neutral-200 bg-white p-4 dark:border-white/[0.07] dark:bg-surface">
-                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">Current user</div>
+                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">{{ __('common.current_user') }}</div>
                 <div class="mt-2 truncate text-sm font-semibold text-black dark:text-fg">
                     {{ auth()->user()->name }}
                 </div>
@@ -12,13 +12,13 @@
                 </div>
             </div>
             <div class="rounded-[10px] border border-neutral-200 bg-white p-4 dark:border-white/[0.07] dark:bg-surface">
-                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">Active subscribers</div>
+                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">{{ __('common.active_subscribers') }}</div>
                 <div class="mt-2 text-2xl font-semibold tracking-tight text-black dark:text-fg">
                     {{ $activeSubscribers }}
                 </div>
             </div>
             <div class="rounded-[10px] border border-neutral-200 bg-white p-4 dark:border-white/[0.07] dark:bg-surface">
-                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">Inactive subscribers</div>
+                <div class="text-xs font-medium text-neutral-500 dark:text-fg-dim">{{ __('common.inactive_subscribers') }}</div>
                 <div class="mt-2 text-2xl font-semibold tracking-tight text-black dark:text-fg">
                     {{ $inactiveSubscribers }}
                 </div>
@@ -26,10 +26,10 @@
         </section>
 
         @if (session('impersonating'))
-            <x-callout type="warning" title="Impersonation is active">
+            <x-callout type="warning" :title="__('common.impersonation_active')">
                 <div class="flex flex-wrap items-center justify-between gap-3">
-                    <span>You are viewing Coolify as {{ auth()->user()->name }}.</span>
-                    <x-forms.button wire:click="back">Return to root user</x-forms.button>
+                    <span>{{ __('common.viewing_user', ['name' => auth()->user()->name]) }}</span>
+                    <x-forms.button wire:click="back">{{ __('common.return_root_user') }}</x-forms.button>
                 </div>
             </x-callout>
         @endif
@@ -37,34 +37,34 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>User lookup</h2>
-                    <p>Find an account and switch into it for support or administration.</p>
+                    <h2>{{ __('common.user_lookup') }}</h2>
+                    <p>{{ __('common.find_account') }}</p>
                 </div>
             </div>
             <div class="application-settings-section-body p-0!">
                 <form wire:submit="submitSearch"
                     class="flex items-end gap-2 border-b border-neutral-200 p-4 dark:border-white/[0.06]">
                     <div class="max-w-md flex-1">
-                        <x-forms.input wire:model="search" label="Name or email"
-                            placeholder="Search for a user…" />
+                        <x-forms.input wire:model="search" :label="__('common.name_or_email')"
+                            :placeholder="__('common.search_for_user')" />
                     </div>
                     <x-forms.button type="submit">
                         <x-reicon name="search" class="size-4" />
-                        Search
+                        {{ __('common.search') }}
                     </x-forms.button>
                 </form>
 
                 @if ($search)
                     @if ($foundUsers->isEmpty())
-                        <x-empty size="sm" title="No users found"
-                            description="No account matches {{ $search }}." icon-name="profile" />
+                        <x-empty size="sm" :title="__('common.no_users_found')"
+                            :description="__('common.no_account_matches', ['search' => $search])" icon-name="profile" />
                     @else
                         <div class="data-table">
                             <div class="data-table-header admin-search-table-grid">
-                                <span>Name</span>
-                                <span>Email</span>
-                                <span>Subscription</span>
-                                <span class="text-right">Action</span>
+                                <span>{{ __('common.name') }}</span>
+                                <span>{{ __('common.email') }}</span>
+                                <span>{{ __('common.subscription') }}</span>
+                                <span class="text-right">{{ __('common.action') }}</span>
                             </div>
                             @foreach ($foundUsers as $user)
                                 @php
@@ -81,26 +81,26 @@
                                         {{ $user->email }}
                                     </div>
                                     <div>
-                                        <x-status-badge :status="$hasActiveSubscription ? 'Active' : 'Inactive'"
+                                        <x-status-badge :status="$hasActiveSubscription ? __('common.active') : __('common.inactive')"
                                             :type="$hasActiveSubscription ? 'success' : 'neutral'" />
                                     </div>
                                     <div class="flex justify-end">
                                         <button type="button" class="button"
                                             wire:click="switchUser({{ $user->id }})">
-                                            Switch user
+                                            {{ __('common.switch_user') }}
                                         </button>
                                     </div>
                                 </div>
                             @endforeach
                             <div
                                 class="flex min-h-11 items-center border-t border-neutral-200 px-4 text-[11px] text-neutral-500 dark:border-white/[0.08] dark:text-fg-faint">
-                                {{ $foundUsers->count() }} {{ Str::plural('matching user', $foundUsers->count()) }}
+                                {{ trans_choice('common.users_count', $foundUsers->count()) }}
                             </div>
                         </div>
                     @endif
                 @else
-                    <x-empty size="sm" title="Search for an account"
-                        description="Enter a name or email address to begin." icon-name="profile" />
+                    <x-empty size="sm" :title="__('common.search_for_account')"
+                        :description="__('common.enter_name_or_email')" icon-name="profile" />
                 @endif
             </div>
         </section>

@@ -2,7 +2,7 @@
     @php
         $databasePageItems = [
             [
-                'label' => 'Settings',
+                'label' => __('common.settings'),
                 'route' => 'project.database.configuration',
                 'active' => request()->routeIs('project.database.configuration')
                     || request()->routeIs('project.database.environment-variables')
@@ -18,19 +18,19 @@
                     || request()->routeIs('project.database.danger'),
             ],
             [
-                'label' => 'Backups',
+                'label' => __('common.backups'),
                 'route' => 'project.database.backup.index',
                 'active' => request()->routeIs('project.database.backup.*'),
                 'visible' => $database->isBackupSolutionAvailable(),
             ],
             [
-                'label' => 'Runtime Logs',
+                'label' => __('common.runtime_logs'),
                 'route' => 'project.database.logs',
                 'active' => request()->routeIs('project.database.logs'),
                 'navigate' => false,
             ],
             [
-                'label' => 'Terminal',
+                'label' => __('common.terminal'),
                 'route' => 'project.database.command',
                 'active' => request()->routeIs('project.database.command'),
                 'navigate' => false,
@@ -49,10 +49,10 @@
     <livewire:project.shared.configuration-checker :resource="$database" />
 
     <x-process-dialog @startdatabase.window="processDialogOpen = true" closeWithX>
-        <x-slot:title>Database Startup</x-slot:title>
+        <x-slot:title>{{ __('common.database_startup') }}</x-slot:title>
         <x-slot:content>
             <div wire:ignore class="flex h-full min-h-0 min-w-0 max-w-full flex-col">
-                <livewire:activity-monitor header="Logs" fullHeight />
+                <livewire:activity-monitor :header="__('common.logs')" fullHeight />
             </div>
         </x-slot:content>
     </x-process-dialog>
@@ -64,7 +64,7 @@
                     {{ $database->name }}
                 </h1>
                 <div class="relative flex w-full min-w-0 items-center gap-2">
-                    <x-status-summary :status="$database->status" title="Database status" />
+                    <x-status-summary :status="$database->status" :title="__('common.database_status')" />
                 </div>
                 <div class="flex w-full flex-wrap gap-1">
                     <x-application.restart-limit-warning :application="$database" />
@@ -81,7 +81,7 @@
                     <button type="button" class="button w-full justify-between" @click="open = !open"
                         :aria-expanded="open" aria-haspopup="menu">
                         <span class="inline-flex items-center gap-2">
-                            Actions
+                            {{ __('common.actions') }}
                         </span>
                         <span class="inline-flex transition-transform" :class="open && 'rotate-180'">
                             <x-reicon name="chevron-down" class="size-3 opacity-55" />
@@ -96,24 +96,24 @@
                                     @click="open = false; document.getElementById('database-restart-trigger')?.click()"
                                     role="menuitem">
                                     <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                    Restart
+                                    {{ __('common.restart') }}
                                 </button>
                                 <button type="button" class="listbox-option justify-start! gap-2.5!"
                                     @click="open = false; document.getElementById('database-stop-trigger')?.click()"
                                     role="menuitem">
                                     <x-reicon name="stop" class="size-3.5 text-error" />
-                                    Stop
+                                    {{ __('common.stop') }}
                                 </button>
                             @else
                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                     role="menuitem">
                                     <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                    Restart
+                                    {{ __('common.restart') }}
                                 </button>
                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                     role="menuitem">
                                     <x-reicon name="stop" class="size-3.5 opacity-70" />
-                                    Stop
+                                    {{ __('common.stop') }}
                                 </button>
                             @endcan
                         @else
@@ -121,13 +121,13 @@
                                 <button type="button" class="listbox-option justify-start! gap-2.5!"
                                     @click="open = false; $wire.dispatch('startEvent')" role="menuitem">
                                     <x-reicon name="play-circle" class="size-3.5 opacity-70" />
-                                    Start
+                                    {{ __('common.start') }}
                                 </button>
                             @else
                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                     role="menuitem">
                                     <x-reicon name="play-circle" class="size-3.5 opacity-70" />
-                                    Start
+                                    {{ __('common.start') }}
                                 </button>
                             @endcan
                         @endif
@@ -150,23 +150,23 @@
                                 <button type="button" class="button button-highlighted"
                                     @disabled(!auth()->user()->can('manage', $database))
                                     @click="document.getElementById('database-restart-trigger')?.click()">
-                                    Restart
+                                    {{ __('common.restart') }}
                                 </button>
                                 <button type="button" class="button"
                                     @disabled(!auth()->user()->can('manage', $database))
                                     @click="document.getElementById('database-stop-trigger')?.click()">
-                                    Stop
+                                    {{ __('common.stop') }}
                                 </button>
                             @else
                                 <x-forms.button class="button-highlighted" canGate="manage" :canResource="$database"
                                     @click="$wire.dispatch('startEvent')">
-                                    Start
+                                    {{ __('common.start') }}
                                 </x-forms.button>
                             @endif
                         </div>
                         @endcan
                     @else
-                        <x-status-badge status="Server unavailable" type="error" />
+                        <x-status-badge :status="__('common.server_unavailable')" type="error" />
                     @endif
                 </div>
             </div>
@@ -177,25 +177,25 @@
 
     @if ($database->destination->server->isFunctional())
         <div class="hidden" aria-hidden="true">
-            <x-modal-confirmation title="Confirm Database Restart?" buttonTitle="Restart"
+            <x-modal-confirmation :title="__('common.confirm_database_restart')" :buttonTitle="__('common.restart')"
                 submitAction="restartEvent" :actions="[
-                    'This database will be unavailable during the restart.',
-                    'If the database is currently in use, data could be lost.',
-                ]" :confirmWithText="false" :confirmWithPassword="false" step2ButtonText="Restart Database"
+                    __('common.database_unavailable_during_restart'),
+                    __('common.database_data_loss_in_use'),
+                ]" :confirmWithText="false" :confirmWithPassword="false" :step2ButtonText="__('common.restart_database')"
                 :dispatchAction="true">
                 <x-slot:trigger>
-                    <button id="database-restart-trigger" type="button">Restart</button>
+                    <button id="database-restart-trigger" type="button">{{ __('common.restart') }}</button>
                 </x-slot:trigger>
             </x-modal-confirmation>
-            <x-modal-confirmation title="Confirm Database Stopping?" buttonTitle="Stop" submitAction="stop"
+            <x-modal-confirmation :title="__('common.confirm_database_stopping')" :buttonTitle="__('common.stop')" submitAction="stop"
                 :checkboxes="$checkboxes" :actions="[
-                    'This database will be stopped.',
-                    'If the database is currently in use, data could be lost.',
-                    'Non-persistent containers, networks, and unused images will be removed.',
+                    __('common.database_will_be_stopped'),
+                    __('common.database_data_loss_in_use'),
+                    __('common.database_cleanup_on_stop'),
                 ]" :confirmWithText="false" :confirmWithPassword="false"
-                step1ButtonText="Continue" step2ButtonText="Confirm">
+                :step1ButtonText="__('common.continue')" :step2ButtonText="__('common.confirm')">
                 <x-slot:trigger>
-                    <button id="database-stop-trigger" type="button">Stop</button>
+                    <button id="database-stop-trigger" type="button">{{ __('common.stop') }}</button>
                 </x-slot:trigger>
             </x-modal-confirmation>
         </div>
@@ -208,7 +208,7 @@
                 $wire.$call('start');
             });
             $wire.$on('restartEvent', () => {
-                $wire.$dispatch('info', 'Restarting database.');
+                $wire.$dispatch('info', @js(__('common.restarting_database')));
                 window.dispatchEvent(new CustomEvent('startdatabase'));
                 $wire.$call('restart');
             });

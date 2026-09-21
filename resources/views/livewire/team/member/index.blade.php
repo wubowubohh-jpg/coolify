@@ -53,23 +53,23 @@
     }
 }">
     <x-slot:title>
-        Team Members | Coolify
+        {{ __('common.members') }} | Coolify
     </x-slot>
 
     <x-team.settings-layout>
     <div class="application-settings-form flex flex-col gap-6">
-        <x-application.settings-section title="Members" flush>
+        <x-application.settings-section :title="__('common.members')" flush>
             <div
                 class="flex flex-col gap-2 border-b border-neutral-200 p-3 sm:flex-row sm:items-center sm:justify-between dark:border-white/[0.08]">
                 <div class="relative w-full max-w-sm">
                     <x-reicon name="search"
                         class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                     <input x-model.debounce.150ms="search" x-on:input="page = 1" type="search"
-                        placeholder="Search members" aria-label="Search members"
+                        placeholder="{{ __('common.search_members') }}" aria-label="{{ __('common.search_members') }}"
                         class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                     <button x-cloak x-show="search" x-on:click="search = ''; page = 1" type="button"
                         class="absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg"
-                        aria-label="Clear search">
+                        aria-label="{{ __('common.clear_search') }}">
                         <x-reicon name="x" class="size-3" />
                     </button>
                 </div>
@@ -77,19 +77,19 @@
                     <div class="w-full sm:w-36">
                         <x-forms.listbox id="member-role-filter" :wire="false" x-model="roleFilter"
                             x-effect="page = 1" :value="'all'" :options="[
-                                ['value' => 'all', 'label' => 'All roles'],
-                                ['value' => 'owner', 'label' => 'Owner'],
-                                ['value' => 'admin', 'label' => 'Admin'],
-                                ['value' => 'member', 'label' => 'Member'],
+                                ['value' => 'all', 'label' => __('common.all_roles')],
+                                ['value' => 'owner', 'label' => __('common.owner')],
+                                ['value' => 'admin', 'label' => __('common.admin')],
+                                ['value' => 'member', 'label' => __('common.member')],
                             ]" />
                     </div>
                     <div class="w-full sm:w-40">
                         <x-forms.listbox id="member-sort" :wire="false" x-model="sortBy"
                             x-effect="page = 1" :value="'name_asc'" :options="[
-                                ['value' => 'name_asc', 'label' => 'Name A–Z'],
-                                ['value' => 'name_desc', 'label' => 'Name Z–A'],
-                                ['value' => 'email_asc', 'label' => 'Email A–Z'],
-                                ['value' => 'role', 'label' => 'Role'],
+                                ['value' => 'name_asc', 'label' => __('common.name_a_z')],
+                                ['value' => 'name_desc', 'label' => __('common.name_z_a')],
+                                ['value' => 'email_asc', 'label' => __('common.email_a_z')],
+                                ['value' => 'role', 'label' => __('common.role')],
                             ]" />
                     </div>
                 </div>
@@ -99,9 +99,9 @@
                 <div
                     class="border-b border-neutral-200 px-4 py-2.5 text-[12px] dark:border-white/[0.08]">
                     @if ($membersWithoutTwoFactorCount > 0)
-                        <span class="text-warning-700 dark:text-warning">{{ $membersWithoutTwoFactorCount }} of {{ $members->count() }} {{ Str::plural('member', $members->count()) }} {{ $membersWithoutTwoFactorCount === 1 ? 'does' : 'do' }} not have two-factor authentication enabled.</span>
+                        <span class="text-warning-700 dark:text-warning">{{ trans_choice('common.members_missing_two_factor', $membersWithoutTwoFactorCount, ['count' => $membersWithoutTwoFactorCount, 'total' => $members->count()]) }}</span>
                     @else
-                        <span class="text-neutral-500 dark:text-fg-dim">All members have two-factor authentication enabled.</span>
+                        <span class="text-neutral-500 dark:text-fg-dim">{{ __('common.all_members_two_factor_enabled') }}</span>
                     @endif
                 </div>
             @endcan
@@ -111,13 +111,13 @@
                     'data-table-header team-members-table-grid',
                     'team-members-table-grid-2fa' => auth()->user()?->can('manageMembers', currentTeam()),
                 ])>
-                    <span>Name</span>
-                    <span>Email</span>
-                    <span>Role</span>
+                    <span>{{ __('common.name') }}</span>
+                    <span>{{ __('common.email') }}</span>
+                    <span>{{ __('common.role') }}</span>
                     @can('manageMembers', currentTeam())
-                        <span>2FA</span>
+                        <span>{{ __('common.two_factor') }}</span>
                     @endcan
-                    <span class="text-right">Actions</span>
+                    <span class="text-right">{{ __('common.actions') }}</span>
                 </div>
                 @foreach ($members as $member)
                     <livewire:team.member :member="$member" :wire:key="$member->id" />
@@ -125,8 +125,8 @@
             </div>
 
             <div x-cloak x-show="filteredMembers.length === 0">
-                <x-empty size="sm" title="No matching members"
-                    description="Try a different name, email address, or role." />
+                <x-empty size="sm" :title="__('common.no_matching_members')"
+                    :description="__('common.search_member_hint')" />
             </div>
 
             <x-client-pagination x-cloak x-show="filteredMembers.length > 0"

@@ -1,17 +1,17 @@
 <div>
     @can('manageInvitations', currentTeam())
         @if ($invitations->count() > 0)
-            <x-application.settings-section title="Pending invitations"
-                description="Invitation links that have not been accepted yet." flush>
+            <x-application.settings-section :title="__('common.pending_invitations')"
+                :description="__('common.invitation_links_pending')" flush>
                 <div class="overflow-x-auto">
                     <div class="data-table min-w-[760px]">
                         <div
                             class="data-table-header grid-cols-[minmax(13rem,1.2fr)_7rem_7rem_minmax(15rem,1.5fr)_6rem]">
-                            <span>Email</span>
-                            <span>Method</span>
-                            <span>Role</span>
-                            <span>Invitation link</span>
-                            <span class="text-right">Actions</span>
+                            <span>{{ __('common.email') }}</span>
+                            <span>{{ __('common.method') }}</span>
+                            <span>{{ __('common.role') }}</span>
+                            <span>{{ __('common.invitation_link') }}</span>
+                            <span class="text-right">{{ __('common.actions') }}</span>
                         </div>
                         @foreach ($invitations as $invite)
                             <div wire:key="team-invitation-{{ $invite->id }}"
@@ -31,8 +31,8 @@
                                         title="{{ $invite->link }}">{{ $invite->link }}</span>
                                     <button type="button"
                                         class="button h-7! shrink-0 px-2!"
-                                        title="Copy invitation link"
-                                        aria-label="Copy invitation link"
+                                        title="{{ __('common.copy_invitation_link') }}"
+                                        aria-label="{{ __('common.copy_invitation_link') }}"
                                         x-data
                                         x-on:click.prevent="window.copyToClipboard(@js($invite->link))">
                                         <x-reicon name="file-content" class="size-3.5" />
@@ -42,7 +42,7 @@
                                     <button type="button"
                                         class="button h-7! px-2.5! text-[11px]! text-error! hover:text-error!"
                                         wire:click.prevent="deleteInvitation({{ $invite->id }})">
-                                        Revoke
+                                        {{ __('common.revoke') }}
                                     </button>
                                 </div>
                             </div>

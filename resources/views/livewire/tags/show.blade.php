@@ -1,6 +1,6 @@
 <div class="application-settings-form w-full">
     <x-slot:title>
-        Tags | Coolify
+        {{ __('common.tags') }} | Coolify
     </x-slot>
 
     <header @class([
@@ -8,22 +8,22 @@
         'lg:hidden' => isset($tag),
     ])>
         <div class="min-w-0">
-            <h1 class="truncate text-[24px]! leading-7! font-semibold! tracking-tight!">Tags</h1>
+            <h1 class="truncate text-[24px]! leading-7! font-semibold! tracking-tight!">{{ __('common.tags') }}</h1>
             <p class="mt-1 text-[13px] text-neutral-500 dark:text-fg-dim">
                 @if ($tags->isEmpty())
-                    Group applications and services for bulk deploys
+                    {{ __('common.group_applications_services_bulk') }}
                 @elseif (isset($tag))
-                    Manage webhook deploys and resources for this tag
+                    {{ __('common.manage_tag_deployments') }}
                 @else
-                    {{ $tags->count() }} {{ Str::plural('tag', $tags->count()) }} for bulk deploys and grouping
+                    {{ trans_choice('common.tags_bulk_deploys_summary', $tags->count(), ['count' => $tags->count()]) }}
                 @endif
             </p>
         </div>
     </header>
 
     @if ($tags->isEmpty())
-        <x-empty title="No tags yet"
-            description="Open a resource and add a tag to start grouping related deployments."
+        <x-empty :title="__('common.no_tags_yet')"
+            :description="__('common.add_tag_start_grouping')"
             icon-name="tags" />
     @elseif (! isset($tag))
         <div x-data="tagsIndex()" class="w-full">
@@ -32,11 +32,11 @@
                     <x-reicon name="search"
                         class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                     <input x-model.debounce.150ms="search" x-on:input="page = 1" type="search"
-                        placeholder="Search tags"
+                        placeholder="{{ __('common.search_tags') }}"
                         class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                     <button x-cloak x-show="search" x-on:click="search = ''; page = 1" type="button"
                         class="absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg"
-                        aria-label="Clear search">
+                        aria-label="{{ __('common.clear_search') }}">
                         <span class="text-sm leading-none">×</span>
                     </button>
                 </div>
@@ -51,7 +51,7 @@
                                     stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
                                     stroke-linejoin="round" />
                             </svg>
-                            Sort
+                            {{ __('common.sort') }}
                             </button>
                         </x-slot:trigger>
                             <template x-for="option in sortOptions" :key="option.value">
@@ -76,7 +76,7 @@
                                 ?
                                 'control-selected' :
                                 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                            aria-label="Table view" title="Table view">
+                            aria-label="{{ __('common.table_view') }}" title="{{ __('common.table_view') }}">
                             <x-reicon name="unordered-list" class="size-3.5" />
                         </button>
                         <button type="button" x-on:click="setViewMode('grid')"
@@ -85,7 +85,7 @@
                                 ?
                                 'control-selected' :
                                 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                            aria-label="Grid view" title="Grid view">
+                            aria-label="{{ __('common.grid_view') }}" title="{{ __('common.grid_view') }}">
                             <x-reicon name="grid" class="size-3.5" />
                         </button>
                     </div>
@@ -109,14 +109,14 @@
                                     <h2 class="truncate text-[13px]! leading-4! font-semibold! text-black dark:text-fg"
                                         x-text="tag.name"></h2>
                                     <p class="mt-0.5 truncate text-[11px] text-neutral-500 dark:text-fg-faint">
-                                        Team tag
+                                        {{ __('common.team_tag') }}
                                     </p>
                                 </div>
                             </div>
 
                             <div class="mt-auto flex items-center pt-4">
                                 <span class="text-[11px] text-neutral-500 dark:text-fg-dim"
-                                    x-text="`${tag.resourceCount} ${tag.resourceCount === 1 ? 'resource' : 'resources'}`"></span>
+                                    x-text="`${tag.resourceCount} ${tag.resourceCount === 1 ? labels.resource : labels.resources}`"></span>
                             </div>
                         </article>
                     </template>
@@ -130,10 +130,10 @@
                 class="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-white/[0.08] dark:bg-white/[0.05]">
                 <div
                     class="tags-table-grid border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[11px] font-medium text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                    <div>Tag</div>
-                    <div>Resources</div>
-                    <div>Applications</div>
-                    <div class="tag-services">Services</div>
+                    <div>{{ __('common.tag') }}</div>
+                    <div>{{ __('common.resources') }}</div>
+                    <div>{{ __('common.applications') }}</div>
+                    <div class="tag-services">{{ __('common.services') }}</div>
                 </div>
 
                 <template x-for="tag in paginatedTags" :key="tag.id">
@@ -163,9 +163,9 @@
             <div x-show="filteredTags.length === 0"
                 class="flex min-h-52 flex-col items-center justify-center rounded-xl border border-neutral-200 bg-white px-6 text-center dark:border-white/[0.08] dark:bg-white/[0.05]">
                 <x-reicon name="search" class="mb-3 size-6 text-neutral-300 dark:text-fg-faint" />
-                <p class="text-[13px] font-medium">No matching tags</p>
+                <p class="text-[13px] font-medium">{{ __('common.no_matching_tags') }}</p>
                 <p class="mt-1 text-[12px] text-neutral-500 dark:text-fg-dim">
-                    Try a different search.
+                    {{ __('common.tags_try_different_search') }}
                 </p>
             </div>
         </div>
@@ -180,17 +180,21 @@
                     page: 1,
                     pageSize: 12,
                     tags: @js($tagsJs),
+                    labels: @js([
+                        'resource' => __('common.resource'),
+                        'resources' => __('common.resources'),
+                    ]),
                     sortOptions: [{
                             value: 'name-asc',
-                            label: 'Name A–Z'
+                            label: @js(__('common.name_a_z'))
                         },
                         {
                             value: 'name-desc',
-                            label: 'Name Z–A'
+                            label: @js(__('common.name_z_a'))
                         },
                         {
                             value: 'resources',
-                            label: 'Most resources'
+                            label: @js(__('common.most_resources'))
                         },
                     ],
                     get filteredTags() {
@@ -251,58 +255,58 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div
                     class="rounded-xl border border-neutral-200 bg-white p-3 dark:border-white/[0.08] dark:bg-white/[0.05]">
-                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">Resources</p>
+                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">{{ __('common.resources') }}</p>
                     <p class="mt-1 text-[20px] font-semibold tracking-tight text-black dark:text-fg">
                         {{ $resourceCount }}
                     </p>
                     <p class="mt-0.5 text-[11px] text-neutral-500 dark:text-fg-dim">
-                        Applications & services
+                        {{ __('common.applications_and_services') }}
                     </p>
                 </div>
                 <div
                     class="rounded-xl border border-neutral-200 bg-white p-3 dark:border-white/[0.08] dark:bg-white/[0.05]">
-                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">Applications</p>
+                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">{{ __('common.applications') }}</p>
                     <p class="mt-1 text-[20px] font-semibold tracking-tight text-black dark:text-fg">
                         {{ $applications?->count() ?? 0 }}
                     </p>
                     <p class="mt-0.5 text-[11px] text-neutral-500 dark:text-fg-dim">
-                        Using this tag
+                        {{ __('common.using_this_tag') }}
                     </p>
                 </div>
                 <div
                     class="rounded-xl border border-neutral-200 bg-white p-3 dark:border-white/[0.08] dark:bg-white/[0.05]">
-                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">Active deployments</p>
+                    <p class="text-[11px] font-medium text-neutral-500 dark:text-fg-faint">{{ __('common.active_deployments') }}</p>
                     <p class="mt-1 text-[20px] font-semibold tracking-tight text-black dark:text-fg">
                         {{ collect($deploymentsPerTagPerServer ?? [])->flatten(1)->count() }}
                     </p>
                     <p class="mt-0.5 text-[11px] text-neutral-500 dark:text-fg-dim">
-                        Queued or running
+                        {{ __('common.queued_or_running') }}
                     </p>
                 </div>
             </div>
 
             <x-application.settings-section :title="$tag->name"
-                description="Use this webhook to deploy every resource with this tag.">
+                :description="__('common.tag_webhook_description')">
                 <x-slot:actions>
-                    <x-modal-confirmation title="Redeploy all resources with this tag?"
-                        buttonTitle="Redeploy all" submitAction="redeployAll" :actions="[
-                            'All resources with this tag will be redeployed.',
-                            'During redeploy resources will be temporarily unavailable.',
+                    <x-modal-confirmation :title="__('common.redeploy_all_tag_resources')"
+                        :buttonTitle="__('common.redeploy_all')" submitAction="redeployAll" :actions="[
+                            __('common.all_tag_resources_redeployed'),
+                            __('common.redeploy_unavailable'),
                         ]"
                         confirmationText="{{ $tag->name }}"
-                        confirmationLabel="Please confirm the execution of the actions by entering the Tag Name below"
-                        shortConfirmationLabel="Tag Name" :confirmWithPassword="false"
-                        step2ButtonText="Redeploy All" />
+                        :confirmationLabel="__('common.confirm_tag_name_action')"
+                        :shortConfirmationLabel="__('common.tag_name')" :confirmWithPassword="false"
+                        :step2ButtonText="__('common.redeploy_all')" />
                 </x-slot:actions>
 
-                <x-forms.input readonly label="Deploy webhook URL" id="webhook" />
+                <x-forms.input readonly :label="__('common.deploy_webhook_url')" id="webhook" />
             </x-application.settings-section>
 
-            <x-application.settings-section title="Resources"
-                description="{{ $resourceCount }} {{ Str::plural('resource', $resourceCount) }} use this tag.">
+            <x-application.settings-section :title="__('common.resources')"
+                :description="trans_choice('common.resources_use_tag', $resourceCount, ['count' => $resourceCount])">
                 @if ($resourceCount === 0)
-                    <x-empty title="No resources use this tag"
-                        description="Add this tag to an application or service to see it here."
+                    <x-empty :title="__('common.no_resources_use_tag')"
+                        :description="__('common.add_tag_to_resource')"
                         icon-name="tags" size="sm" />
                 @else
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -325,7 +329,7 @@
                                     </div>
                                 </div>
                                 <p class="mt-auto truncate pt-3 text-[11px] text-neutral-500 dark:text-fg-dim">
-                                    {{ $application->description ?: 'Application' }}
+                                    {{ $application->description ?: __('common.application') }}
                                 </p>
                             </a>
                         @endforeach
@@ -349,7 +353,7 @@
                                     </div>
                                 </div>
                                 <p class="mt-auto truncate pt-3 text-[11px] text-neutral-500 dark:text-fg-dim">
-                                    {{ $service->description ?: 'Service' }}
+                                    {{ $service->description ?: __('common.service') }}
                                 </p>
                             </a>
                         @endforeach
@@ -357,8 +361,8 @@
                 @endif
             </x-application.settings-section>
 
-            <x-application.settings-section title="Active deployments"
-                description="Queued and running deployments for applications using this tag." flush>
+            <x-application.settings-section :title="__('common.active_deployments')"
+                :description="__('common.queued_or_running')" flush>
                 <x-slot:actions>
                     @if (count($deploymentsPerTagPerServer ?? []) > 0)
                         <x-loading />
@@ -368,16 +372,16 @@
                 <div wire:poll="getDeployments" class="overflow-x-auto">
                     @if (count($deploymentsPerTagPerServer ?? []) === 0)
                         <div class="p-3">
-                            <x-empty title="No active deployments"
-                                description="Deployments will appear here while they are queued or running."
+                            <x-empty :title="__('common.no_active_deployments')"
+                                :description="__('common.deployments_appear_queued_running')"
                                 icon-name="play-circle" size="sm" />
                         </div>
                     @else
                         <div
                             class="grid min-w-[620px] grid-cols-[minmax(0,1fr)_minmax(10rem,.55fr)_7rem] border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[11px] font-medium text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                            <div>Resource</div>
-                            <div>Server</div>
-                            <div>Status</div>
+                            <div>{{ __('common.resource_label') }}</div>
+                            <div>{{ __('common.server') }}</div>
+                            <div>{{ __('common.status') }}</div>
                         </div>
 
                         @foreach ($deploymentsPerTagPerServer as $serverName => $deployments)

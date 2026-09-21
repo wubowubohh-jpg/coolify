@@ -15,8 +15,8 @@
     @endif
     @if (!str($complexStatus)->contains('exited') && $showRefreshButton)
         <x-status-badge as="button" wire:target="manualCheckStatus" wire:loading.attr="disabled"
-            wire:click='manualCheckStatus' status="Refresh" type="neutral" title="Refresh Status"
-            aria-label="Refresh status"
+            wire:click='manualCheckStatus' :status="__('common.refresh')" type="neutral" :title="__('common.refresh_status')"
+            aria-label="{{ __('common.refresh_status') }}"
             class="min-w-[4.5rem] justify-center cursor-pointer border-transparent hover:bg-neutral-200 disabled:cursor-wait disabled:opacity-70 dark:hover:bg-coolgray-300" />
     @endif
 </div>

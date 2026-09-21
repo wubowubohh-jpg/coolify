@@ -22,9 +22,9 @@
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Configuration sections"
+    <nav aria-label="{{ __('common.configuration') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-        <div class="nav-section hidden xl:block">Configuration</div>
+        <div class="nav-section hidden xl:block">{{ __('common.configuration') }}</div>
         @foreach ($settingsMenuItems as $menuItem)
             <a @class([
                 'menu-item',
@@ -32,7 +32,7 @@
             ])
                 {{ wireNavigate() }} href="{{ route($menuItem['route']) }}">
                 <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                <span class="menu-item-label">{{ __('settings.' . str($menuItem['label'])->lower()) }}</span>
             </a>
         @endforeach
     </nav>

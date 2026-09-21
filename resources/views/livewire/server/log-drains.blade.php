@@ -1,6 +1,6 @@
 <div>
     <x-slot:title>
-        {{ data_get_str($server, 'name')->limit(10) }} > Log Drains | Coolify
+        {{ data_get_str($server, 'name')->limit(10) }} > {{ __('common.log_drains') }} | Coolify
     </x-slot>
 
     <livewire:server.navbar :server="$server" />
@@ -11,15 +11,14 @@
 
         <div class="application-settings-form flex w-full flex-col gap-6">
             @if ($server->isFunctional())
-                <x-application.settings-section id="server-log-drains-overview-section" title="Log drains"
-                    helper="Forward container logs from this server to one external destination.">
+                <x-application.settings-section id="server-log-drains-overview-section" :title="__('common.log_drains')"
+                    :helper="__('common.log_drains_description')">
                     <x-slot:actions>
-                        <x-status-badge :status="$server->isLogDrainEnabled() ? 'Active' : 'Not configured'"
+                        <x-status-badge :status="$server->isLogDrainEnabled() ? __('common.active') : __('common.not_configured')"
                             :type="$server->isLogDrainEnabled() ? 'success' : 'neutral'" />
                     </x-slot:actions>
                     <p class="text-sm leading-6 text-neutral-600 dark:text-fg-dim">
-                        Only one log drain can be active at a time. Disable the current destination before enabling
-                        another provider.
+                        {{ __('common.log_drains_only_one') }}
                     </p>
                 </x-application.settings-section>
 
@@ -27,9 +26,9 @@
                     <x-unsaved-bar action="submit" />
 
                     <x-application.settings-section id="server-new-relic-drain-section" title="New Relic"
-                        helper="Send logs through the New Relic Log API.">
+                        :helper="__('common.new_relic_log_api_helper')">
                         <div class="grid gap-4 lg:grid-cols-3">
-                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainNewRelicEnabled" label="Status"
+                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainNewRelicEnabled" :label="__('common.status')"
                                 onChange="instantSave" :options="[
                                     ['value' => false, 'label' => 'Disabled'],
                                     ['value' => true, 'label' => 'Enabled'],
@@ -46,9 +45,9 @@
                         </div>
                     </x-application.settings-section>
                     <x-application.settings-section id="server-axiom-drain-section" title="Axiom"
-                        helper="Send logs to an Axiom dataset using its ingest API.">
+                        :helper="__('common.axiom_ingest_api_helper')">
                         <div class="grid gap-4 lg:grid-cols-3">
-                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainAxiomEnabled" label="Status"
+                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainAxiomEnabled" :label="__('common.status')"
                                 onChange="instantSave" :options="[
                                     ['value' => false, 'label' => 'Disabled'],
                                     ['value' => true, 'label' => 'Enabled'],
@@ -62,10 +61,10 @@
                                 :disabled="$server->isLogDrainEnabled()" />
                         </div>
                     </x-application.settings-section>
-                    <x-application.settings-section id="server-custom-drain-section" title="Custom Fluent Bit"
-                        helper="Provide a custom Fluent Bit output and optional parser configuration.">
+                    <x-application.settings-section id="server-custom-drain-section" :title="__('common.custom_fluent_bit')"
+                        :helper="__('common.custom_fluent_bit_helper')">
                         <div class="mb-4 max-w-sm">
-                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainCustomEnabled" label="Status"
+                            <x-forms.listbox canGate="update" :canResource="$server" id="isLogDrainCustomEnabled" :label="__('common.status')"
                                 onChange="instantSave" :options="[
                                     ['value' => false, 'label' => 'Disabled'],
                                     ['value' => true, 'label' => 'Enabled'],
@@ -74,19 +73,19 @@
                         </div>
                         <div class="grid gap-4 lg:grid-cols-2">
                             <x-forms.textarea canGate="update" :canResource="$server" rows="8" required
-                                id="logDrainCustomConfig" label="Fluent Bit configuration"
+                                id="logDrainCustomConfig" :label="__('common.fluent_bit_configuration')"
                                 :disabled="$server->isLogDrainEnabled()" />
                             <x-forms.textarea canGate="update" :canResource="$server" rows="8"
-                                id="logDrainCustomConfigParser" label="Parser configuration"
+                                id="logDrainCustomConfigParser" :label="__('common.parser_configuration')"
                                 :disabled="$server->isLogDrainEnabled()" />
                         </div>
                     </x-application.settings-section>
                 </form>
             @else
-                <x-application.settings-section title="Log drains"
-                    helper="Forward container logs from this server to an external destination.">
-                    <x-empty size="sm" title="Server validation required"
-                        description="Validate this server before configuring log drains."
+                <x-application.settings-section :title="__('common.log_drains')"
+                    :helper="__('common.log_drains_description')">
+                    <x-empty size="sm" :title="__('common.server_validation_required')"
+                        :description="__('common.validate_server_before_log_drains')"
                         icon-name="notifications" />
                 </x-application.settings-section>
             @endif

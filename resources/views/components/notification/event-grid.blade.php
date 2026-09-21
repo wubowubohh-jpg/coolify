@@ -6,38 +6,38 @@
 
 @php
     $eventGroups = [
-        'Deployments' => [
-            ['key' => 'deploymentSuccess', 'label' => 'Deployment success'],
-            ['key' => 'deploymentFailure', 'label' => 'Deployment failure'],
+        __('common.deployments') => [
+            ['key' => 'deploymentSuccess', 'label' => __('common.deployment_success')],
+            ['key' => 'deploymentFailure', 'label' => __('common.deployment_failure')],
         ],
-        'Resources' => [
+        __('common.resources') => [
             [
                 'key' => 'statusChange',
-                'label' => 'Resource status changes',
-                'helper' => 'Notify when a resource stops or Coolify automatically restarts it.',
+                'label' => __('common.resource_status_changes'),
+                'helper' => __('common.notify_resource_stops_restarts'),
             ],
             [
                 'key' => 'restartLimitReached',
-                'label' => 'Restart limit reached',
-                'helper' => 'Notify when a resource is stopped after reaching its restart limit.',
+                'label' => __('common.restart_limit_reached'),
+                'helper' => __('common.notify_restart_limit'),
             ],
         ],
-        'Backups' => [
-            ['key' => 'backupSuccess', 'label' => 'Backup success'],
-            ['key' => 'backupFailure', 'label' => 'Backup failure'],
+        __('common.backups') => [
+            ['key' => 'backupSuccess', 'label' => __('common.backup_success')],
+            ['key' => 'backupFailure', 'label' => __('common.backup_failure')],
         ],
-        'Scheduled tasks' => [
-            ['key' => 'scheduledTaskSuccess', 'label' => 'Scheduled task success'],
-            ['key' => 'scheduledTaskFailure', 'label' => 'Scheduled task failure'],
+        __('common.scheduled_tasks') => [
+            ['key' => 'scheduledTaskSuccess', 'label' => __('common.scheduled_task_success')],
+            ['key' => 'scheduledTaskFailure', 'label' => __('common.scheduled_task_failure')],
         ],
-        'Servers' => [
-            ['key' => 'dockerCleanupSuccess', 'label' => 'Docker cleanup success'],
-            ['key' => 'dockerCleanupFailure', 'label' => 'Docker cleanup failure'],
-            ['key' => 'serverDiskUsage', 'label' => 'Disk usage warning'],
-            ['key' => 'serverReachable', 'label' => 'Server reachable'],
-            ['key' => 'serverUnreachable', 'label' => 'Server unreachable'],
-            ['key' => 'serverPatch', 'label' => 'Server patching'],
-            ['key' => 'traefikOutdated', 'label' => 'Traefik proxy outdated'],
+        __('common.servers') => [
+            ['key' => 'dockerCleanupSuccess', 'label' => __('common.docker_cleanup_success')],
+            ['key' => 'dockerCleanupFailure', 'label' => __('common.docker_cleanup_failure')],
+            ['key' => 'serverDiskUsage', 'label' => __('common.disk_usage_warning')],
+            ['key' => 'serverReachable', 'label' => __('common.server_reachable')],
+            ['key' => 'serverUnreachable', 'label' => __('common.server_unreachable')],
+            ['key' => 'serverPatch', 'label' => __('common.server_patching')],
+            ['key' => 'traefikOutdated', 'label' => __('common.traefik_proxy_outdated')],
         ],
     ];
 
@@ -70,8 +70,8 @@
 @endphp
 
 <div class="flex flex-col gap-6">
-    <x-application.settings-section title="Notification events"
-        description="Choose which events send a notification on this channel.">
+    <x-application.settings-section :title="__('common.notification_events')"
+        :description="__('common.notification_events_description')">
         <div class="grid gap-4 lg:grid-cols-2">
             @foreach ($eventGroups as $group => $events)
                 @php
@@ -96,11 +96,11 @@
     </x-application.settings-section>
 
     @if ($threaded)
-        <x-application.settings-section title="Forum topics"
-            description="Optional. Route enabled events to a Telegram forum topic using its message thread ID. Leave blank to post in the main chat.">
+        <x-application.settings-section :title="__('common.forum_topics')"
+            :description="__('common.forum_topics_description')">
             @if ($enabledThreadEvents === [])
                 <p class="text-[13px] leading-relaxed text-neutral-500 dark:text-fg-dim">
-                    Enable one or more events above to assign forum topic IDs.
+                    {{ __('common.enable_events_forum') }}
                 </p>
             @else
                 <div class="flex flex-col gap-5">
@@ -122,13 +122,13 @@
                                                 {{ $event['label'] }}
                                             </div>
                                             <div class="text-[11px] text-neutral-500 dark:text-fg-dim">
-                                                Topic ID
+                                                {{ __('common.topic_id') }}
                                             </div>
                                         </div>
                                         <x-forms.input wire:key="{{ $channel }}-thread-{{ $event['key'] }}"
                                             canGate="update" :canResource="$settings" type="password"
                                             :id="$event['threadModel']" :label="null"
-                                            :placeholder="'Optional'"
+                                            :placeholder="__('common.optional')"
                                             :aria-label="$event['label'] . ' topic ID'" />
                                     </div>
                                 @endforeach

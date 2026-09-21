@@ -138,6 +138,13 @@ return [
 
     'locale' => 'en',
 
+    'supported_locales' => [
+        'en' => 'settings.language.english',
+        'zh-cn' => 'settings.language.chinese',
+    ],
+
+    'locale_cookie' => 'coolify_locale',
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

@@ -1,47 +1,47 @@
 <div class="grid gap-4 sm:grid-cols-2">
     @if ($resourceType === 'application')
         @if (str($serviceApplication->image)->contains('pocketbase'))
-            <x-forms.listbox id="isGzipEnabled" label="Gzip compression"
-                helper="PocketBase keeps compression disabled so server-sent events continue to work."
+            <x-forms.listbox id="isGzipEnabled" :label="__('common.gzip_compression')"
+                :helper="__('common.gzip_helper')"
                 :disabled="true" :options="[
-                    ['value' => true, 'label' => 'Enabled'],
-                    ['value' => false, 'label' => 'Disabled'],
+                    ['value' => true, 'label' => __('common.enabled')],
+                    ['value' => false, 'label' => __('common.disabled')],
                 ]" />
         @else
-            <x-forms.listbox id="isGzipEnabled" label="Gzip compression"
+            <x-forms.listbox id="isGzipEnabled" :label="__('common.gzip_compression')"
                 :options="[
-                    ['value' => true, 'label' => 'Enabled'],
-                    ['value' => false, 'label' => 'Disabled'],
+                    ['value' => true, 'label' => __('common.enabled')],
+                    ['value' => false, 'label' => __('common.disabled')],
                 ]" />
         @endif
-        <x-forms.listbox id="isStripprefixEnabled" label="Path prefixes"
+        <x-forms.listbox id="isStripprefixEnabled" :label="__('common.path_prefixes')"
             :options="[
-                ['value' => true, 'label' => 'Strip prefixes'],
-                ['value' => false, 'label' => 'Keep prefixes'],
+                ['value' => true, 'label' => __('common.strip_prefixes')],
+                ['value' => false, 'label' => __('common.keep_prefixes')],
             ]" />
-        <x-forms.listbox id="excludeFromStatus" label="Service status"
+        <x-forms.listbox id="excludeFromStatus" :label="__('common.service_status')"
             :options="[
-                ['value' => false, 'label' => 'Include in status'],
-                ['value' => true, 'label' => 'Exclude from status'],
+                ['value' => false, 'label' => __('common.include_in_status')],
+                ['value' => true, 'label' => __('common.exclude_from_status')],
             ]" />
-        <x-forms.listbox id="isLogDrainEnabled" label="Log drain"
+        <x-forms.listbox id="isLogDrainEnabled" :label="__('common.log_drain')"
             :options="[
-                ['value' => true, 'label' => 'Send logs to drain'],
-                ['value' => false, 'label' => 'Do not drain logs'],
+                ['value' => true, 'label' => __('common.send_logs_to_drain')],
+                ['value' => false, 'label' => __('common.do_not_drain_logs')],
             ]" />
-        <x-forms.input type="number" min="0" id="maxRestartCount" label="Max restart count"
-            helper="Maximum number of Docker restarts before Coolify stops this container. Set to 0 to disable the limit. Docker counts expected and unexpected restarts."
+        <x-forms.input type="number" min="0" id="maxRestartCount" :label="__('common.max_restart_count')"
+            :helper="__('common.max_restart_count_helper_service')"
             canGate="update" :canResource="$serviceApplication" />
     @else
-        <x-forms.listbox id="excludeFromStatus" label="Service status"
+        <x-forms.listbox id="excludeFromStatus" :label="__('common.service_status')"
             :options="[
-                ['value' => false, 'label' => 'Include in status'],
-                ['value' => true, 'label' => 'Exclude from status'],
+                ['value' => false, 'label' => __('common.include_in_status')],
+                ['value' => true, 'label' => __('common.exclude_from_status')],
             ]" />
-        <x-forms.listbox id="isLogDrainEnabled" label="Log drain"
+        <x-forms.listbox id="isLogDrainEnabled" :label="__('common.log_drain')"
             :options="[
-                ['value' => true, 'label' => 'Send logs to drain'],
-                ['value' => false, 'label' => 'Do not drain logs'],
+                ['value' => true, 'label' => __('common.send_logs_to_drain')],
+                ['value' => false, 'label' => __('common.do_not_drain_logs')],
             ]" />
     @endif
 </div>

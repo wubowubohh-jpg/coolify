@@ -1,20 +1,20 @@
 <div>
     <x-slot:title>
-        API Tokens | Coolify
+        {{ __('common.api_tokens') }} | Coolify
     </x-slot>
 
     <x-security.settings-layout>
 
     @if (!$isApiEnabled)
         <div class="application-settings-form">
-            <x-application.settings-section title="API disabled"
-                description="Enable the Coolify API before creating access tokens.">
-                <x-empty title="API access is turned off"
-                    description="Enable API access in instance settings to issue tokens." icon-name="keys"
+            <x-application.settings-section :title="__('common.api_disabled')"
+                :description="__('common.enable_api_before_tokens')">
+                <x-empty :title="__('common.api_access_off')"
+                    :description="__('common.enable_api_instance_settings')" icon-name="keys"
                     size="sm">
                     <x-slot:actions>
                         <a href="{{ route('settings.advanced') }}" class="button" {{ wireNavigate() }}>
-                            Open settings
+                            {{ __('common.open_settings') }}
                         </a>
                     </x-slot:actions>
                 </x-empty>
@@ -32,33 +32,33 @@
         <div class="application-settings-form flex flex-col gap-6">
             @can('create', App\Models\PersonalAccessToken::class)
                 <form wire:submit="addNewToken">
-                    <x-application.settings-section title="New API token">
+                    <x-application.settings-section :title="__('common.new_api_token')">
                         <x-slot:actions>
                             <button type="submit"
                                 class="button button-highlighted">
                                 <x-reicon name="plus" class="size-3.5" />
-                                Create token
+                                {{ __('common.create_token') }}
                             </button>
                         </x-slot:actions>
 
                         <div class="grid gap-4 lg:grid-cols-2">
-                            <x-forms.input required id="description" label="Description"
+                            <x-forms.input required id="description" :label="__('common.description')"
                                 placeholder="CI deployment token" />
-                            <x-forms.listbox id="expiresInDays" label="Expires in"
+                            <x-forms.listbox id="expiresInDays" :label="__('common.expires_in')"
                                 :options="$expirationList" />
                         </div>
 
                         <div class="mt-5 border-t border-neutral-200 pt-4 dark:border-white/[0.08]">
                             <div class="mb-3 flex items-center gap-2">
-                                <h4 class="text-[12px] font-semibold text-black dark:text-fg">Permissions</h4>
-                                <x-helper helper="Only grant the abilities this token needs." />
+                                <h4 class="text-[12px] font-semibold text-black dark:text-fg">{{ __('common.permissions') }}</h4>
+                                <x-helper :helper="__('common.token_permission_help')" />
                             </div>
                             <div class="relative" x-data="{ permissionsOpen: false }"
                                 @click.outside="permissionsOpen = false" @keydown.escape.window="permissionsOpen = false">
                                 <button type="button" class="listbox-trigger" @click="permissionsOpen = !permissionsOpen"
                                     aria-haspopup="listbox" :aria-expanded="permissionsOpen">
                                     <span class="truncate">
-                                        Selected permissions: {{ collect($permissions)->map(fn ($permission) => str($permission)->replace(':', ' ')->headline())->join(', ') }}
+                                        {{ __('common.selected_permissions', ['permissions' => collect($permissions)->map(fn ($permission) => str($permission)->replace(':', ' ')->headline())->join(', ')]) }}
                                     </span>
                                     <x-reicon name="chevron-down" class="size-3.5 shrink-0 opacity-60" />
                                 </button>
@@ -66,36 +66,36 @@
                                 <div x-cloak x-show="permissionsOpen" x-transition.origin.top
                                     class="listbox-panel top-full! mt-1! w-full!" role="listbox">
                                     <div class="listbox-option p-0!">
-                                        <x-forms.checkbox id="permission-root" label="Root" fullWidth
+                                        <x-forms.checkbox id="permission-root" :label="__('common.root')" fullWidth
                                             wire:model.live="permissions" domValue="root"
-                                            helper="Full access to every API operation."
+                                            :helper="__('common.full_api_access')"
                                             :checked="in_array('root', $permissions)" :disabled="!$canUseRootPermissions" />
                                     </div>
                                     <div class="listbox-option p-0!">
-                                        <x-forms.checkbox id="permission-write" label="Write" fullWidth
+                                        <x-forms.checkbox id="permission-write" :label="__('common.write')" fullWidth
                                             wire:model.live="permissions" domValue="write"
-                                            helper="Create and update resources."
+                                            :helper="__('common.create_update_resources')"
                                             :checked="in_array('write', $permissions)"
                                             :disabled="in_array('root', $permissions) || !$canUseWritePermissions" />
                                     </div>
                                     <div class="listbox-option p-0!">
-                                        <x-forms.checkbox id="permission-deploy" label="Deploy" fullWidth
+                                        <x-forms.checkbox id="permission-deploy" :label="__('common.deploy_permission')" fullWidth
                                             wire:model.live="permissions" domValue="deploy"
-                                            helper="Trigger deployments through webhooks."
+                                            :helper="__('common.trigger_deployments')"
                                             :checked="in_array('deploy', $permissions)"
                                             :disabled="in_array('root', $permissions) || !$canUseDeployPermissions" />
                                     </div>
                                     <div class="listbox-option p-0!">
-                                        <x-forms.checkbox id="permission-read" label="Read" fullWidth
+                                        <x-forms.checkbox id="permission-read" :label="__('common.read_permission')" fullWidth
                                             wire:model.live="permissions" domValue="read"
-                                            helper="Read non-sensitive resource data."
+                                            :helper="__('common.read_non_sensitive')"
                                             :checked="in_array('read', $permissions)"
                                             :disabled="in_array('root', $permissions)" />
                                     </div>
                                     <div class="listbox-option p-0!">
-                                        <x-forms.checkbox id="permission-read-sensitive" label="Read sensitive data"
+                                        <x-forms.checkbox id="permission-read-sensitive" :label="__('common.read_sensitive_data')"
                                             fullWidth wire:model.live="permissions" domValue="read:sensitive"
-                                            helper="Include secrets, logs, passwords, and Compose content."
+                                            :helper="__('common.include_secrets_logs_passwords')"
                                             :checked="in_array('read:sensitive', $permissions)"
                                             :disabled="in_array('root', $permissions) || !$canUseSensitivePermissions" />
                                     </div>
@@ -107,17 +107,17 @@
             @endcan
 
             @if (session()->has('token'))
-                <x-application.settings-section title="Copy your token">
+                <x-application.settings-section :title="__('common.copy_your_token')">
                     <div class="flex flex-col gap-3">
                         <p class="text-sm text-neutral-500 dark:text-fg-dim">
-                            This value will not be shown again after you leave this page.
+                            {{ __('common.token_not_again') }}
                         </p>
                         <x-forms.copy-button :text="session('token')" />
                     </div>
                 </x-application.settings-section>
             @endif
 
-            <x-application.settings-section title="Issued tokens" flush>
+            <x-application.settings-section :title="__('common.issued_tokens')" flush>
                 <div x-data="{
                     search: '',
                     page: 1,
@@ -159,7 +159,7 @@
                                 <x-reicon name="search"
                                     class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                                 <input x-model.debounce.150ms="search" x-on:input="page = 1" type="search"
-                                    placeholder="Search tokens" aria-label="Search tokens"
+                                    placeholder="{{ __('common.search_tokens') }}" aria-label="{{ __('common.search_tokens') }}"
                                     class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                                 <button x-cloak x-show="search" x-on:click="search = ''; page = 1" type="button"
                                     class="absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg"
@@ -172,18 +172,18 @@
 
                     @if ($tokens->isEmpty())
                         <div class="p-4">
-                            <x-empty title="No API tokens" description="Create a token when an external client needs access."
+                            <x-empty :title="__('common.no_api_tokens')" :description="__('common.create_token_external')"
                                 icon-name="keys" size="sm" />
                         </div>
                     @else
                         <div x-cloak x-show="filteredTokens.length > 0" class="data-table">
                             <div class="data-table-header api-tokens-table-grid">
-                                <span>Description</span>
-                                <span>Permissions</span>
-                                <span>Last used</span>
-                                <span>Created</span>
-                                <span>Expires</span>
-                                <span class="text-right">Actions</span>
+                                <span>{{ __('common.description') }}</span>
+                                <span>{{ __('common.permissions') }}</span>
+                                <span>{{ __('common.last_used') }}</span>
+                                <span>{{ __('common.created') }}</span>
+                                <span>{{ __('common.expires') }}</span>
+                                <span class="text-right">{{ __('common.actions') }}</span>
                             </div>
                             @foreach ($tokens as $token)
                                 <div wire:key="api-token-{{ $token->id }}"
@@ -204,34 +204,34 @@
                                         @endforeach
                                     </div>
                                     <div class="text-[11px] text-neutral-500 dark:text-fg-dim">
-                                        {{ $token->last_used_at?->diffForHumans() ?? 'Never' }}
+                                        {{ $token->last_used_at?->diffForHumans() ?? __('common.never') }}
                                     </div>
                                     <div class="text-[11px] text-neutral-500 dark:text-fg-dim">
                                         {{ $token->created_at->format('Y-m-d') }}
                                     </div>
                                     <div class="text-[11px] text-neutral-500 dark:text-fg-dim">
                                         @if (!$token->expires_at)
-                                            Never
+                                            {{ __('common.never') }}
                                         @elseif ($token->expires_at->isPast())
-                                            <x-status-badge label="Expired" type="error" />
+                                            <x-status-badge :label="__('common.expired')" type="error" />
                                         @else
                                             {{ $token->expires_at->format('Y-m-d') }}
                                         @endif
                                     </div>
                                     <div class="flex justify-end">
                                         @if (auth()->id() === $token->tokenable_id)
-                                            <x-modal-confirmation title="Confirm API Token Revocation?"
+                                            <x-modal-confirmation :title="__('common.confirm_api_token_revocation')"
                                                 submitAction="revoke({{ $token->id }})" :actions="[
-                                                    'This API token will be permanently revoked.',
+                                                    __('common.api_token_revoked_action'),
                                                 ]"
                                                 confirmationText="{{ $token->name }}"
-                                                confirmationLabel="Enter the token description to confirm"
-                                                shortConfirmationLabel="Token description"
-                                                :confirmWithPassword="false" step2ButtonText="Revoke token">
+                                                :confirmationLabel="__('common.enter_token_description')"
+                                                :shortConfirmationLabel="__('common.token_description')"
+                                                :confirmWithPassword="false" :step2ButtonText="__('common.revoke_token')">
                                                 <x-slot:trigger>
                                                     <button type="button"
                                                         class="inline-flex h-7 items-center rounded-md px-2 text-[11px] font-medium text-error transition-colors hover:bg-error/10">
-                                                        Revoke
+                                                        {{ __('common.revoke') }}
                                                     </button>
                                                 </x-slot:trigger>
                                             </x-modal-confirmation>
@@ -242,8 +242,8 @@
                         </div>
 
                         <div x-cloak x-show="filteredTokens.length === 0" class="p-4">
-                            <x-empty size="sm" title="No matching tokens"
-                                description="Try a different description or permission." />
+                            <x-empty size="sm" :title="__('common.no_matching_tokens')"
+                                :description="__('common.try_permission_description')" />
                         </div>
 
                         <x-client-pagination x-cloak x-show="filteredTokens.length > 0"

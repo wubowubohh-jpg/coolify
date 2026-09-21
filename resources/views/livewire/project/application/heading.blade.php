@@ -13,7 +13,7 @@
             ]);
         $applicationMenuItems = [
             [
-                'label' => 'Settings',
+                'label' => __('common.settings'),
                 'route' => 'project.application.configuration',
                 'active' => $isSettingsRoute,
             ],
@@ -49,7 +49,7 @@
                     <button type="button" class="button w-full justify-between" @click="open = !open"
                         :aria-expanded="open" aria-haspopup="menu">
                         <span class="inline-flex items-center gap-2">
-                            Actions
+                            {{ __('common.actions') }}
                         </span>
                         <span class="inline-flex transition-transform" :class="open && 'rotate-180'">
                             <x-reicon name="chevron-down" class="size-3 opacity-55" />
@@ -64,13 +64,13 @@
                                     <button type="button" class="listbox-option justify-start! gap-2.5!"
                                         wire:click="deploy" @click="open = false" role="menuitem">
                                         <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                        Deploy
+                                        {{ __('common.deploy') }}
                                     </button>
                                 @else
                                     <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                         role="menuitem">
                                         <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                        Deploy
+                                        {{ __('common.deploy') }}
                                     </button>
                                 @endcan
                             @endif
@@ -80,13 +80,13 @@
                                         <button type="button" class="listbox-option justify-start! gap-2.5!"
                                             wire:click="deploy" @click="open = false" role="menuitem">
                                             <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                            Update Service
+                                            {{ __('common.update_service') }}
                                         </button>
                                     @else
                                         <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                             role="menuitem">
                                             <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                            Update Service
+                                            {{ __('common.update_service') }}
                                         </button>
                                     @endcan
                                 @else
@@ -95,13 +95,13 @@
                                             @click="open = false; document.getElementById('application-mobile-restart-trigger')?.click()"
                                             role="menuitem">
                                             <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                            Restart
+                                        {{ __('common.restart') }}
                                         </button>
                                     @else
                                         <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                             role="menuitem">
                                             <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                            Restart
+                                        {{ __('common.restart') }}
                                         </button>
                                     @endcan
                                 @endif
@@ -111,13 +111,13 @@
                                 <button type="button" class="listbox-option justify-start! gap-2.5!"
                                     wire:click="deploy" @click="open = false" role="menuitem">
                                     <x-reicon name="play-circle" class="size-3.5 opacity-70" />
-                                    {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment' : 'Deploy' }}
+                                    {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment') : __('common.deploy') }}
                                 </button>
                             @else
                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                     role="menuitem">
                                     <x-reicon name="play-circle" class="size-3.5 opacity-70" />
-                                    {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment' : 'Deploy' }}
+                                    {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment') : __('common.deploy') }}
                                 </button>
                             @endcan
                         @endif
@@ -127,13 +127,13 @@
                                     wire:click="{{ $application->status === 'running' ? 'force_deploy_without_cache' : 'deploy(true)' }}"
                                     @click="open = false" role="menuitem">
                                     <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                    {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment (without cache)' : 'Deploy (without cache)' }}
+                                    {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment_without_cache') : __('common.deploy_without_cache') }}
                                 </button>
                             @else
                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled
                                     role="menuitem">
                                     <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                    {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment (without cache)' : 'Deploy (without cache)' }}
+                                    {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment_without_cache') : __('common.deploy_without_cache') }}
                                 </button>
                             @endcan
                         @endif
@@ -142,7 +142,7 @@
                                 @click="open = false; document.getElementById('application-mobile-stop-trigger')?.click()"
                                 role="menuitem">
                                 <x-reicon name="stop-circle" class="size-3.5 text-error" />
-                                {{ str($application->status)->startsWith('exited') ? 'Remove container' : 'Stop' }}
+                                {{ str($application->status)->startsWith('exited') ? __('common.remove_container') : __('common.stop') }}
                             </button>
                         @endif
                     </div>
@@ -152,24 +152,24 @@
             <div class="hidden" aria-hidden="true">
                 <x-modal-confirmation
                     canGate="deploy" :canResource="$application"
-                    title="{{ str($application->status)->startsWith('exited') ? 'Confirm Container Removal?' : 'Confirm Application Stopping?' }}"
-                    buttonTitle="{{ str($application->status)->startsWith('exited') ? 'Remove container' : 'Stop' }}"
+                    :title="str($application->status)->startsWith('exited') ? __('common.confirm_container_removal') : __('common.confirm_application_stopping')"
+                    :buttonTitle="str($application->status)->startsWith('exited') ? __('common.remove_container') : __('common.stop')"
                     submitAction="stop" :checkboxes="$checkboxes" :actions="[
-                        str($application->status)->startsWith('exited') ? 'The exited application container will be removed.' : 'This application will be stopped.',
-                        str($application->status)->startsWith('exited') ? 'Anonymous volumes may become eligible for Docker cleanup.' : 'All non-persistent data of this application will be deleted.',
+                        str($application->status)->startsWith('exited') ? __('common.exited_container_removed') : __('common.application_stopping_action'),
+                        str($application->status)->startsWith('exited') ? __('common.anonymous_volumes_cleanup') : __('common.application_stopped_data_deleted'),
                     ]" :confirmWithText="false" :confirmWithPassword="false"
-                    step1ButtonText="Continue" step2ButtonText="Confirm">
+                    :step1ButtonText="__('common.continue')" :step2ButtonText="__('common.confirm')">
                     <x-slot:trigger>
-                        <button id="application-mobile-stop-trigger" type="button">Stop</button>
+                        <button id="application-mobile-stop-trigger" type="button">{{ __('common.stop') }}</button>
                     </x-slot:trigger>
                 </x-modal-confirmation>
-                <x-modal-confirmation title="Confirm Application Restart?" buttonTitle="Restart"
+                <x-modal-confirmation :title="__('common.confirm_application_restart')" :buttonTitle="__('common.restart')"
                     submitAction="restart" :actions="[
-                        'This application will be restarted without rebuilding.',
+                        __('common.application_restart_action'),
                     ]" :confirmWithText="false" :confirmWithPassword="false"
-                    step2ButtonText="Confirm">
+                    :step2ButtonText="__('common.confirm')">
                     <x-slot:trigger>
-                        <button id="application-mobile-restart-trigger" type="button">Restart</button>
+                        <button id="application-mobile-restart-trigger" type="button">{{ __('common.restart') }}</button>
                     </x-slot:trigger>
                 </x-modal-confirmation>
             </div>
@@ -182,7 +182,7 @@
                 class="resource-heading-navbar application-heading-actions flex w-full min-w-0 items-center justify-start gap-1 overflow-visible xl:w-auto xl:justify-end">
                 <div class="resource-heading-actions flex shrink-0 items-center gap-0.5">
                     @if ($application->build_pack === 'dockercompose' && is_null($application->docker_compose_raw))
-                        <span class="px-2 text-[13px] text-neutral-500 dark:text-fg-dim">Load a Compose file to deploy.</span>
+                        <span class="px-2 text-[13px] text-neutral-500 dark:text-fg-dim">{{ __('common.load_compose_file') }}</span>
                     @else
                         <div class="resource-heading-menus shrink-0">
                             <x-applications.links :application="$application" />
@@ -193,7 +193,7 @@
                             @click.outside="open = false" @keydown.escape.window="open = false">
                             <button type="button" class="button button-highlighted" @click="open = !open" :aria-expanded="open"
                                 aria-haspopup="menu">
-                                Actions
+                                {{ __('common.actions') }}
                                 <x-reicon name="chevron-down" class="size-3 opacity-55" />
                             </button>
 
@@ -204,14 +204,14 @@
                                         @disabled(!auth()->user()->can('deploy', $application))
                                         wire:click="deploy" @click="open = false" role="menuitem">
                                         <x-reicon name="play-circle" class="size-3.5 opacity-70" />
-                                        {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment' : 'Deploy' }}
+                                        {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment') : __('common.deploy') }}
                                     </button>
                                     @if (!$application->destination->server->isSwarm())
                                         <button type="button" class="listbox-option justify-start! gap-2.5!"
                                             @disabled(!auth()->user()->can('deploy', $application))
                                             wire:click="deploy(true)" @click="open = false" role="menuitem">
                                             <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                            {{ $application->stoppedAfterRestartLimit() ? 'Retry deployment (without cache)' : 'Deploy (without cache)' }}
+                                            {{ $application->stoppedAfterRestartLimit() ? __('common.retry_deployment_without_cache') : __('common.deploy_without_cache') }}
                                         </button>
                                     @endif
                                     @if ($application->container_present !== false)
@@ -219,7 +219,7 @@
                                             @click="open = false; document.getElementById('application-mobile-stop-trigger')?.click()"
                                             role="menuitem">
                                             <x-reicon name="stop-circle" class="size-3.5 text-error" />
-                                            Remove container
+                                            {{ __('common.remove_container') }}
                                         </button>
                                     @endif
                                 @else
@@ -228,12 +228,12 @@
                                             <button type="button" class="listbox-option justify-start! gap-2.5!"
                                                 wire:click="deploy" @click="open = false" role="menuitem">
                                                 <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                                Redeploy
+                                                {{ __('common.redeploy') }}
                                             </button>
                                         @else
                                             <button type="button" class="listbox-option justify-start! gap-2.5!" disabled>
                                                 <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                                Redeploy
+                                                {{ __('common.redeploy') }}
                                             </button>
                                         @endcan
                                         <button type="button" class="listbox-option justify-start! gap-2.5!"
@@ -241,7 +241,7 @@
                                             wire:click="{{ str($application->status)->startsWith('running') ? 'force_deploy_without_cache' : 'deploy(true)' }}"
                                             @click="open = false" role="menuitem">
                                             <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                            {{ str($application->status)->startsWith('running') ? 'Redeploy (without cache)' : 'Deploy (without cache)' }}
+                                            {{ str($application->status)->startsWith('running') ? __('common.redeploy_without_cache') : __('common.deploy_without_cache') }}
                                         </button>
                                     @endif
                                     @if ($application->build_pack !== 'dockercompose')
@@ -250,12 +250,12 @@
                                                 <button type="button" class="listbox-option justify-start! gap-2.5!"
                                                     wire:click="deploy" @click="open = false" role="menuitem">
                                                     <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                                    Update Service
+                                                    {{ __('common.update_service') }}
                                                 </button>
                                             @else
                                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled>
                                                     <x-reicon name="refresh" class="size-3.5 opacity-70" />
-                                                    Update Service
+                                                    {{ __('common.update_service') }}
                                                 </button>
                                             @endcan
                                         @else
@@ -264,12 +264,12 @@
                                                     @click="open = false; document.getElementById('application-mobile-restart-trigger')?.click()"
                                                     role="menuitem">
                                                     <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                                    Restart
+                                                    {{ __('common.restart') }}
                                                 </button>
                                             @else
                                                 <button type="button" class="listbox-option justify-start! gap-2.5!" disabled>
                                                     <x-reicon name="restart" class="size-3.5 opacity-70" />
-                                                    Restart
+                                                    {{ __('common.restart') }}
                                                 </button>
                                             @endcan
                                         @endif
@@ -279,12 +279,12 @@
                                             @click="open = false; document.getElementById('application-mobile-stop-trigger')?.click()"
                                             role="menuitem">
                                             <x-reicon name="stop-circle" class="size-3.5 text-error" />
-                                            Stop
+                                            {{ __('common.stop') }}
                                         </button>
                                     @else
                                         <button type="button" class="listbox-option justify-start! gap-2.5!" disabled>
                                             <x-reicon name="stop-circle" class="size-3.5 opacity-70" />
-                                            Stop
+                                            {{ __('common.stop') }}
                                         </button>
                                     @endcan
                                 @endif

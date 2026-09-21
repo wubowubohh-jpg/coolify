@@ -1,19 +1,19 @@
 <div>
     <x-slot:title>
-        Cloud-Init Scripts | Coolify
+        {{ __('common.cloud_init_scripts') }} | Coolify
     </x-slot>
 
     <x-security.settings-layout>
-        <x-application.settings-section title="Cloud-init scripts"
-            description="Reusable initialization scripts for cloud servers." flush>
+        <x-application.settings-section :title="__('common.cloud_init_scripts')"
+            :description="__('common.cloud_init_description')" flush>
         <x-slot:actions>
             @can('create', App\Models\CloudInitScript::class)
-                <x-modal-input title="New Cloud-Init Script">
+                <x-modal-input :title="__('common.new_cloud_init_script')">
                     <x-slot:content>
                         <button type="button"
                             class="button button-highlighted">
                             <x-reicon name="plus" class="size-3.5" />
-                            New script
+                            {{ __('common.new_script') }}
                         </button>
                     </x-slot:content>
                     <livewire:security.cloud-init-script-form />
@@ -23,19 +23,19 @@
 
 
             @if ($scripts->isEmpty())
-                <x-empty title="No cloud-init scripts"
-                    description="Create a script to reuse it during server provisioning."
+                <x-empty :title="__('common.no_cloud_init_scripts')"
+                    :description="__('common.create_script_reuse')"
                     icon-name="file-content" size="sm" />
             @else
                 <div>
                     <div class="grid grid-cols-[minmax(0,1fr)_12rem_1.75rem] items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[13px] font-medium text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                        <div class="pl-11">Script</div>
-                        <div>Last updated</div>
+                        <div class="pl-11">{{ __('common.script') }}</div>
+                        <div>{{ __('common.last_updated') }}</div>
                         <div class="w-7"></div>
                     </div>
                     @foreach ($scripts as $script)
                         @can('view', $script)
-                            <x-modal-input title="Edit Cloud-Init Script" isFullWidth :wireIgnore="false" :contentClicks="false"
+                            <x-modal-input :title="__('common.edit_cloud_init_script')" isFullWidth :wireIgnore="false" :contentClicks="false"
                                 wire:key="cloud-init-script-{{ $script->id }}"
                                 class="border-b border-neutral-200 last:border-b-0 dark:border-white/[0.07]">
                                 <x-slot:content>
@@ -56,11 +56,11 @@
                                 </div>
                                 <div class="flex items-center">
                                     <span class="text-[10px] text-neutral-400 dark:text-fg-faint">
-                                        Updated {{ $script->updated_at->diffForHumans() }}
+                                        {{ __('common.updated') }} {{ $script->updated_at->diffForHumans() }}
                                     </span>
                                 </div>
-                                <button type="button" class="icon-button" title="Edit cloud-init script"
-                                    aria-label="Edit {{ $script->name }}" @click="modalOpen=true">
+                                <button type="button" class="icon-button" :title="__('common.edit_cloud_init_script')"
+                                    aria-label="{{ __('common.edit_cloud_init_script') }} {{ $script->name }}" @click="modalOpen=true">
                                     <x-reicon name="settings" class="size-3.5" />
                                 </button>
                             </div>

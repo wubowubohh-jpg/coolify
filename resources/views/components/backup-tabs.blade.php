@@ -35,9 +35,16 @@
         ['key' => 'executions', 'label' => 'Executions'],
         ['key' => 'danger', 'label' => 'Danger Zone'],
     ])->filter(fn (array $item): bool => isset($routes[$item['key']]));
+    $backupTranslations = [
+        'General' => 'common.general',
+        'S3 storage' => 'common.s3_storage',
+        'Retention' => 'common.retention',
+        'Executions' => 'common.executions',
+        'Danger Zone' => 'common.danger_zone',
+    ];
 @endphp
 
-<nav aria-label="Backup sections"
+<nav aria-label="{{ __('common.backup_sections') }}"
     class="flex min-w-0 flex-wrap gap-1 border-b border-neutral-200 pb-2 dark:border-white/[0.08]">
     @foreach ($items as $item)
         @if ($context === 'service-schedule')
@@ -46,7 +53,7 @@
                     ? 'bg-coollabs/10 text-coollabs ring-1 ring-coollabs/25 dark:bg-warning/15 dark:text-warning dark:ring-warning/25'
                     : 'text-neutral-500 hover:bg-black/5 hover:text-neutral-900 dark:text-fg-dim dark:hover:bg-white/[0.06] dark:hover:text-fg'"
                 class="inline-flex h-8 shrink-0 cursor-pointer items-center rounded-md px-3 text-[13px] font-medium transition-colors">
-                {{ $item['label'] }}
+                {{ __($backupTranslations[$item['label']] ?? $item['label']) }}
             </button>
         @else
             <a @class([
@@ -55,7 +62,7 @@
                 'text-neutral-500 hover:bg-black/5 hover:text-neutral-900 dark:text-fg-dim dark:hover:bg-white/[0.06] dark:hover:text-fg' => $section !== $item['key'],
             ])
                 {{ wireNavigate() }} href="{{ route($routes[$item['key']], $parameters) }}">
-                {{ $item['label'] }}
+                {{ __($backupTranslations[$item['label']] ?? $item['label']) }}
             </a>
         @endif
     @endforeach

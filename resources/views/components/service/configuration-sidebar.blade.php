@@ -46,24 +46,44 @@
             ->filter()
             ->values())
         ->filter(fn ($items) => $items->isNotEmpty());
+
+    $serviceTranslations = [
+        'General' => 'common.general',
+        'Domains' => 'common.domains',
+        'Environment Variables' => 'common.environment_variables',
+        'Persistent Storage' => 'common.persistent_storage',
+        'Backups' => 'common.backups',
+        'Import Backup' => 'common.import_backup',
+        'Runtime Logs' => 'common.runtime_logs',
+        'Terminal' => 'common.terminal',
+        'Scheduled Tasks' => 'common.scheduled_tasks',
+        'Webhooks' => 'common.webhooks',
+        'Resource Operations' => 'common.resource_operations',
+        'Tags' => 'common.tags',
+        'Danger Zone' => 'common.danger_zone',
+        'Settings' => 'common.settings',
+        'Observe & troubleshoot' => 'common.observe_troubleshoot',
+        'Automation' => 'common.automation',
+        'Operations' => 'common.operations',
+    ];
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Service settings"
+    <nav aria-label="{{ __('common.service_settings') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
         @foreach ($groupedItems as $groupLabel => $groupItems)
             @unless ($loop->first)
                 <div class="my-2 hidden border-t border-neutral-200 xl:block dark:border-white/[0.06]" aria-hidden="true"></div>
             @endunless
-            <div class="nav-section hidden xl:block">{{ $groupLabel }}</div>
+            <div class="nav-section hidden xl:block">{{ __($serviceTranslations[$groupLabel] ?? $groupLabel) }}</div>
             @foreach ($groupItems as $menuItem)
                 <a @class(['menu-item', 'menu-item-active' => $menuItem['active']])
                     @if ($menuItem['navigate'] ?? true) {{ wireNavigate() }} @endif
                     href="{{ route($menuItem['route'], $serviceRouteParameters) }}">
                     <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                    <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                    <span class="menu-item-label">{{ __($serviceTranslations[$menuItem['label']] ?? $menuItem['label']) }}</span>
                     @if ($menuItem['hasWarning'] ?? false)
-                        <span class="ml-auto size-2 shrink-0 rounded-full bg-error" title="Required environment variables missing"></span>
+                        <span class="ml-auto size-2 shrink-0 rounded-full bg-error" title="{{ __('common.required_environment_variables_missing') }}"></span>
                     @endif
                 </a>
             @endforeach

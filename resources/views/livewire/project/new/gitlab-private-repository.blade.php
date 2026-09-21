@@ -3,16 +3,16 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>GitLab App</h2>
-                    <p>Connect a GitLab App before selecting a private repository.</p>
+                    <h2>{{ __('common.gitlab_app') }}</h2>
+                    <p>{{ __('common.git_app_selection_description') }}</p>
                 </div>
             </div>
             <div class="application-settings-section-body">
-                <x-empty title="No GitLab Apps"
-                    description="Create an app to grant Coolify access to selected repositories."
+                <x-empty :title="__('common.no_gitlab_apps')"
+                    :description="__('common.create_app_access_repositories')"
                     icon-name="sources">
                     <x-slot:contents>
-                        <x-modal-input buttonTitle="+ Add GitLab App" title="New GitLab App" closeOutside="false">
+                        <x-modal-input :buttonTitle="__('common.add_gitlab_app')" :title="__('common.new_gitlab_app')" closeOutside="false">
                             <livewire:source.gitlab.create />
                         </x-modal-input>
                     </x-slot:contents>
@@ -23,10 +23,10 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>Choose GitLab App</h2>
-                    <p>Select the installation that can access the repository you want to deploy.</p>
+                    <h2>{{ __('common.choose_gitlab_app') }}</h2>
+                    <p>{{ __('common.git_app_selection_description') }}</p>
                 </div>
-                <x-modal-input buttonTitle="+ Add GitLab App" title="New GitLab App" closeOutside="false">
+                <x-modal-input :buttonTitle="__('common.add_gitlab_app')" :title="__('common.new_gitlab_app')" closeOutside="false">
                     <livewire:source.gitlab.create />
                 </x-modal-input>
             </div>
@@ -58,20 +58,20 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>Choose repository</h2>
-                    <p>Search repositories available through the selected GitLab App.</p>
+                    <h2>{{ __('common.choose_repository') }}</h2>
+                    <p>{{ __('common.gitlab_repository_description') }}</p>
                 </div>
                 @if ($gitlab_app_id)
                     <x-forms.button wire:click.prevent="loadRepositories({{ $gitlab_app_id }})">
-                        Refresh
+                        {{ __('common.refresh') }}
                     </x-forms.button>
                 @endif
             </div>
             <div class="application-settings-section-body">
                 @if ($repositories->isNotEmpty())
                     <div class="flex items-end gap-2">
-                        <x-forms.datalist class="w-full" label="Repository"
-                            placeholder="Search repositories…" wire:model.live="selected_project_id">
+                        <x-forms.datalist class="w-full" :label="__('common.repository')"
+                            :placeholder="__('common.search_repositories')" wire:model.live="selected_project_id">
                             @foreach ($repositories as $repo)
                                 <option value="{{ data_get($repo, 'id') }}">
                                     {{ data_get($repo, 'path_with_namespace') }}
@@ -82,12 +82,12 @@
                             wire:target="loadBranches,selected_project_id">
                             <x-loading-on-button wire:loading.delay
                                 wire:target="loadBranches,selected_project_id" />
-                            Load repository
+                            {{ __('common.load_repository') }}
                         </x-forms.button>
                     </div>
                 @else
-                    <x-empty size="sm" title="No repositories available"
-                        description="Review this GitLab App configuration and grant access to a repository." />
+                    <x-empty size="sm" :title="__('common.no_repositories_available')"
+                        :description="__('common.review_gitlab_app')" />
                 @endif
             </div>
         </section>
@@ -97,38 +97,38 @@
                 <section class="application-settings-section">
                     <div class="application-settings-section-header">
                         <div>
-                            <h2>Build configuration</h2>
-                            <p>Choose the branch and build strategy for this application.</p>
+                        <h2>{{ __('common.build_configuration') }}</h2>
+                        <p>{{ __('common.build_strategy_description') }}</p>
                         </div>
                         <x-forms.button type="submit" isHighlighted>Continue</x-forms.button>
                     </div>
                     <div class="application-settings-section-body space-y-5">
                         <div class="grid gap-4 sm:grid-cols-2">
-                            <x-forms.listbox id="selected_branch_name" label="Branch" required
+                            <x-forms.listbox id="selected_branch_name" :label="__('common.branch')" required
                                 :options="$branches->map(fn ($branch) => [
                                     'value' => data_get($branch, 'name'),
                                     'label' => data_get($branch, 'name'),
                                 ])->values()->all()" />
-                            <x-forms.listbox id="build_pack" label="Build pack" required live :options="[
-                                ['value' => 'railpack', 'label' => 'Railpack'],
-                                ['value' => 'nixpacks', 'label' => 'Nixpacks'],
-                                ['value' => 'static', 'label' => 'Static'],
-                                ['value' => 'dockerfile', 'label' => 'Dockerfile'],
-                                ['value' => 'dockercompose', 'label' => 'Docker Compose'],
+                            <x-forms.listbox id="build_pack" :label="__('common.build_pack')" required live :options="[
+                                ['value' => 'railpack', 'label' => __('common.railpack')],
+                                ['value' => 'nixpacks', 'label' => __('common.nixpacks')],
+                                ['value' => 'static', 'label' => __('common.static')],
+                                ['value' => 'dockerfile', 'label' => __('common.dockerfile_build_pack')],
+                                ['value' => 'dockercompose', 'label' => __('common.docker_compose_build_pack')],
                             ]" />
                             @if ($show_is_static)
-                                <x-forms.listbox id="is_static" label="Output type" onChange="instantSave"
+                                <x-forms.listbox id="is_static" :label="__('common.output_type')" onChange="instantSave"
                                     :options="[
-                                        ['value' => false, 'label' => 'Web application'],
-                                        ['value' => true, 'label' => 'Static site'],
+                                        ['value' => false, 'label' => __('common.web_application')],
+                                        ['value' => true, 'label' => __('common.static_site')],
                                     ]" />
-                                <x-forms.input type="number" id="port" label="Port"
+                                <x-forms.input type="number" id="port" :label="__('common.port')"
                                     :readonly="$is_static || $build_pack === 'static'"
-                                    helper="Port the application listens on." />
+                                    :helper="__('common.port_helper')" />
                             @endif
                             @if ($is_static)
-                                <x-forms.input id="publish_directory" label="Publish directory"
-                                    helper="Directory containing the generated static assets." />
+                                <x-forms.input id="publish_directory" :label="__('common.publish_directory')"
+                                    :helper="__('common.static_assets_helper')" />
                             @endif
                         </div>
 
@@ -143,21 +143,21 @@
                                 },
                             }" class="grid gap-4 sm:grid-cols-2">
                                 <x-forms.input placeholder="/" wire:model.defer="base_directory"
-                                    label="Base directory" helper="Repository directory used as the build root."
+                                    :label="__('common.base_directory')" :helper="__('common.base_directory_helper')"
                                     x-model="baseDir" @blur="baseDir = normalize(baseDir)" />
                                 <x-forms.input placeholder="/docker-compose.yaml"
-                                    wire:model.defer="docker_compose_location" label="Compose file"
-                                    helper="Path relative to the base directory." x-model="composeLocation"
+                                    wire:model.defer="docker_compose_location" :label="__('common.compose_file')"
+                                    :helper="__('common.compose_file_helper')" x-model="composeLocation"
                                     @blur="composeLocation = normalize(composeLocation)" />
                                 <p class="sm:col-span-2 text-xs text-neutral-500 dark:text-fg-dim">
-                                    Resolved file:
+                                    {{ __('common.resolved_file') }}:
                                     <code class="font-mono text-coollabs dark:text-warning"
                                         x-text='(baseDir === "/" ? "" : baseDir) + (composeLocation.startsWith("/") ? composeLocation : "/" + composeLocation)'></code>
                                 </p>
                             </div>
                         @else
-                            <x-forms.input wire:model="base_directory" label="Base directory"
-                                helper="Repository directory used as the build root." />
+                            <x-forms.input wire:model="base_directory" :label="__('common.base_directory')"
+                                :helper="__('common.base_directory_helper')" />
                         @endif
                     </div>
                 </section>

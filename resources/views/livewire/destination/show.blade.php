@@ -5,8 +5,8 @@
 
     @php
         $destinationSubtitle = $destination->getMorphClass() === 'App\Models\StandaloneDocker'
-            ? 'Docker network on '.data_get($destination, 'server.name', 'server')
-            : 'Deprecated Docker Swarm network';
+            ? __('common.docker_network_on_server', ['server' => data_get($destination, 'server.name', __('common.server'))])
+            : __('common.deprecated_docker_swarm_network');
     @endphp
 
     <x-dashboard.navbar section="destination" :parameters="['destination_uuid' => $destination->uuid]"
@@ -19,27 +19,27 @@
             <div class="min-w-0">
                 @if (request()->routeIs('destination.danger'))
                     <div class="application-settings-form">
-                        <x-application.settings-section id="destination-danger-section" title="Danger zone"
-                            helper="Destructive actions for this destination cannot be undone.">
-                            <x-danger-zone title="Delete destination">
+                        <x-application.settings-section id="destination-danger-section" :title="__('common.danger_zone')"
+                            :helper="__('common.destination_delete_irreversible')">
+                            <x-danger-zone :title="__('common.delete_destination')">
                                 <p>
-                                    Permanently delete <strong class="font-semibold">{{ $destination->name }}</strong>
-                                    from Coolify. The Docker network is also removed from the server.
+                                    {{ __('common.permanently_delete') }} <strong class="font-semibold">{{ $destination->name }}</strong>
+                                    {{ __('common.destination_delete_description') }}
                                 </p>
-                                <p>Delete or move every attached resource before deleting this destination.</p>
+                                <p>{{ __('common.delete_attached_resources') }}</p>
                                 <x-slot:action>
                                     @if ($network !== 'coolify')
-                                        <x-modal-confirmation title="Confirm Destination Deletion?"
-                                            buttonTitle="Delete destination" isErrorButton submitAction="delete"
-                                            :actions="['This permanently deletes the destination and its Docker network.']"
+                                        <x-modal-confirmation :title="__('common.confirm_destination_deletion')"
+                                            :buttonTitle="__('common.delete_destination')" isErrorButton submitAction="delete"
+                                            :actions="[__('common.destination_delete_confirmation_action')]"
                                             confirmationText="{{ $destination->name }}"
-                                            confirmationLabel="Please confirm by entering the Destination Name below"
-                                            shortConfirmationLabel="Destination Name" :confirmWithPassword="false"
-                                            step2ButtonText="Permanently Delete" canGate="delete"
+                                            :confirmationLabel="__('common.enter_destination_name')"
+                                            :shortConfirmationLabel="__('common.destination_name')" :confirmWithPassword="false"
+                                            :step2ButtonText="__('common.permanently_delete')" canGate="delete"
                                             :canResource="$destination" />
                                     @else
-                                        <x-forms.button isError disabled tooltip="The default Coolify destination cannot be deleted.">
-                                            Delete destination
+                                        <x-forms.button isError disabled :tooltip="__('common.default_destination_cannot_delete')">
+                                            {{ __('common.delete_destination') }}
                                         </x-forms.button>
                                     @endif
                                 </x-slot:action>
@@ -50,22 +50,22 @@
                     <form wire:submit="submit" class="application-settings-form">
                     <x-unsaved-bar action="submit" />
 
-                    <x-application.settings-section title="General"
+                    <x-application.settings-section :title="__('common.general')"
                         :description="$destination->getMorphClass() === 'App\Models\StandaloneDocker'
-                            ? 'Docker network used to connect deployed resources.'
-                            : 'Deprecated Docker Swarm network.'">
+                            ? __('common.docker_network_connect_resources')
+                            : __('common.deprecated_docker_swarm_network')">
                     @if ($destination->getMorphClass() !== 'App\Models\StandaloneDocker')
                         <x-slot:actions>
-                            <x-status-badge label="Deprecated" type="warning" />
+                            <x-status-badge :label="__('common.deprecated')" type="warning" />
                         </x-slot:actions>
                     @endif
 
                         <div class="grid gap-4 lg:grid-cols-2">
-                            <x-forms.input canGate="update" :canResource="$destination" id="name" label="Name" />
-                            <x-forms.input id="serverIp" label="Server IP" readonly />
+                            <x-forms.input canGate="update" :canResource="$destination" id="name" :label="__('common.name')" />
+                            <x-forms.input id="serverIp" :label="__('common.server_ip')" readonly />
                             @if ($destination->getMorphClass() === 'App\Models\StandaloneDocker')
                                 <div class="lg:col-span-2">
-                                    <x-forms.input id="network" label="Docker network" readonly />
+                                    <x-forms.input id="network" :label="__('common.docker_network')" readonly />
                                 </div>
                             @endif
                         </div>

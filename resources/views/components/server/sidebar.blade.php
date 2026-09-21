@@ -178,6 +178,36 @@
         ->filter(fn (array $item): bool => $item['visible'] ?? true)
         ->values();
     $groupedServerMenuItems = $serverMenuItems->groupBy('group');
+    $serverTranslations = [
+        'General' => 'common.general',
+        'Advanced' => 'common.advanced',
+        'Private Key' => 'common.private_key',
+        'Cloud Token' => 'common.cloud_token',
+        'CA Certificate' => 'common.ca_certificate',
+        'Cloudflare Tunnel' => 'common.cloudflare_tunnel',
+        'Proxy' => 'common.proxy',
+        'Configuration' => 'common.configuration',
+        'Dynamic Configurations' => 'common.dynamic_configurations',
+        'Logs' => 'common.logs',
+        'Sentinel' => 'common.sentinel',
+        'Resources' => 'common.resources',
+        'Terminal' => 'common.terminal',
+        'Destinations' => 'common.destinations',
+        'Swarm' => 'common.swarm',
+        'Docker Cleanup' => 'common.docker_cleanup',
+        'Log Drains' => 'common.log_drains',
+        'Metrics' => 'common.metrics',
+        'Security' => 'common.server_security',
+        'Server Patching' => 'common.server_patching',
+        'Terminal Access' => 'common.terminal_access',
+        'Transfer' => 'common.transfer',
+        'Danger' => 'common.danger',
+        'Settings' => 'common.settings',
+        'Networking' => 'common.networking_group',
+        'Platform' => 'common.platform',
+        'Operations' => 'common.operations',
+        'Danger zone' => 'common.danger_zone',
+    ];
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start"
@@ -202,14 +232,14 @@
         sentinelOutOfSync = $event.detail.outOfSync;
         scheduleSentinelExpiry($event.detail.expiresInMilliseconds);
     ">
-    <nav aria-label="Server configuration sections"
+    <nav aria-label="{{ __('common.server_settings_sections') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
         @foreach ($groupedServerMenuItems as $groupLabel => $groupItems)
             @unless ($loop->first)
                 <div class="my-2 hidden border-t border-neutral-200 xl:block dark:border-white/[0.06]"
                     aria-hidden="true"></div>
             @endunless
-            <div class="nav-section hidden xl:block">{{ $groupLabel }}</div>
+            <div class="nav-section hidden xl:block">{{ __($serverTranslations[$groupLabel] ?? $groupLabel) }}</div>
             @foreach ($groupItems as $menuItem)
                 <a wire:key="server-settings-link-{{ str($menuItem['label'])->slug() }}"
                     @class([
@@ -219,7 +249,7 @@
                     @if ($menuItem['navigate'] ?? true) {{ wireNavigate() }} @endif
                     href="{{ route($menuItem['route'], $serverRouteParameters) }}">
                     <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                    <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                    <span class="menu-item-label">{{ __($serverTranslations[$menuItem['label']] ?? $menuItem['label']) }}</span>
                     @if ($menuItem['tracks_proxy_configuration'] ?? false)
                         <x-reicon name="alert-triangle" x-cloak
                             x-show="proxyConfigurationPending || traefikOutdated"
@@ -240,7 +270,7 @@
                                 @if ($child['navigate'] ?? true) {{ wireNavigate() }} @endif
                                 href="{{ route($child['route'], $serverRouteParameters) }}">
                                 <x-reicon :name="$child['icon']" class="menu-item-icon" />
-                                <span class="menu-item-label">{{ $child['label'] }}</span>
+                                <span class="menu-item-label">{{ __($serverTranslations[$child['label']] ?? $child['label']) }}</span>
                             </a>
                         @endforeach
                     </div>

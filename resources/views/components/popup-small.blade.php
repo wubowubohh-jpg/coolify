@@ -1,11 +1,16 @@
 @props([
-    'title' => 'Default title',
-    'description' => 'Default description',
+    'title' => null,
+    'description' => null,
     'compactAfter' => null,
     'compactStorageKey' => null,
     'compactStoragePrefix' => null,
     'position' => 'bottom-right',
 ])
+
+@php
+    $title ??= __('common.default_title');
+    $description ??= __('common.default_description');
+@endphp
 
 <div x-data="{
         bannerVisible: true,
@@ -53,7 +58,7 @@
     x-transition:leave-end="translate-y-3 opacity-0"
     class="fixed right-4 z-999 {{ $position === 'top-right' ? 'top-16' : 'bottom-4' }}">
     <template x-if="iconOnly">
-        <button type="button" @click="restore()" aria-label="Restore warning" class="surface-popover flex rounded-lg p-2">
+        <button type="button" @click="restore()" aria-label="{{ __('common.restore_warning') }}" class="surface-popover flex rounded-lg p-2">
             @isset($icon)
                 <span
                     class="flex size-7 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-700 dark:bg-warning/10 dark:text-warning">
@@ -86,7 +91,7 @@
             </div>
         </div>
 
-        <button type="button" @click.stop="minimizeToIcon()" aria-label="Minimize warning"
+        <button type="button" @click.stop="minimizeToIcon()" aria-label="{{ __('common.minimize_warning') }}"
             class="absolute right-2 top-2 flex size-6 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-black/5 hover:text-neutral-700 dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg">
             <x-reicon name="x" class="size-3.5" />
         </button>

@@ -1,12 +1,17 @@
 @props([
-    'label' => 'Domains',
-    'helper' => 'Add one domain per entry. Press Enter (or type a comma) to add it. You can specify a path and a port to bind the domain to.<br><br><span class=\'text-helper\'>Example</span><br>- https://app.coolify.io/api/v3<br>- https://app.coolify.io:3000 -> app.coolify.io will point to port 3000 inside the container.<br>- https://app.coolify.io:8080/api -> app.coolify.io/api will point to port 8080 inside the container.',
+    'label' => null,
+    'helper' => null,
     'model' => 'fqdn',
     'disabled' => false,
     'required' => false,
     'placeholder' => 'https://coolify.io',
     'canUpdate' => null,
 ])
+
+@php
+    $label ??= __('common.domains');
+    $helper ??= __('common.domain_chips_helper');
+@endphp
 
 @php
     $canEdit = $canUpdate ?? ! $disabled;
@@ -74,7 +79,7 @@
             <span class="chip">
                 <span x-text="domain"></span>
                 <button type="button" class="chip-remove" x-show="canUpdate"
-                    :aria-label="'Remove ' + domain" @click.stop="remove(index)">
+                    :aria-label="@js(__('common.remove')) + ' ' + domain" @click.stop="remove(index)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor" class="size-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />

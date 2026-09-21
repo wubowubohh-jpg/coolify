@@ -9,11 +9,11 @@
 
         <div class="auth-guidance">
             <x-reicon name="info-circle" class="mt-0.5 size-4 shrink-0" />
-            <p>Use at least 8 characters with uppercase, lowercase, number, and symbol.</p>
+            <p>{{ __('common.password_requirements') }}</p>
         </div>
 
         <x-forms.button class="w-full justify-center" type="submit" isHighlighted>
-            Reset password
+            {{ __('auth.reset_password') }}
         </x-forms.button>
     </form>
 </x-auth.shell>

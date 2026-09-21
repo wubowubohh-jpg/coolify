@@ -23,11 +23,11 @@
                 </span>
                 <span class="hidden sm:inline">
                     @if ($i === 1)
-                        Server
+                        {{ __('common.server') }}
                     @elseif ($i === 2)
-                        Connection
+                        {{ __('common.connection') }}
                     @else
-                        Complete
+                        {{ __('common.complete') }}
                     @endif
                 </span>
             </div>

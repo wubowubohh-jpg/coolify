@@ -18,16 +18,16 @@
         <x-status.stopped :status="$resource->status" />
     @endif
     @if (isset($resource->restart_count) && $resource->restart_count > 0 && (!str($resource->status)->startsWith('exited') || $stoppedAfterRestartLimit))
-        <x-status-badge status="{{ $resource->restart_count }}x restarts" type="warning"
-            title="Container has restarted {{ $resource->restart_count }} time{{ $resource->restart_count > 1 ? 's' : '' }}. Last restart: {{ $resource->last_restart_at?->diffForHumans() }}" />
+        <x-status-badge :status="__('common.restarts', ['count' => $resource->restart_count])" type="warning"
+            :title="__('common.container_restarted', ['count' => $resource->restart_count]).' '.__('common.last_restart', ['time' => $resource->last_restart_at?->diffForHumans()])" />
     @endif
     @if ($stoppedAfterRestartLimit)
         <x-application.restart-limit-warning :application="$resource" />
     @endif
     @if (!str($resource->status)->contains('exited') && $showRefreshButton)
         <x-status-badge as="button" wire:target="manualCheckStatus" wire:loading.attr="disabled"
-            wire:click='manualCheckStatus' status="Refresh" type="neutral" title="Refresh Status"
-            aria-label="Refresh status"
+            wire:click='manualCheckStatus' :status="__('common.refresh')" type="neutral" :title="__('common.refresh_status')"
+            aria-label="{{ __('common.refresh_status') }}"
             class="min-w-[4.5rem] justify-center cursor-pointer border-transparent hover:bg-neutral-200 disabled:cursor-wait disabled:opacity-70 dark:hover:bg-coolgray-300" />
     @endif
 </div>

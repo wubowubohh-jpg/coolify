@@ -1,7 +1,9 @@
 @props([
     'value',
-    'label' => 'Copy to clipboard',
+    'label' => null,
 ])
+
+@php($label ??= __('common.copy_to_clipboard'))
 
 <button type="button"
     x-data="{ copied: false }"

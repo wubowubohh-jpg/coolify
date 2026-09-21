@@ -47,7 +47,15 @@
         ['key' => 'executions', 'label' => 'Executions', 'icon' => 'browser-terminal'],
         ['key' => 'danger', 'label' => 'Danger Zone', 'icon' => 'shield-alert'],
     ];
-    $backLabel = $context === 'database' ? 'Back to database' : 'Back to backups';
+    $backupTranslations = [
+        'General' => 'common.general',
+        'S3 storage' => 'common.s3_storage',
+        'Retention' => 'common.retention',
+        'Executions' => 'common.executions',
+        'Danger Zone' => 'common.danger_zone',
+    ];
+    $translateBackupLabel = fn (string $label): string => __($backupTranslations[$label] ?? $label);
+    $backLabel = $context === 'database' ? __('common.back_to_database') : __('common.back_to_backups');
     $backParameters = match ($context) {
         'database' => collect($parameters)->except('backup_uuid')->all(),
         'service' => collect($parameters)->except(['stack_service_uuid', 'backup_uuid'])->all(),
@@ -56,9 +64,9 @@
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Backup settings"
+    <nav aria-label="{{ __('common.backup_settings') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-        <div class="nav-section hidden xl:block">Backup</div>
+        <div class="nav-section hidden xl:block">{{ __('common.backup') }}</div>
         <a class="menu-item" {{ wireNavigate() }} href="{{ route($routes['back'], $backParameters) }}">
             <x-reicon name="logout" class="menu-item-icon rotate-180" />
             <span class="menu-item-label">{{ $backLabel }}</span>
@@ -71,7 +79,7 @@
             ])
                 {{ wireNavigate() }} href="{{ route($routes[$item['key']], $parameters) }}">
                 <x-reicon :name="$item['icon']" class="menu-item-icon" />
-                <span class="menu-item-label">{{ $item['label'] }}</span>
+                <span class="menu-item-label">{{ $translateBackupLabel($item['label']) }}</span>
             </a>
         @endforeach
     </nav>

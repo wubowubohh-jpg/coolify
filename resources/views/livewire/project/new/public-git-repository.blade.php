@@ -4,8 +4,8 @@
         <section class="application-settings-section">
             <div class="application-settings-section-header">
                 <div>
-                    <h2>Public Git repository</h2>
-                    <p>Connect a public repository over HTTPS and inspect its default branch.</p>
+                    <h2>{{ __('common.public_git_repository') }}</h2>
+                    <p>{{ __('common.public_git_repository_description') }}</p>
                 </div>
             </div>
             <div class="application-settings-section-body">
@@ -24,14 +24,14 @@
                             <path class="opacity-75" d="M21 12a9 9 0 0 0-9-9" stroke="currentColor"
                                 stroke-width="3" stroke-linecap="round" />
                         </svg>
-                        Check repository
+                        {{ __('common.check_repository') }}
                     </x-forms.button>
                 </div>
                 <p class="mt-2 text-xs text-neutral-500 dark:text-fg-dim">
-                    Need a sample? Browse
+                    {{ __('common.need_sample_browse') }}
                     <a class="font-medium text-coollabs hover:underline dark:text-warning"
                         href="https://github.com/coollabsio/coolify-examples/" target="_blank">
-                        Coolify Examples
+                        {{ __('common.coolify_examples') }}
                     </a>.
                 </p>
             </div>
@@ -43,43 +43,43 @@
             <section class="application-settings-section">
                 <div class="application-settings-section-header">
                     <div>
-                        <h2>Build configuration</h2>
-                        <p>Choose how Coolify builds and runs this repository.</p>
+                        <h2>{{ __('common.build_configuration') }}</h2>
+                        <p>{{ __('common.build_configuration_description') }}</p>
                     </div>
                     <x-forms.button type="submit" isHighlighted>Continue</x-forms.button>
                 </div>
                 <div class="application-settings-section-body space-y-5">
                     @if ($rate_limit_remaining && $rate_limit_reset)
-                        <x-callout type="info" title="Git provider rate limit">
-                            {{ $rate_limit_remaining }} requests remain. The limit resets at
-                            {{ $rate_limit_reset }} UTC.
+                        <x-callout type="info" :title="__('common.git_provider_rate_limit')">
+                            {{ __('common.rate_limit_remaining', ['count' => $rate_limit_remaining]) }}
+                            {{ __('common.rate_limit_reset_at', ['time' => $rate_limit_reset]) }}
                         </x-callout>
                     @endif
 
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <x-forms.input id="git_branch" label="Branch"
+                        <x-forms.input id="git_branch" :label="__('common.branch')"
                             :disabled="$git_source !== 'other'"
-                            helper="You can choose another branch after the application is created." />
-                        <x-forms.listbox id="build_pack" label="Build pack" required live :options="[
-                            ['value' => 'railpack', 'label' => 'Railpack'],
-                            ['value' => 'nixpacks', 'label' => 'Nixpacks'],
-                            ['value' => 'static', 'label' => 'Static'],
-                            ['value' => 'dockerfile', 'label' => 'Dockerfile'],
-                            ['value' => 'dockercompose', 'label' => 'Docker Compose'],
+                            :helper="__('common.branch_after_creation')" />
+                        <x-forms.listbox id="build_pack" :label="__('common.build_pack')" required live :options="[
+                            ['value' => 'railpack', 'label' => __('common.railpack')],
+                            ['value' => 'nixpacks', 'label' => __('common.nixpacks')],
+                            ['value' => 'static', 'label' => __('common.static')],
+                            ['value' => 'dockerfile', 'label' => __('common.dockerfile_build_pack')],
+                            ['value' => 'dockercompose', 'label' => __('common.docker_compose_build_pack')],
                         ]" />
                         @if ($show_is_static)
-                            <x-forms.listbox id="isStatic" label="Output type" onChange="instantSave"
+                            <x-forms.listbox id="isStatic" :label="__('common.output_type')" onChange="instantSave"
                                 :options="[
-                                    ['value' => false, 'label' => 'Web application'],
-                                    ['value' => true, 'label' => 'Static site'],
+                                    ['value' => false, 'label' => __('common.web_application')],
+                                    ['value' => true, 'label' => __('common.static_site')],
                                 ]" />
-                            <x-forms.input type="number" id="port" label="Port"
+                            <x-forms.input type="number" id="port" :label="__('common.port')"
                                 :readonly="$isStatic || $build_pack === 'static'"
-                                helper="Port the application listens on." />
+                                :helper="__('common.port_helper')" />
                         @endif
                         @if ($isStatic)
-                            <x-forms.input id="publish_directory" label="Publish directory"
-                                helper="Directory containing the generated static assets." />
+                            <x-forms.input id="publish_directory" :label="__('common.publish_directory')"
+                                :helper="__('common.static_assets_helper')" />
                         @endif
                     </div>
 
@@ -94,21 +94,21 @@
                             },
                         }" class="grid gap-4 sm:grid-cols-2">
                             <x-forms.input placeholder="/" wire:model.defer="base_directory"
-                                label="Base directory" helper="Repository directory used as the build root."
+                                :label="__('common.base_directory')" :helper="__('common.base_directory_helper')"
                                 x-model="baseDir" @blur="baseDir = normalize(baseDir)" />
                             <x-forms.input placeholder="/docker-compose.yaml"
-                                wire:model.defer="docker_compose_location" label="Compose file"
-                                helper="Path relative to the base directory." x-model="composeLocation"
+                                wire:model.defer="docker_compose_location" :label="__('common.compose_file')"
+                                :helper="__('common.compose_file_helper')" x-model="composeLocation"
                                 @blur="composeLocation = normalize(composeLocation)" />
                             <p class="sm:col-span-2 text-xs text-neutral-500 dark:text-fg-dim">
-                                Resolved file:
+                                {{ __('common.resolved_file') }}:
                                 <code class="font-mono text-coollabs dark:text-warning"
                                     x-text='(baseDir === "/" ? "" : baseDir) + (composeLocation.startsWith("/") ? composeLocation : "/" + composeLocation)'></code>
                             </p>
                         </div>
                     @else
-                        <x-forms.input wire:model="base_directory" label="Base directory"
-                            helper="Repository directory used as the build root." />
+                        <x-forms.input wire:model="base_directory" :label="__('common.base_directory')"
+                            :helper="__('common.base_directory_helper')" />
                     @endif
                 </div>
             </section>

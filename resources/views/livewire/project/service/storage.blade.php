@@ -18,10 +18,10 @@
             $resource->getMorphClass() == 'App\Models\StandaloneClickhouse' ||
             $resource->getMorphClass() == 'App\Models\StandaloneMongodb' ||
             $resource->getMorphClass() == 'App\Models\StandaloneMysql')
-        <x-application.settings-section id="storage-mounts-section" title="Persistent storage" :flush="true"
+        <x-application.settings-section id="storage-mounts-section" :title="__('common.persistent_storage')" :flush="true"
             :helper="$resource instanceof \App\Models\Application && $resource->git_based()
-                ? 'Preview deployment volumes can use a -pr-#PRNumber suffix so each pull request receives isolated storage.'
-                : 'Mount volumes, files, or directories to preserve data between deployments.'">
+                ? __('common.preview_deployment_volumes_helper')
+                : __('common.mount_storage_helper')">
             <x-slot:actions>
                 @if ($resource?->build_pack !== 'dockercompose')
                     @can('update', $resource)
@@ -44,7 +44,7 @@
                                     @click="dropdownOpen = !dropdownOpen" aria-haspopup="menu"
                                     x-bind:aria-expanded="dropdownOpen">
                                     <x-reicon name="plus" class="size-3.5" />
-                                    Add mount
+                                    {{ __('common.add_mount') }}
                                     <x-reicon name="chevron-down" class="size-3 opacity-55" />
                                 </x-forms.button>
 
@@ -54,22 +54,22 @@
                                     <button type="button" class="listbox-option justify-start! gap-2.5!" role="menuitem"
                                         @click="volumeModalOpen = true; dropdownOpen = false">
                                         <x-reicon name="storages" class="size-3.5 shrink-0 opacity-70" />
-                                        Volume mount
+                                        {{ __('common.volume_mount') }}
                                     </button>
                                     <button type="button" class="listbox-option justify-start! gap-2.5!" role="menuitem"
                                         @click="fileModalOpen = true; dropdownOpen = false">
                                         <x-reicon name="file" class="size-3.5 shrink-0 opacity-70" />
-                                        File mount
+                                        {{ __('common.file_mount') }}
                                     </button>
                                     <button type="button" class="listbox-option justify-start! gap-2.5!" role="menuitem"
                                         @click="hostFileModalOpen = true; dropdownOpen = false">
                                         <x-reicon name="file-content" class="size-3.5 shrink-0 opacity-70" />
-                                        Host file mount
+                                        {{ __('common.host_file_mount') }}
                                     </button>
                                     <button type="button" class="listbox-option justify-start! gap-2.5!" role="menuitem"
                                         @click="directoryModalOpen = true; dropdownOpen = false">
                                         <x-reicon name="folder" class="size-3.5 shrink-0 opacity-70" />
-                                        Directory mount
+                                        {{ __('common.directory_mount') }}
                                     </button>
                                 </div>
                             </div>
@@ -92,7 +92,7 @@
                                         x-transition:leave-end="opacity-0 -translate-y-2 sm:scale-95"
                                         class="application-settings-form application-settings-section relative w-full min-w-full lg:min-w-[36rem] lg:max-w-2xl">
                                         <header>
-                                            <h3>Add volume mount</h3>
+                                            <h3>{{ __('common.volume_mount') }}</h3>
                                             <button @click="volumeModalOpen=false"
                                                 class="flex size-7 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg">
                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -114,17 +114,17 @@
                                             <form class="flex w-full flex-col gap-4"
                                                 wire:submit='submitPersistentVolume'>
                                                 <p class="text-[13px] leading-5 text-neutral-500 dark:text-fg-dim">
-                                                    Mount a Docker volume inside the container.
+                                                    {{ __('common.mount_docker_volume') }}
                                                 </p>
                                                 <div class="flex flex-col gap-4">
                                                     <x-forms.input canGate="update" :canResource="$resource" placeholder="pv-name"
-                                                        id="name" label="Name" required helper="Volume name." />
+                                                        id="name" :label="__('common.name')" required :helper="__('common.volume_name')" />
                                                     <x-forms.input canGate="update" :canResource="$resource"
-                                                        placeholder="/tmp/root" id="mount_path" label="Destination Path"
-                                                        required helper="Directory inside the container." />
+                                                        placeholder="/tmp/root" id="mount_path" :label="__('common.destination_path')"
+                                                        required :helper="__('common.directory_inside_container')" />
                                                     <div class="flex justify-end pt-2">
                                                         <x-forms.button canGate="update" :canResource="$resource" type="submit">
-                                                            Add volume
+                                                            {{ __('common.add_volume') }}
                                                         </x-forms.button>
                                                     </div>
                                                 </div>
@@ -152,7 +152,7 @@
                                         x-transition:leave-end="opacity-0 -translate-y-2 sm:scale-95"
                                         class="application-settings-form application-settings-section relative w-full min-w-full lg:min-w-[36rem] lg:max-w-2xl">
                                         <header>
-                                            <h3>Add file mount</h3>
+                                            <h3>{{ __('common.file_mount') }}</h3>
                                             <button @click="fileModalOpen=false"
                                                 class="flex size-7 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg">
                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -183,23 +183,23 @@
                                                 }"
                                                 wire:submit='submitFileStorage'>
                                                 <p class="text-[13px] leading-5 text-neutral-500 dark:text-fg-dim">
-                                                    Create a managed file on the host and mount it inside the container.
+                                                    {{ __('common.create_managed_file') }}
                                                 </p>
                                                 <div class="flex flex-col gap-4">
                                                     <div class="rounded-lg bg-neutral-100 p-3 text-xs ring-1 ring-neutral-200 dark:bg-white/[0.04] dark:ring-white/[0.07]">
-                                                        <div class="mb-1 font-medium">Host file path</div>
+                                                        <div class="mb-1 font-medium">{{ __('common.host_file_path') }}</div>
                                                         <code class="break-all" x-text="previewPath()">{{ $this->fileStoragePreviewPath() }}</code>
                                                     </div>
                                                     <x-forms.input canGate="update" :canResource="$resource"
                                                         placeholder="/etc/nginx/nginx.conf" id="file_storage_path"
-                                                        label="Destination Path" required
+                                                        :label="__('common.destination_path')" required
                                                         x-on:input="filePath = $event.target.value"
-                                                        helper="File location inside the container" />
-                                                    <x-forms.textarea canGate="update" :canResource="$resource" label="Content"
+                                                        :helper="__('common.file_location_inside_container')" />
+                                                    <x-forms.textarea canGate="update" :canResource="$resource" :label="__('common.content')"
                                                         id="file_storage_content"></x-forms.textarea>
                                                     <div class="flex justify-end pt-2">
                                                         <x-forms.button canGate="update" :canResource="$resource" type="submit">
-                                                            Add file
+                                                            {{ __('common.add_file') }}
                                                         </x-forms.button>
                                                     </div>
                                                 </div>
@@ -227,7 +227,7 @@
                                         x-transition:leave-end="opacity-0 -translate-y-2 sm:scale-95"
                                         class="application-settings-form application-settings-section relative w-full min-w-full lg:min-w-[36rem] lg:max-w-2xl">
                                         <header>
-                                            <h3>Add host file mount</h3>
+                                            <h3>{{ __('common.host_file_mount') }}</h3>
                                             <button @click="hostFileModalOpen=false"
                                                 class="flex size-7 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg">
                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -249,21 +249,20 @@
                                             <form class="flex w-full flex-col gap-4"
                                                 wire:submit='submitHostFileStorage'>
                                                 <p class="text-[13px] leading-5 text-neutral-500 dark:text-fg-dim">
-                                                    Bind an existing host file into the container. Coolify will not modify
-                                                    or delete the source file.
+                                                    {{ __('common.bind_existing_host_file') }}
                                                 </p>
                                                 <div class="flex flex-col gap-4">
                                                     <x-forms.input canGate="update" :canResource="$resource"
                                                         placeholder="/etc/nginx/nginx.conf"
-                                                        id="host_file_storage_source" label="Host File Path" required
-                                                        helper="Existing file on the host system." />
+                                                        id="host_file_storage_source" :label="__('common.host_file_path')" required
+                                                        :helper="__('common.existing_host_file')" />
                                                     <x-forms.input canGate="update" :canResource="$resource"
                                                         placeholder="/etc/nginx/nginx.conf"
-                                                        id="host_file_storage_destination" label="Destination Path"
-                                                        required helper="File location inside the container." />
+                                                        id="host_file_storage_destination" :label="__('common.destination_path')"
+                                                        required :helper="__('common.file_location_inside_container')" />
                                                     <div class="flex justify-end pt-2">
                                                         <x-forms.button canGate="update" :canResource="$resource" type="submit">
-                                                            Add host file
+                                                            {{ __('common.add_host_file') }}
                                                         </x-forms.button>
                                                     </div>
                                                 </div>
@@ -291,7 +290,7 @@
                                         x-transition:leave-end="opacity-0 -translate-y-2 sm:scale-95"
                                         class="application-settings-form application-settings-section relative w-full min-w-full lg:min-w-[36rem] lg:max-w-2xl">
                                         <header>
-                                            <h3>Add directory mount</h3>
+                                            <h3>{{ __('common.directory_mount') }}</h3>
                                             <button @click="directoryModalOpen=false"
                                                 class="flex size-7 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg">
                                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -313,20 +312,20 @@
                                             <form class="flex w-full flex-col gap-4"
                                                 wire:submit='submitFileStorageDirectory'>
                                                 <p class="text-[13px] leading-5 text-neutral-500 dark:text-fg-dim">
-                                                    Bind a directory from the host system into the container.
+                                                    {{ __('common.bind_host_directory') }}
                                                 </p>
                                                 <div class="flex flex-col gap-4">
                                                     <x-forms.input canGate="update" :canResource="$resource"
                                                         placeholder="{{ application_configuration_dir() }}/{{ $resource->uuid }}/etc/nginx"
-                                                        id="file_storage_directory_source" label="Source Directory"
-                                                        required helper="Directory on the host system." />
+                                                        id="file_storage_directory_source" :label="__('common.source_directory')"
+                                                        required :helper="__('common.directory_on_host')" />
                                                     <x-forms.input canGate="update" :canResource="$resource"
                                                         placeholder="/etc/nginx" id="file_storage_directory_destination"
-                                                        label="Destination Directory" required
-                                                        helper="Directory inside the container." />
+                                                        :label="__('common.destination_directory')" required
+                                                        :helper="__('common.directory_inside_container')" />
                                                     <div class="flex justify-end pt-2">
                                                         <x-forms.button canGate="update" :canResource="$resource" type="submit">
-                                                            Add directory
+                                                            {{ __('common.add_directory') }}
                                                         </x-forms.button>
                                                     </div>
                                                 </div>
@@ -344,33 +343,33 @@
                         <button type="button" wire:click="setActiveTab('volumes')"
                             @disabled(!$hasVolumes)
                             @class([$tabButtonBase, $activeTab === 'volumes' ? $tabButtonActive : $tabButtonInactive])>
-                            Volumes ({{ $this->volumeCount }})
+                            {{ __('common.volume') }} ({{ $this->volumeCount }})
                         </button>
                         <button type="button" wire:click="setActiveTab('files')"
                             @disabled(!$hasFiles)
                             @class([$tabButtonBase, $activeTab === 'files' ? $tabButtonActive : $tabButtonInactive])>
-                            Files ({{ $this->fileCount }})
+                            {{ __('common.file') }} ({{ $this->fileCount }})
                         </button>
                         <button type="button" wire:click="setActiveTab('directories')"
                             @disabled(!$hasDirectories)
                             @class([$tabButtonBase, $activeTab === 'directories' ? $tabButtonActive : $tabButtonInactive])>
-                            Directories ({{ $this->directoryCount }})
+                            {{ __('common.directory') }} ({{ $this->directoryCount }})
                         </button>
                     </div>
                 @endif
             </x-slot:actions>
 
         @if (!$hasVolumes && !$hasFiles && !$hasDirectories)
-            <x-empty size="sm" title="No persistent storage"
-                description="Add a volume, file, or directory mount to preserve data between deployments."
+            <x-empty size="sm" :title="__('common.no_persistent_storage')"
+                :description="__('common.storage_preserve_data')"
                 icon-name="storages" />
         @elseif ($activeTab === 'volumes')
             @if ($hasVolumes)
                 <livewire:project.shared.storages.all wire:key="volumes-{{ $resource->id }}"
                     :resource="$resource" />
             @else
-                <x-empty size="sm" title="No volumes configured"
-                    description="Switch tabs or add a volume mount." icon-name="storages" />
+                <x-empty size="sm" :title="__('common.no_volumes_configured')"
+                    :description="__('common.switch_tabs_add_volume')" icon-name="storages" />
             @endif
         @elseif ($activeTab === 'files')
             <div class="flex flex-col gap-4 p-4">
@@ -380,8 +379,8 @@
                             wire:key="file-{{ $fs->id }}" />
                     @endforeach
                 @else
-                    <x-empty size="sm" title="No file mounts configured"
-                        description="Switch tabs or add a file mount." icon-name="file" />
+                    <x-empty size="sm" :title="__('common.no_file_mounts_configured')"
+                        :description="__('common.switch_tabs_add_file')" icon-name="file" />
                 @endif
             </div>
         @else
@@ -392,8 +391,8 @@
                             wire:key="directory-{{ $fs->id }}" />
                     @endforeach
                 @else
-                    <x-empty size="sm" title="No directory mounts configured"
-                        description="Switch tabs or add a directory mount." icon-name="folder" />
+                    <x-empty size="sm" :title="__('common.no_directory_mounts_configured')"
+                        :description="__('common.switch_tabs_add_directory')" icon-name="folder" />
                 @endif
             </div>
         @endif
@@ -402,7 +401,7 @@
         {{-- Service stack resources: one settings card + table per service --}}
         <x-application.settings-section :id="'storage-service-'.$resource->uuid"
             :title="Str::headline($resource->name)" :flush="true"
-            helper="Volume mounts for this compose service. Compose-managed mounts are read-only in the dashboard.">
+            :helper="__('common.volume_mounts_compose_readonly')">
             <x-slot:actions>
                 @if ($hasVolumes || $hasFiles || $hasDirectories)
                     <div
@@ -410,25 +409,25 @@
                         <button type="button" wire:click="setActiveTab('volumes')"
                             @disabled(!$hasVolumes)
                             @class([$tabButtonBase, $activeTab === 'volumes' ? $tabButtonActive : $tabButtonInactive])>
-                            Volumes ({{ $this->volumeCount }})
+                            {{ __('common.volume') }} ({{ $this->volumeCount }})
                         </button>
                         <button type="button" wire:click="setActiveTab('files')"
                             @disabled(!$hasFiles)
                             @class([$tabButtonBase, $activeTab === 'files' ? $tabButtonActive : $tabButtonInactive])>
-                            Files ({{ $this->fileCount }})
+                            {{ __('common.file') }} ({{ $this->fileCount }})
                         </button>
                         <button type="button" wire:click="setActiveTab('directories')"
                             @disabled(!$hasDirectories)
                             @class([$tabButtonBase, $activeTab === 'directories' ? $tabButtonActive : $tabButtonInactive])>
-                            Directories ({{ $this->directoryCount }})
+                            {{ __('common.directory') }} ({{ $this->directoryCount }})
                         </button>
                     </div>
                 @endif
             </x-slot:actions>
 
             @if (!$hasVolumes && !$hasFiles && !$hasDirectories)
-                <x-empty size="sm" title="No storage found"
-                    description="No volumes, files, or directories are defined for this service."
+                <x-empty size="sm" :title="__('common.no_storage_found')"
+                    :description="__('common.service_storage_not_defined')"
                     icon-name="storages" />
             @elseif ($activeTab === 'volumes')
                 @if ($hasVolumes)
@@ -436,8 +435,8 @@
                         wire:key="svc-volumes-{{ $resource->id }}"
                         :resource="$resource" />
                 @else
-                    <x-empty size="sm" title="No volumes configured"
-                        description="This service has no volume mounts." icon-name="storages" />
+                    <x-empty size="sm" :title="__('common.no_volumes_configured')"
+                        :description="__('common.service_no_volume_mounts')" icon-name="storages" />
                 @endif
             @elseif ($activeTab === 'files')
                 <div class="flex flex-col gap-4 p-4">
@@ -447,8 +446,8 @@
                                 wire:key="file-{{ $fs->id }}" />
                         @endforeach
                     @else
-                        <x-empty size="sm" title="No file mounts configured"
-                            description="This service has no file mounts." icon-name="file" />
+                        <x-empty size="sm" :title="__('common.no_file_mounts_configured')"
+                            :description="__('common.service_no_file_mounts')" icon-name="file" />
                     @endif
                 </div>
             @else
@@ -459,8 +458,8 @@
                                 wire:key="directory-{{ $fs->id }}" />
                         @endforeach
                     @else
-                        <x-empty size="sm" title="No directory mounts configured"
-                            description="This service has no directory mounts." icon-name="folder" />
+                        <x-empty size="sm" :title="__('common.no_directory_mounts_configured')"
+                            :description="__('common.service_no_directory_mounts')" icon-name="folder" />
                     @endif
                 </div>
             @endif

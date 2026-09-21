@@ -13,41 +13,41 @@
 @php
     $items = match ($section) {
         'team' => [
-            ['label' => 'General', 'route' => 'team.index', 'active' => request()->routeIs('team.index', 'team.member.index', 'team.admin-view', 'team.danger-zone')],
+            ['label' => 'settings.general', 'route' => 'team.index', 'active' => request()->routeIs('team.index', 'team.member.index', 'team.admin-view', 'team.danger-zone')],
         ],
         'profile' => [
-            ['label' => 'General', 'route' => 'profile', 'active' => request()->routeIs('profile')],
-            ['label' => 'Appearance', 'route' => 'profile.appearance', 'active' => request()->routeIs('profile.appearance')],
+            ['label' => 'settings.general', 'route' => 'profile', 'active' => request()->routeIs('profile')],
+            ['label' => 'nav.appearance', 'route' => 'profile.appearance', 'active' => request()->routeIs('profile.appearance')],
         ],
         'notifications' => [
-            ['label' => 'Email', 'route' => 'notifications.email', 'active' => request()->routeIs('notifications.*')],
+            ['label' => 'settings.email', 'route' => 'notifications.email', 'active' => request()->routeIs('notifications.*')],
         ],
         'security' => [
-            ['label' => 'Private Keys', 'route' => 'security.private-key.index', 'active' => request()->routeIs('security.*')],
+            ['label' => 'nav.keys_tokens', 'route' => 'security.private-key.index', 'active' => request()->routeIs('security.*')],
         ],
         'settings' => [
-            ['label' => 'General', 'route' => 'settings.index', 'active' => request()->routeIs('settings.*')],
+            ['label' => 'settings.general', 'route' => 'settings.index', 'active' => request()->routeIs('settings.*')],
         ],
         'source' => [
             [
-                'label' => 'General',
+                'label' => 'settings.general',
                 'route' => 'source.github.show',
                 'active' => request()->routeIs('source.github.show', 'source.github.permissions', 'source.github.resources', 'source.github.danger'),
             ],
         ],
         'destination' => [
-            ['label' => 'General', 'route' => 'destination.show', 'active' => request()->routeIs('destination.show', 'destination.resources', 'destination.danger')],
+            ['label' => 'settings.general', 'route' => 'destination.show', 'active' => request()->routeIs('destination.show', 'destination.resources', 'destination.danger')],
         ],
         'storage' => [
             [
-                'label' => 'General',
+                'label' => 'settings.general',
                 'route' => 'storage.show',
                 'active' => request()->routeIs('storage.show', 'storage.danger', 'storage.resources'),
             ],
         ],
         'subscription' => [
             [
-                'label' => 'Plan',
+                'label' => 'subscription.plan',
                 'route' => 'subscription.show',
                 'active' => request()->routeIs('subscription.show'),
                 'icon' => 'subscription',
@@ -55,7 +55,7 @@
                 'visible' => isSubscriptionActive() || isSubscriptionOnGracePeriod(),
             ],
             [
-                'label' => 'Pricing',
+                'label' => 'subscription.pricing',
                 'route' => 'subscription.index',
                 'active' => request()->routeIs('subscription.index'),
                 'icon' => 'dashboard',
@@ -126,7 +126,7 @@
                         @if ($item['icon'] ?? null)
                             <x-reicon :name="$item['icon']" class="size-3.5" />
                         @endif
-                        {{ $item['label'] }}
+                        {{ __($item['label']) }}
                     </a>
                 @endforeach
             </div>

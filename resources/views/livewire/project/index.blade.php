@@ -1,19 +1,19 @@
 <div class="application-settings-form w-full">
     <x-slot:title>
-        Projects | Coolify
+        {{ __('common.projects') }} | Coolify
     </x-slot>
 
     <div x-data="projectsIndex()" class="w-full">
         <header class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h1 class="min-w-0 truncate text-[24px]! leading-7! font-semibold! tracking-tight!">Projects</h1>
+            <h1 class="min-w-0 truncate text-[24px]! leading-7! font-semibold! tracking-tight!">{{ __('common.projects') }}</h1>
             @can('createAnyResource')
                 <div class="w-fit shrink-0">
-                    <x-modal-input title="New Project">
+                    <x-modal-input :title="__('common.new_project')">
                         <x-slot:content>
                             <button type="button"
                                 class="button button-highlighted">
                                 <x-reicon name="plus" class="size-3.5" />
-                                New project
+                                {{ __('common.new_project') }}
                             </button>
                         </x-slot:content>
                         <livewire:project.add-empty />
@@ -23,13 +23,13 @@
         </header>
 
         @if ($projects->isEmpty())
-            <x-empty title="No projects yet"
-                description="Create a project to organize your environments and resources."
+            <x-empty :title="__('common.no_projects_yet')"
+                :description="__('common.deployment_workspaces')"
                 icon-name="projects">
                 <x-slot:contents>
                     <a class="text-[12px] font-medium text-coollabs hover:underline dark:text-warning"
                         href="{{ route('onboarding') }}" {{ wireNavigate() }}>
-                        Open onboarding
+                        {{ __('common.open_onboarding') }}
                     </a>
                 </x-slot:contents>
             </x-empty>
@@ -39,11 +39,11 @@
                     <x-reicon name="search"
                         class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
                     <input x-model.debounce.150ms="search" x-on:input="page = 1" type="search"
-                        placeholder="Search projects"
+                        placeholder="{{ __('common.search_projects') }}"
                         class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                     <button x-cloak x-show="search" x-on:click="search = ''; page = 1" type="button"
                         class="absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg"
-                        aria-label="Clear search">
+                        aria-label="{{ __('common.clear_search') }}">
                         <span class="text-sm leading-none">×</span>
                     </button>
                 </div>
@@ -58,7 +58,7 @@
                                         stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
                                         stroke-linejoin="round" />
                                 </svg>
-                                Sort
+                                {{ __('common.sort') }}
                             </button>
                         </x-slot:trigger>
                             <template x-for="option in sortOptions" :key="option.value">
@@ -83,7 +83,7 @@
                                 ?
                                 'control-selected' :
                                 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                            aria-label="Table view" title="Table view">
+                            aria-label="{{ __('common.table_view') }}" title="{{ __('common.table_view') }}">
                             <x-reicon name="unordered-list" class="size-3.5" />
                         </button>
                         <button type="button" x-on:click="setViewMode('grid')"
@@ -92,7 +92,7 @@
                                 ?
                                 'control-selected' :
                                 'text-neutral-400 hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg'"
-                            aria-label="Grid view" title="Grid view">
+                            aria-label="{{ __('common.grid_view') }}" title="{{ __('common.grid_view') }}">
                             <x-reicon name="grid" class="size-3.5" />
                         </button>
                     </div>
@@ -105,7 +105,7 @@
                         <article
                             class="group relative flex min-h-28 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:shadow-md dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
                             <a :href="project.href" {{ wireNavigate() }} class="absolute inset-0 rounded-xl"
-                                :aria-label="`Open ${project.name}`"></a>
+                                :aria-label="`{{ __('common.open') }} ${project.name}`"></a>
                             <div class="flex items-start gap-3">
                                 <div
                                     class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-fg-dim">
@@ -128,22 +128,22 @@
                             <div class="mt-auto flex items-center justify-between gap-3 pt-4">
                                 <p class="min-w-0 truncate text-[11px] text-neutral-500 dark:text-fg-dim">
                                     <span
-                                        x-text="`${project.environmentCount} ${project.environmentCount === 1 ? 'env' : 'envs'}`"></span>
+                                        x-text="`${project.environmentCount} ${project.environmentCount === 1 ? @js(__('common.env_short')) : @js(__('common.envs_short'))}`"></span>
                                     <span class="px-1 text-neutral-300 dark:text-white/15">·</span>
                                     <span
-                                        x-text="`${project.resourceCount} ${project.resourceCount === 1 ? 'resource' : 'resources'}`"></span>
+                                        x-text="`${project.resourceCount} ${project.resourceCount === 1 ? @js(__('common.resource')) : @js(__('common.resources'))}`"></span>
                                 </p>
 
                                 <div class="relative z-10 flex shrink-0 items-center gap-0.5">
                                     <a x-show="project.addResourceHref" :href="project.addResourceHref"
                                         {{ wireNavigate() }}
                                         class="flex size-7.5 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                        title="Add resource" :aria-label="`Add resource to ${project.name}`">
+                                        title="{{ __('common.add_resource') }}" :aria-label="`{{ __('common.add_resource') }} ${project.name}`">
                                         <x-reicon name="plus" class="size-3" />
                                     </a>
                                     <a x-show="project.settingsHref" :href="project.settingsHref" {{ wireNavigate() }}
                                         class="flex size-7.5 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                        title="Project settings" :aria-label="`Open settings for ${project.name}`">
+                                        title="{{ __('common.project_settings') }}" :aria-label="`{{ __('common.project_settings') }} ${project.name}`">
                                         <x-reicon name="settings" class="size-3" />
                                     </a>
                                 </div>
@@ -160,10 +160,10 @@
                 class="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-white/[0.08] dark:bg-white/[0.05]">
                 <div
                     class="projects-table-grid border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[11px] font-medium text-neutral-500 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                    <div>Project</div>
-                    <div>Environments</div>
-                    <div>Resources</div>
-                    <div class="project-description">Description</div>
+                    <div>{{ __('common.project') }}</div>
+                    <div>{{ __('common.environments') }}</div>
+                    <div>{{ __('common.resources') }}</div>
+                    <div class="project-description">{{ __('common.description') }}</div>
                     <div></div>
                 </div>
 
@@ -195,12 +195,12 @@
                         <div class="flex items-center justify-end gap-0.5">
                             <a x-show="project.addResourceHref" :href="project.addResourceHref" {{ wireNavigate() }}
                                 class="flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                title="Add resource" :aria-label="`Add resource to ${project.name}`">
+                                title="{{ __('common.add_resource') }}" :aria-label="`{{ __('common.add_resource') }} ${project.name}`">
                                 <x-reicon name="plus" class="size-3.5" />
                             </a>
                             <a x-show="project.settingsHref" :href="project.settingsHref" {{ wireNavigate() }}
                                 class="flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.06] dark:hover:text-fg"
-                                title="Project settings" :aria-label="`Open settings for ${project.name}`">
+                                title="{{ __('common.project_settings') }}" :aria-label="`{{ __('common.project_settings') }} ${project.name}`">
                                 <x-reicon name="settings" class="size-3.5" />
                             </a>
                         </div>
@@ -214,9 +214,9 @@
             <div x-show="filteredProjects.length === 0"
                 class="flex min-h-52 flex-col items-center justify-center rounded-xl border border-neutral-200 bg-white px-6 text-center dark:border-white/[0.08] dark:bg-white/[0.05]">
                 <x-reicon name="search" class="mb-3 size-6 text-neutral-300 dark:text-fg-faint" />
-                <p class="text-[13px] font-medium">No matching projects</p>
+                <p class="text-[13px] font-medium">{{ __('common.no_matching_projects') }}</p>
                 <p class="mt-1 text-[12px] text-neutral-500 dark:text-fg-dim">
-                    Try a different search.
+                    {{ __('common.try_different_search') }}
                 </p>
             </div>
         @endif
@@ -235,19 +235,19 @@
             projects: @js($projectsJs),
             sortOptions: [{
                     value: 'name-asc',
-                    label: 'Name A–Z'
+                    label: @js(__('common.name_az'))
                 },
                 {
                     value: 'name-desc',
-                    label: 'Name Z–A'
+                    label: @js(__('common.name_za'))
                 },
                 {
                     value: 'resources',
-                    label: 'Most resources'
+                    label: @js(__('common.most_resources'))
                 },
                 {
                     value: 'environments',
-                    label: 'Most environments'
+                    label: @js(__('common.most_environments'))
                 },
             ],
             get filteredProjects() {

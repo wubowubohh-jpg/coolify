@@ -17,9 +17,9 @@
 @endphp
 
 <aside class="application-settings-navigation min-w-0 xl:self-start">
-    <nav aria-label="Server security sections"
+    <nav aria-label="{{ __('common.server_security') }}"
         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-        <div class="nav-section hidden xl:block">Security</div>
+        <div class="nav-section hidden xl:block">{{ __('common.server_security') }}</div>
         @foreach ($securityMenuItems as $menuItem)
             <a wire:key="server-security-link-{{ str($menuItem['label'])->slug() }}"
                 @class([
@@ -29,7 +29,7 @@
                 @if ($menuItem['navigate'] ?? true) {{ wireNavigate() }} @endif
                 href="{{ route($menuItem['route'], $parameters) }}">
                 <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
-                <span class="menu-item-label">{{ $menuItem['label'] }}</span>
+                <span class="menu-item-label">{{ $menuItem['label'] === 'Server Patching' ? __('common.server_patching') : __('common.terminal_access') }}</span>
             </a>
         @endforeach
     </nav>

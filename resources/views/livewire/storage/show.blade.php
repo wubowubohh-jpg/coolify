@@ -8,19 +8,19 @@
         $showSettingsSidebar = in_array($currentRoute, ['storage.show', 'storage.resources', 'storage.danger'], true);
         $settingsMenuItems = [
             [
-                'label' => 'General',
+                'label' => __('common.general'),
                 'route' => 'storage.show',
                 'active' => $currentRoute === 'storage.show',
                 'icon' => 'settings',
             ],
             [
-                'label' => 'Resources',
+                'label' => __('common.resources'),
                 'route' => 'storage.resources',
                 'active' => $currentRoute === 'storage.resources',
                 'icon' => 'grid',
             ],
             [
-                'label' => 'Danger Zone',
+                'label' => __('common.danger_zone'),
                 'route' => 'storage.danger',
                 'active' => $currentRoute === 'storage.danger',
                 'icon' => 'shield-alert',
@@ -30,16 +30,16 @@
 
     <x-dashboard.navbar section="storage" :parameters="$storageRouteParameters"
         :title="$storage->name"
-        :subtitle="filled($storage->description) ? $storage->description : 'S3-compatible backup destination'"
+        :subtitle="filled($storage->description) ? $storage->description : __('common.s3_compatible_backup_destination')"
         :mobileTitleOnly="true" />
 
     @if ($showSettingsSidebar)
         <section class="application-settings-workspace mt-4 w-full max-w-none lg:mt-0">
             <div class="grid min-w-0 gap-8 xl:grid-cols-[210px_minmax(0,1fr)] xl:gap-8">
                 <aside class="application-settings-navigation min-w-0 xl:self-start">
-                    <nav aria-label="S3 storage settings"
+                    <nav :aria-label="__('common.s3_storage_settings')"
                         class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
-                        <div class="nav-section hidden xl:block">Settings</div>
+                        <div class="nav-section hidden xl:block">{{ __('common.settings') }}</div>
                         @foreach ($settingsMenuItems as $menuItem)
                             <a wire:key="storage-settings-{{ str($menuItem['label'])->slug() }}"
                                 @class([
@@ -62,39 +62,37 @@
                         <livewire:storage.resources :storage="$storage" :key="'resources-'.$storage->uuid" />
                     @elseif ($currentRoute === 'storage.danger')
                         <div class="application-settings-form">
-                            <x-application.settings-section id="storage-danger-section" title="Danger zone"
-                                helper="Destructive actions for this S3 storage destination cannot be undone.">
-                                <x-danger-zone title="Delete storage">
+                            <x-application.settings-section id="storage-danger-section" :title="__('common.danger_zone')"
+                                :helper="__('common.s3_storage_delete_description')">
+                                <x-danger-zone :title="__('common.delete_storage')">
                                             <p>
-                                                Permanently delete
-                                                <strong class="font-semibold text-black dark:text-fg">{{ $storage->name }}</strong>
-                                                from Coolify. Existing objects in the bucket are not deleted.
+                                                {!! __('common.permanently_delete_storage_description', ['name' => '<strong class="font-semibold text-black dark:text-fg">'.e($storage->name).'</strong>']) !!}
                                             </p>
                                             <ul class="space-y-1 text-xs">
-                                                <li>• Backup schedules pointing at this storage will stop writing to S3.</li>
+                                                <li>• {{ __('common.backup_schedules_stop_writing') }}</li>
                                                 @if ($backupCount > 0)
-                                                    <li>• {{ $backupCount }} backup schedule(s) currently use this destination.</li>
+                                                    <li>• {{ __('common.backup_schedules_use_destination', ['count' => $backupCount]) }}</li>
                                                 @endif
-                                                <li>• Bucket contents on the provider are left untouched.</li>
-                                                <li>• This storage destination cannot be restored from Coolify after deletion.</li>
+                                                <li>• {{ __('common.bucket_contents_untouched') }}</li>
+                                                <li>• {{ __('common.storage_cannot_restore') }}</li>
                                             </ul>
                                         <x-slot:action>
                                             @can('delete', $storage)
-                                                <x-modal-confirmation title="Confirm Storage Deletion?" isErrorButton
-                                                    buttonTitle="Delete" submitAction="delete"
+                                                <x-modal-confirmation :title="__('common.confirm_storage_deletion')" isErrorButton
+                                                    :buttonTitle="__('common.delete')" submitAction="delete"
                                                     :actions="array_filter([
-                                                        'The selected storage location will be permanently deleted from Coolify.',
+                                                        __('common.selected_storage_deleted'),
                                                         $backupCount > 0
-                                                            ? $backupCount.' backup schedule(s) will stop saving to S3. Existing objects in this storage will not be deleted.'
+                                                            ? __('common.storage_schedules_stop_saving', ['count' => $backupCount])
                                                             : null,
                                                     ])"
                                                     confirmationText="{{ $storage->name }}"
-                                                    confirmationLabel="Please confirm the execution of the actions by entering the Storage Name below"
-                                                    shortConfirmationLabel="Storage Name" :confirmWithPassword="false"
-                                                    step2ButtonText="Permanently Delete" />
+                                                    :confirmationLabel="__('common.confirm_storage_name')"
+                                                    :shortConfirmationLabel="__('common.storage_name')" :confirmWithPassword="false"
+                                                    :step2ButtonText="__('common.permanently_delete_button')" />
                                             @else
-                                                <x-forms.button isError disabled tooltip="You do not have permission to delete this storage.">
-                                                    Delete
+                                                <x-forms.button isError disabled :tooltip="__('common.no_permission_delete_storage')">
+                                                    {{ __('common.delete') }}
                                                 </x-forms.button>
                                             @endcan
                                         </x-slot:action>
@@ -102,8 +100,8 @@
 
                                 @cannot('delete', $storage)
                                     <div class="mt-4">
-                                        <x-callout type="danger" title="Insufficient permissions">
-                                            Contact a team administrator if this storage must be deleted.
+                                        <x-callout type="danger" :title="__('common.insufficient_permissions')">
+                                            {{ __('common.storage_delete_admin_help') }}
                                         </x-callout>
                                     </div>
                                 @endcannot

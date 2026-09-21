@@ -1,6 +1,6 @@
 <div>
     <x-slot:title>
-        {{ data_get_str($server, 'name')->limit(10) }} > Server Resources | Coolify
+        {{ data_get_str($server, 'name')->limit(10) }} > {{ __('common.server_resources') }} | Coolify
     </x-slot>
 
     <livewire:server.navbar :server="$server" />
@@ -8,25 +8,25 @@
     <div class="server-settings-workspace application-settings-workspace mt-4 grid w-full max-w-none min-w-0 gap-8 lg:mt-0 xl:grid-cols-[210px_minmax(0,1fr)] xl:gap-8">
         <x-server.sidebar :server="$server" activeMenu="resources" />
         <div class="application-settings-form min-w-0 w-full">
-        <x-application.settings-section id="server-resources-section" title="Resources"
-            helper="Review Coolify-managed resources and other Docker containers running on this server."
+        <x-application.settings-section id="server-resources-section" :title="__('common.resources')"
+            :helper="__('common.server_resources_helper')"
             flush>
             <x-slot:actions>
                 <div class="inline-flex w-fit rounded-[10px] bg-neutral-100 p-1 dark:bg-white/[0.05]">
                     <button type="button" wire:click="loadManagedContainers" wire:loading.attr="disabled" wire:target="loadManagedContainers,loadUnmanagedContainers"
                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors disabled:cursor-wait {{ $activeTab === 'managed' ? 'bg-white text-neutral-950 shadow-sm dark:bg-warning/15 dark:text-warning' : 'text-neutral-500 hover:text-neutral-900 dark:text-fg-dim dark:hover:text-fg' }}">
                         <x-loading-on-button wire:loading wire:target="loadManagedContainers" />
-                        Managed
+                        {{ __('common.managed') }}
                     </button>
                     <button type="button" wire:click="loadUnmanagedContainers" wire:loading.attr="disabled" wire:target="loadManagedContainers,loadUnmanagedContainers"
                         class="inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors disabled:cursor-wait {{ $activeTab === 'unmanaged' ? 'bg-white text-neutral-950 shadow-sm dark:bg-warning/15 dark:text-warning' : 'text-neutral-500 hover:text-neutral-900 dark:text-fg-dim dark:hover:text-fg' }}">
                         <x-loading-on-button wire:loading wire:target="loadUnmanagedContainers" />
-                        Unmanaged
+                        {{ __('common.unmanaged') }}
                     </button>
                 </div>
                 <x-forms.button wire:click="refreshStatus">
                     <x-reicon name="refresh" class="size-3.5" />
-                    Refresh
+                    {{ __('common.refresh') }}
                 </x-forms.button>
             </x-slot:actions>
 
@@ -34,13 +34,13 @@
                 <div class="relative w-full max-w-sm">
                     <x-reicon name="search"
                         class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-3.5 -translate-y-1/2 text-neutral-400 dark:text-fg-faint" />
-                    <input wire:model.live.debounce.300ms="search" type="search" placeholder="Search resources by name"
-                        aria-label="Search resources by name"
+                    <input wire:model.live.debounce.300ms="search" type="search" placeholder="{{ __('common.search_resources_by_name') }}"
+                        aria-label="{{ __('common.search_resources_by_name') }}"
                         class="h-8! w-full rounded-lg! border-neutral-200! bg-white! py-0! pr-8! pl-8! text-[12px]! shadow-none! placeholder:text-neutral-400 focus:border-accent! focus:ring-0! dark:border-white/[0.08]! dark:bg-white/[0.035]! dark:text-fg! dark:placeholder:text-fg-faint">
                     <button type="button" wire:click="$set('search', '')" @class([
                         'absolute top-1/2 right-2 flex size-5 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-black dark:text-fg-faint dark:hover:bg-white/[0.07] dark:hover:text-fg',
                         'hidden' => blank($search),
-                    ]) aria-label="Clear search">
+                    ]) aria-label="{{ __('common.clear_search') }}">
                         <x-reicon name="x" class="size-3" />
                     </button>
                 </div>
@@ -53,11 +53,11 @@
                 @if ($resources->total() > 0)
                     <div class="data-table">
                         <div class="data-table-header server-resources-managed-table-grid">
-                            <span>Name</span>
-                            <span>Project</span>
-                            <span>Environment</span>
-                            <span>Type</span>
-                            <span>Status</span>
+                            <span>{{ __('common.name') }}</span>
+                            <span>{{ __('common.project') }}</span>
+                            <span>{{ __('common.environment') }}</span>
+                            <span>{{ __('common.type') }}</span>
+                            <span>{{ __('common.status') }}</span>
                         </div>
                         @foreach ($resources as $resource)
                             @php($resourceStatus = (string) data_get($resource, 'status', 'unknown'))
@@ -93,8 +93,8 @@
                     </div>
                 @else
                     <div class="p-6">
-                        <x-empty size="sm" :title="trim($search) !== '' ? 'No matching resources' : 'No managed resources'"
-                            :description="trim($search) !== '' ? 'Try another name or clear the search.' : 'Resources assigned to this server will appear here.'"
+                        <x-empty size="sm" :title="trim($search) !== '' ? __('common.no_matching_resources') : __('common.no_managed_resources')"
+                            :description="trim($search) !== '' ? __('common.try_another_name_or_clear_search') : __('common.managed_resources_appear_here')"
                             icon-name="projects" />
                     </div>
                 @endif
@@ -102,10 +102,10 @@
                 @if ($resources->total() > 0)
                     <div class="data-table">
                         <div class="data-table-header server-resources-unmanaged-table-grid">
-                            <span>Name</span>
-                            <span>Image</span>
-                            <span>Status</span>
-                            <span>Actions</span>
+                            <span>{{ __('common.name') }}</span>
+                            <span>{{ __('common.image') }}</span>
+                            <span>{{ __('common.status') }}</span>
+                            <span>{{ __('common.actions') }}</span>
                         </div>
                         @foreach ($resources as $resource)
                             @php($containerState = (string) data_get($resource, 'State', 'unknown'))
@@ -128,24 +128,24 @@
                                         <x-forms.button canGate="update" :canResource="$server"
                                             wire:click="restartUnmanaged('{{ data_get($resource, 'ID') }}')"
                                             wire:key="restart-{{ data_get($resource, 'ID') }}">
-                                            Restart
+                                            {{ __('common.restart') }}
                                         </x-forms.button>
                                         <x-forms.button canGate="update" :canResource="$server" isError
                                             wire:click="stopUnmanaged('{{ data_get($resource, 'ID') }}')"
                                             wire:key="stop-{{ data_get($resource, 'ID') }}">
-                                            Stop
+                                            {{ __('common.stop') }}
                                         </x-forms.button>
                                     @elseif ($containerState === 'exited')
                                         <x-forms.button canGate="update" :canResource="$server"
                                             wire:click="startUnmanaged('{{ data_get($resource, 'ID') }}')"
                                             wire:key="start-{{ data_get($resource, 'ID') }}">
-                                            Start
+                                            {{ __('common.start') }}
                                         </x-forms.button>
                                     @elseif ($containerState === 'restarting')
                                         <x-forms.button canGate="update" :canResource="$server"
                                             wire:click="stopUnmanaged('{{ data_get($resource, 'ID') }}')"
                                             wire:key="stop-restarting-{{ data_get($resource, 'ID') }}">
-                                            Stop
+                                            {{ __('common.stop') }}
                                         </x-forms.button>
                                     @endif
                                 </div>
@@ -154,8 +154,8 @@
                     </div>
                 @else
                     <div class="p-6">
-                        <x-empty size="sm" :title="trim($search) !== '' ? 'No matching containers' : 'No unmanaged containers'"
-                            :description="trim($search) !== '' ? 'Try another name or clear the search.' : 'All detected Docker containers are managed by Coolify.'"
+                        <x-empty size="sm" :title="trim($search) !== '' ? __('common.no_matching_containers') : __('common.no_unmanaged_containers')"
+                            :description="trim($search) !== '' ? __('common.try_another_name_or_clear_search') : __('common.all_detected_containers_managed')"
                             icon-name="servers" />
                     </div>
                 @endif
@@ -171,7 +171,7 @@
                 </x-table-pagination>
             @endif
             </div>
-                <x-table.loading target="search" text="Searching resources..." />
+                <x-table.loading target="search" :text="__('common.searching_resources')" />
             </div>
         </x-application.settings-section>
         </div>

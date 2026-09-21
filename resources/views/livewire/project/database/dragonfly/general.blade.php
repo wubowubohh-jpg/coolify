@@ -2,59 +2,59 @@
     <form wire:submit="submit" class="flex flex-col gap-6">
         <x-unsaved-bar action="submit" />
 
-        <x-application.settings-section title="Database details"
-            description="Manage the identity and container image for this Dragonfly database.">
+        <x-application.settings-section :title="__('common.database_details')"
+            :description="__('common.database_identity_description', ['type' => 'Dragonfly'])">
             <x-slot:actions>
-                <x-modal-input title="Resource details" buttonTitle="Details">
+                <x-modal-input :title="__('common.resource_details_title')" :buttonTitle="__('common.details')">
                     <livewire:project.shared.resource-details :resource="$database" />
                 </x-modal-input>
             </x-slot:actions>
             <div class="grid gap-4 lg:grid-cols-2">
-                <x-forms.input label="Name" id="name" canGate="update" :canResource="$database" />
-                <x-forms.input label="Description" id="description" canGate="update" :canResource="$database" />
+                <x-forms.input :label="__('common.name')" id="name" canGate="update" :canResource="$database" />
+                <x-forms.input :label="__('common.description')" id="description" canGate="update" :canResource="$database" />
                 <div class="lg:col-span-2">
-                    <x-forms.input label="Image" id="image" required canGate="update" :canResource="$database" />
+                    <x-forms.input :label="__('common.image')" id="image" required canGate="update" :canResource="$database"
+                        :helper="__('common.database_image_helper', ['type' => 'Dragonfly'])" />
                 </div>
             </div>
         </x-application.settings-section>
 
-        <x-application.settings-section title="Credentials"
-            description="Keep these values aligned with the credentials configured inside Dragonfly.">
+        <x-application.settings-section :title="__('common.credentials')"
+            :description="__('common.credentials_description', ['type' => 'Dragonfly'])">
             @if ($database->started_at)
                 @if ($isPasswordHiddenForMember)
-                    <x-forms.input label="Password" disabled value="Hidden (only admins can view)" />
+                    <x-forms.input :label="__('common.password')" disabled :value="__('common.hidden_admins_only')" />
                 @else
-                    <x-forms.input label="Password" id="dragonflyPassword" type="password" required readonly
-                        helper="You can only change this in the database." canGate="update" :canResource="$database" />
+                    <x-forms.input :label="__('common.password')" id="dragonflyPassword" type="password" required readonly
+                        :helper="__('common.database_value_change_restriction')" canGate="update" :canResource="$database" />
                 @endif
             @else
-                <x-callout type="warning" title="Verify the initial credentials">
-                    You can only change this password here before the first start. Later changes must be made inside the
-                    database.
+                <x-callout type="warning" :title="__('common.verify_initial_credentials')">
+                    {{ __('common.password_before_first_start') }}
                 </x-callout>
                 <div class="mt-4">
                     @if ($isPasswordHiddenForMember)
-                        <x-forms.input label="Password" disabled value="Hidden (only admins can view)" />
+                        <x-forms.input :label="__('common.password')" disabled :value="__('common.hidden_admins_only')" />
                     @else
-                        <x-forms.input label="Password" id="dragonflyPassword" type="password" required
+                        <x-forms.input :label="__('common.password')" id="dragonflyPassword" type="password" required
                             canGate="update" :canResource="$database" />
                     @endif
                 </div>
             @endif
         </x-application.settings-section>
 
-        <x-application.settings-section title="Runtime and network"
-            description="Configure Docker runtime options and host port mappings.">
+        <x-application.settings-section :title="__('common.runtime_and_network')"
+            :description="__('common.runtime_network_description')">
             <div class="grid gap-4 lg:grid-cols-2">
                 <div class="lg:col-span-2">
                     <x-forms.input
-                        helper="Add supported docker run options used when the container starts. Unsupported options can interfere with Coolify automation."
+                        :helper="__('common.docker_run_options_helper')"
                         placeholder="--cap-add SYS_ADMIN --device=/dev/fuse"
-                        id="customDockerRunOptions" label="Custom Docker options" canGate="update"
+                        id="customDockerRunOptions" :label="__('common.custom_docker_options')" canGate="update"
                         :canResource="$database" />
                 </div>
-                <x-forms.input placeholder="3000:6379" id="portsMappings" label="Port mappings"
-                    helper="Comma-separated host-to-container mappings, for example 3000:6379."
+                <x-forms.input placeholder="3000:6379" id="portsMappings" :label="__('common.port_mappings')"
+                    :helper="__('common.port_mappings_helper', ['mapping' => '3000:6379'])"
                     canGate="update" :canResource="$database" />
             </div>
             <div class="mt-4">
@@ -62,43 +62,43 @@
             </div>
         </x-application.settings-section>
 
-        <x-application.settings-section title="Public access" class="relative"
-            description="Expose this database through the managed TCP proxy.">
+        <x-application.settings-section :title="__('common.public_access')" class="relative"
+            :description="__('common.database_public_access_description')">
             <x-slot:actions>
                 @if ($isPublic)
                     <x-process-dialog closeWithX size="xl">
-                        <x-slot:title>Proxy logs</x-slot:title>
+                        <x-slot:title>{{ __('common.proxy_logs') }}</x-slot:title>
                         <x-slot:content>
                             <livewire:project.shared.get-logs :server="$server" :resource="$database"
                                 container="{{ data_get($database, 'uuid') }}-proxy" :collapsible="false" lazy />
                         </x-slot:content>
-                        <x-forms.button @click="processDialogOpen = true">View logs</x-forms.button>
+                        <x-forms.button @click="processDialogOpen = true">{{ __('common.view_logs') }}</x-forms.button>
                     </x-process-dialog>
                 @endif
             </x-slot:actions>
-            <x-table.loading target="instantSave" text="Updating public access..." />
+            <x-table.loading target="instantSave" :text="__('common.updating_public_access')" />
             <div class="grid gap-4 lg:grid-cols-2">
                 <div wire:key="public-access-{{ $publicPort ?: 'unset' }}">
-                    <x-forms.listbox id="isPublic" label="Access" live onChange="instantSave"
+                    <x-forms.listbox id="isPublic" :label="__('common.access')" live onChange="instantSave"
                         :disabled="! auth()->user()->can('update', $database)" canGate="update" :canResource="$database" :options="[
-                            ['value' => false, 'label' => 'Private'],
-                            ['value' => true, 'label' => blank($publicPort) ? 'Public through TCP proxy (set public port first)' : 'Public through TCP proxy', 'disabled' => blank($publicPort)],
+                            ['value' => false, 'label' => __('common.private')],
+                            ['value' => true, 'label' => blank($publicPort) ? __('common.public_tcp_proxy_set_port') : __('common.public_tcp_proxy'), 'disabled' => blank($publicPort)],
                         ]" />
                 </div>
                 <x-forms.input type="number" placeholder="6379" disabled="{{ $isPublic }}" id="publicPort"
-                    label="Public port" canGate="update" :canResource="$database" />
+                    :label="__('common.public_port')" canGate="update" :canResource="$database" />
                 <x-forms.input type="number" placeholder="3600" disabled="{{ $isPublic }}" id="publicPortTimeout"
-                    label="Proxy timeout" helper="Timeout in seconds. The default is 3600."
+                    :label="__('common.proxy_timeout')" :helper="__('common.proxy_timeout_helper')"
                     canGate="update" :canResource="$database" />
             </div>
         </x-application.settings-section>
 
-        <x-application.settings-section title="Log delivery"
-            description="Forward container logs to the drain configured on the server.">
-            <x-forms.listbox canGate="update" :canResource="$database" id="isLogDrainEnabled" label="Log drain" live onChange="instantSaveAdvanced"
+        <x-application.settings-section :title="__('common.log_delivery')"
+            :description="__('common.log_delivery_description')">
+            <x-forms.listbox canGate="update" :canResource="$database" id="isLogDrainEnabled" :label="__('common.log_drain')" live onChange="instantSaveAdvanced"
                 :disabled="! auth()->user()->can('update', $database)" :options="[
-                    ['value' => false, 'label' => 'Do not forward logs'],
-                    ['value' => true, 'label' => 'Forward logs to the server drain'],
+                    ['value' => false, 'label' => __('common.do_not_forward_logs')],
+                    ['value' => true, 'label' => __('common.forward_logs_server_drain')],
                 ]" />
         </x-application.settings-section>
     </form>

@@ -41,7 +41,7 @@
             @if ($allowToPeak)
                 <button type="button" x-on:click="type = type === 'password' ? 'text' : 'password'"
                     class="password-toggle flex absolute inset-y-0 right-0 z-10 items-center pr-2 cursor-pointer text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-white"
-                    aria-label="Toggle password visibility">
+                    aria-label="{{ __('common.toggle_password_visibility') }}">
                     {{-- Eye icon (shown when password is hidden) --}}
                     <x-reicon name="eye" x-show="type === 'password'" class="size-[18px]" />
                     {{-- Eye-off2 icon (shown when password is visible) --}}

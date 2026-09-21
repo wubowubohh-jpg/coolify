@@ -29,6 +29,10 @@
                 });
             },
             scopeUrls: @js($scopeUrls),
+            translations: @js([
+                'noSharedVariables' => __('common.no_shared_variables_in_scope'),
+                'addScopeVariables' => __('common.add_scope_variables'),
+            ]),
 
             handleInput() {
                 const input = this.$refs.input;
@@ -226,7 +230,7 @@
         @if ($type === 'password' && $allowToPeak)
             <button type="button" x-on:click="type = type === 'password' ? 'text' : 'password'"
                 class="password-toggle flex absolute inset-y-0 right-0 z-10 items-center pr-2 cursor-pointer text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-white"
-                aria-label="Toggle password visibility">
+                aria-label="{{ __('common.toggle_password_visibility') }}">
                 <x-reicon name="eye" x-show="type === 'password'" class="size-[18px]" />
                 <x-reicon name="eye-off2" x-cloak x-show="type === 'text'" class="size-[18px]" />
             </button>
@@ -238,11 +242,11 @@
 
             <template x-if="suggestions.length === 0 && currentScope">
                 <div class="px-2 py-2 text-sm text-neutral-500 dark:text-fg-dim">
-                    <div>No shared variables found in <span class="font-semibold" x-text="currentScope"></span> scope.</div>
+                    <div x-text="translations.noSharedVariables.replace(':scope', currentScope)"></div>
                     <a :href="getScopeUrl(currentScope)"
                        class="mt-1 inline-block text-xs text-coollabs hover:underline dark:text-warning"
                        target="_blank">
-                        Add <span x-text="currentScope"></span> variables →
+                        <span x-text="translations.addScopeVariables.replace(':scope', currentScope)"></span>
                     </a>
                 </div>
             </template>
@@ -259,12 +263,12 @@
                          role="option" :aria-selected="index === selectedIndex">
                         <template x-if="suggestion.type === 'scope'">
                             <span class="rounded-md border border-warning/25 bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-warning">
-                                SCOPE
+                                {{ __('common.scope') }}
                             </span>
                         </template>
                         <template x-if="suggestion.type === 'variable'">
                             <span class="rounded-md border border-emerald-500/25 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
-                                VAR
+                                {{ __('common.var') }}
                             </span>
                         </template>
                         <span class="min-w-0 truncate font-mono text-sm" x-text="suggestion.display"></span>

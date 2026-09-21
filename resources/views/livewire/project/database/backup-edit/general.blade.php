@@ -1,24 +1,24 @@
 <form wire:submit="submit">
     <x-unsaved-bar action="submit" />
 
-    <x-application.settings-section title="Backup schedule"
-        description="Choose what to back up, when it runs, and how long it may run.">
+    <x-application.settings-section :title="__('common.backup_schedule')"
+        :description="__('common.backup_schedule_description')">
         <x-slot:actions>
             <div class="flex items-center gap-2">
                 @if (! $backupEnabled)
                     <x-forms.button type="button" wire:click="toggleEnabled" wire:loading.attr="disabled"
                         wire:target="toggleEnabled" isHighlighted>
-                        Enable backup
+                        {{ __('common.enable_backup') }}
                     </x-forms.button>
                 @else
                     <x-forms.button type="button" wire:click="toggleEnabled" wire:loading.attr="disabled"
                         wire:target="toggleEnabled">
-                        Disable backup
+                        {{ __('common.disable_backup') }}
                     </x-forms.button>
                 @endif
                 <x-forms.button type="button" wire:click="backupNow"
                     :disabled="! str($status)->startsWith('running')"
-                    :tooltip="! str($status)->startsWith('running') ? 'The database must be running to start a backup.' : null">Back up now</x-forms.button>
+                    :tooltip="! str($status)->startsWith('running') ? __('common.database_must_running') : null">{{ __('common.back_up_now') }}</x-forms.button>
             </div>
         </x-slot:actions>
 
@@ -27,9 +27,9 @@
                     || $backup->database_type === 'App\Models\StandaloneMysql'
                     || $backup->database_type === 'App\Models\StandaloneMariadb')
                 <div class="grid w-full gap-4">
-                    <x-forms.listbox id="dumpAll" label="Database selection" onChange="instantSave" :options="[
-                        ['value' => true, 'label' => 'All databases'],
-                        ['value' => false, 'label' => 'Specific databases'],
+                    <x-forms.listbox id="dumpAll" :label="__('common.database_selection')" onChange="instantSave" :options="[
+                        ['value' => true, 'label' => __('common.all_databases')],
+                        ['value' => false, 'label' => __('common.specific_databases')],
                     ]" />
                     @if (! $backup->dump_all)
                         <div class="w-full" x-data="{
@@ -48,7 +48,7 @@
                                 this.value = this.databases.filter((_, itemIndex) => itemIndex !== index).join(',');
                             },
                         }">
-                            <label class="mb-1.5 block text-sm font-medium">Databases to back up</label>
+                            <label class="mb-1.5 block text-sm font-medium">{{ __('common.databases_to_back_up') }}</label>
                             <div class="chip-input">
                                 <template x-for="(database, index) in databases" :key="database">
                                     <span class="chip font-mono">
@@ -63,34 +63,34 @@
                                 <input x-model="draft" @keydown.enter.prevent="addDatabase()"
                                     @keydown="if ($event.key === ',') { $event.preventDefault(); addDatabase(); }"
                                     @blur="addDatabase()" type="text"
-                                    placeholder="Type a database and press Enter" />
+                                    placeholder="{{ __('common.type_database_press_enter') }}" />
                             </div>
                             <p class="mt-1.5 text-xs text-neutral-500 dark:text-fg-dim">
-                                Add one or more database names. Leave empty to include the default database.
+                                {{ __('common.add_database_names') }}
                             </p>
                         </div>
                     @endif
                 </div>
             @elseif ($backup->database_type === 'App\Models\StandaloneMongodb')
-                <x-forms.input label="Databases to include"
-                    helper="Use database:collection1,collection2|database2 to exclude selected collections. Leave empty to include all databases and collections."
+                <x-forms.input :label="__('common.databases_to_include')"
+                    :helper="__('common.databases_include_helper')"
                     id="databasesToBackup" />
             @elseif ($backup->database_type === 'App\Models\StandaloneClickhouse')
-                <x-forms.input label="Databases to back up"
-                    helper="Comma-separated database names. Leave empty to include the default database."
+                <x-forms.input :label="__('common.databases_to_back_up')"
+                    :helper="__('common.comma_database_names')"
                     id="databasesToBackup" />
             @endif
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <x-forms.input label="Frequency" id="frequency" required />
-                <x-forms.input label="Timezone" id="timezone" disabled
-                    helper="Uses the deployment server timezone, or the instance timezone when none is configured."
+                <x-forms.input :label="__('common.frequency')" id="frequency" required />
+                <x-forms.input :label="__('common.timezone')" id="timezone" disabled
+                    :helper="__('common.timezone_helper')"
                     required />
-                <x-forms.input label="Timeout" id="timeout" type="number" min="60"
-                    helper="Maximum backup runtime in seconds." required />
-                <x-forms.input label="Missing backup alert after" id="missingBackupNotificationDays" type="number"
-                    min="0" max="365" suffix="days" canGate="manageBackups" :canResource="$backup->database"
-                    helper="Notify through backup failure channels after this many days without an execution. Use 0 to disable." required />
+                <x-forms.input :label="__('common.timeout')" id="timeout" type="number" min="60"
+                    :helper="__('common.max_backup_runtime')" required />
+                <x-forms.input :label="__('common.missing_backup_alert_after')" id="missingBackupNotificationDays" type="number"
+                    min="0" max="365" :suffix="__('common.days')" canGate="manageBackups" :canResource="$backup->database"
+                    :helper="__('common.missing_alert_helper')" required />
             </div>
         </div>
     </x-application.settings-section>

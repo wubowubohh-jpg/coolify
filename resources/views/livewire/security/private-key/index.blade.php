@@ -1,22 +1,22 @@
 <div>
     <x-slot:title>
-        Keys & Tokens | Coolify
+        {{ __('common.keys_tokens') }} | Coolify
     </x-slot>
 
     <x-security.settings-layout>
-        <x-application.settings-section title="Private keys"
-            description="SSH keys used to connect servers and private repositories." flush>
+        <x-application.settings-section :title="__('common.private_keys')"
+            :description="__('common.generate_or_add_ssh')" flush>
         <x-slot:actions>
             @can('create', App\Models\PrivateKey::class)
-                <x-modal-confirmation title="Confirm unused SSH Key Deletion?"
+                <x-modal-confirmation :title="__('common.confirm_unused_ssh_key_deletion')"
                     isErrorButton submitAction="cleanupUnusedKeys"
-                    :actions="['All unused SSH keys (marked with unused) are permanently deleted.']"
+                    :actions="[__('common.unused_ssh_keys_deleted')]"
                     :confirmWithText="false" :confirmWithPassword="false">
                     <x-slot:trigger>
                         <button type="button"
                             class="button whitespace-nowrap text-error! hover:text-error! dark:text-error!">
-                            <span class="max-sm:hidden">Delete unused keys</span>
-                            <span class="sm:hidden">Delete unused</span>
+                            <span class="max-sm:hidden">{{ __('common.delete_unused_keys') }}</span>
+                            <span class="sm:hidden">{{ __('common.delete_unused') }}</span>
                         </button>
                     </x-slot:trigger>
                 </x-modal-confirmation>
@@ -27,8 +27,8 @@
                         class="button whitespace-nowrap button-highlighted"
                         aria-haspopup="menu" :aria-expanded="dropdownOpen">
                         <x-reicon name="plus" class="size-3.5" />
-                        <span class="max-sm:hidden">New private key</span>
-                        <span class="sm:hidden">New key</span>
+                        <span class="max-sm:hidden">{{ __('common.new_private_key') }}</span>
+                        <span class="sm:hidden">{{ __('common.new_key') }}</span>
                         <x-reicon name="chevron-down" class="size-3 opacity-55" />
                     </button>
 
@@ -38,20 +38,20 @@
                             wire:click="generatePrivateKey('ed25519')" @click="dropdownOpen = false"
                             role="menuitem">
                             <x-reicon name="keys" class="size-3.5 shrink-0 opacity-70" />
-                            Generate ED25519
+                            {{ __('common.generate_ed25519') }}
                         </button>
                         <button type="button" class="listbox-option justify-start! gap-2.5!"
                             wire:click="generatePrivateKey('rsa')" @click="dropdownOpen = false"
                             role="menuitem">
                             <x-reicon name="keys" class="size-3.5 shrink-0 opacity-70" />
-                            Generate RSA
+                            {{ __('common.generate_rsa') }}
                         </button>
-                        <x-modal-input title="Add Private Key Manually">
+                        <x-modal-input :title="__('common.add_private_key_manually')">
                             <x-slot:content>
                                 <button type="button" @click="dropdownOpen = false"
                                     class="listbox-option justify-start! gap-2.5!" role="menuitem">
                                     <x-reicon name="plus" class="size-3.5 shrink-0 opacity-70" />
-                                    Add manually
+                                    {{ __('common.add_manually') }}
                                 </button>
                             </x-slot:content>
                             <livewire:security.private-key.create :modal_mode="true" />
@@ -63,15 +63,15 @@
 
 
     @if ($privateKeys->isEmpty())
-        <x-empty title="No private keys yet"
-            description="Generate or add an SSH key to connect Coolify to servers and private repositories."
+        <x-empty :title="__('common.no_private_keys_yet')"
+            :description="__('common.generate_or_add_ssh')"
             icon-name="keys" />
     @else
         <div>
             <div class="grid grid-cols-[minmax(0,1fr)_7rem_1.75rem] items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[13px] font-medium text-neutral-500 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_7rem_1.75rem] dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
-                <div class="pl-11">Private key</div>
-                <div class="hidden sm:block">Description</div>
-                <div class="text-center">Status</div>
+                <div class="pl-11">{{ __('common.private_key_header') }}</div>
+                <div class="hidden sm:block">{{ __('common.description') }}</div>
+                <div class="text-center">{{ __('common.status') }}</div>
                 <div class="w-7"></div>
             </div>
             @foreach ($privateKeys as $key)
@@ -97,13 +97,13 @@
                         </p>
                         <div class="flex justify-center">
                             @if ($key->isInUse())
-                                <x-status-badge label="In use" type="success" />
+                                <x-status-badge :label="__('common.in_use')" type="success" />
                             @else
-                                <x-status-badge label="Unused" type="warning" />
+                                <x-status-badge :label="__('common.unused')" type="warning" />
                             @endif
                         </div>
-                        <button type="button" class="icon-button" title="Edit private key"
-                            aria-label="Edit {{ $key->name }}"
+                        <button type="button" class="icon-button" :title="__('common.edit_private_key')"
+                            aria-label="{{ __('common.edit_key') }} {{ $key->name }}"
                             @click="$dispatch('open-private-key-editor', { name: @js($key->name), description: @js($key->description ?? '') })"
                             wire:click="openEditor('{{ $key->uuid }}')">
                             <x-reicon name="settings" class="size-3.5" />
@@ -112,7 +112,7 @@
                     </div>
                 @else
                     <div class="grid min-h-14 cursor-not-allowed grid-cols-[minmax(0,1fr)_7rem_1.75rem] items-center gap-3 border-b border-neutral-200 px-4 py-2.5 opacity-65 last:border-b-0 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_7rem_1.75rem] dark:border-white/[0.07]"
-                        title="You do not have permission to view this private key">
+                        :title="__('common.no_permission_private_key')">
                         <div class="flex items-start gap-3">
                             <div
                                 class="flex size-8 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-400 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-fg-faint">
@@ -126,9 +126,9 @@
                         </div>
                         <p class="hidden truncate text-[12px] text-neutral-500 sm:block dark:text-fg-dim">{{ $key->description ?: '-' }}</p>
                         <div class="flex flex-wrap justify-center gap-2">
-                            <x-status-badge label="View only" type="neutral" />
+                            <x-status-badge :label="__('common.view_only')" type="neutral" />
                             @if (!$key->isInUse())
-                                <x-status-badge label="Unused" type="warning" />
+                                <x-status-badge :label="__('common.unused')" type="warning" />
                             @endif
                         </div>
                         <span class="size-7"></span>
@@ -138,29 +138,29 @@
         </div>
     @endif
 
-    <x-modal-input title="Edit Private Key" :wireIgnore="false" :contentClicks="false"
+    <x-modal-input :title="__('common.edit_private_key')" :wireIgnore="false" :contentClicks="false"
         @open-private-key-editor.window="modalOpen=true; $nextTick(() => { $refs.loadingPrivateKeyName.value = $event.detail.name; $refs.loadingPrivateKeyDescription.value = $event.detail.description })">
         <x-slot:content><span class="hidden" aria-hidden="true"></span></x-slot:content>
-        <div wire:loading.flex wire:target="openEditor" aria-label="Loading private key editor"
+        <div wire:loading.flex wire:target="openEditor" :aria-label="__('common.loading_private_key_editor')"
             class="w-full flex-col gap-4">
             <div class="grid gap-4 lg:grid-cols-2">
-                <x-forms.input label="Name" required x-ref="loadingPrivateKeyName" />
-                <x-forms.input label="Description" x-ref="loadingPrivateKeyDescription" />
+                <x-forms.input :label="__('common.name')" required x-ref="loadingPrivateKeyName" />
+                <x-forms.input :label="__('common.description')" x-ref="loadingPrivateKeyDescription" />
                 <div class="lg:col-span-2">
-                    <x-forms.input label="Public key" loading
-                        helper="Copy this value to ~/.ssh/authorized_keys on the target server." />
+                    <x-forms.input :label="__('common.public_key')" loading
+                        :helper="__('common.copy_authorized_keys')" />
                 </div>
                 <div class="lg:col-span-2">
                     <div class="mb-1.5 flex items-center justify-between gap-3">
-                        <label class="text-[13px] font-medium">Private key <span class="text-helper">*</span></label>
-                        <span class="text-[11px] font-medium text-neutral-400 dark:text-fg-faint">Edit key</span>
+                        <label class="text-[13px] font-medium">{{ __('common.private_key_header') }} <span class="text-helper">*</span></label>
+                        <span class="text-[11px] font-medium text-neutral-400 dark:text-fg-faint">{{ __('common.edit_key') }}</span>
                     </div>
                     <x-forms.input loading :allowToPeak="false" />
                 </div>
             </div>
             <div class="flex items-center justify-between gap-2 border-t border-neutral-200 pt-4 dark:border-white/[0.08]">
-                <x-forms.button disabled isError>Delete</x-forms.button>
-                <x-forms.button disabled isHighlighted>Save changes</x-forms.button>
+                <x-forms.button disabled isError>{{ __('common.delete') }}</x-forms.button>
+                <x-forms.button disabled isHighlighted>{{ __('common.save_changes') }}</x-forms.button>
             </div>
         </div>
         @if ($selectedPrivateKeyUuid)

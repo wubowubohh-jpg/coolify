@@ -1,6 +1,6 @@
 @props([
     'action' => 'submit',
-    'label' => "You have changes that haven't been saved yet.",
+    'label' => null,
     // Optional comma-separated Livewire properties. When set, the bar only
     // appears when those fields differ from the last server snapshot — not on
     // incidental component state (e.g. $wire.set from x-init, display-only props).
@@ -8,6 +8,8 @@
     // Optional Alpine expression for drafts that survive unrelated server requests.
     'dirty' => null,
 ])
+
+@php($label ??= __('common.unsaved_changes'))
 
 {{-- Floating "unsaved changes" pill (bottom center). Reveals itself via
      Livewire's wire:dirty whenever the surrounding component has un-saved
@@ -64,11 +66,11 @@
     <div class="flex shrink-0 items-center justify-end gap-2">
         <button type="button" onclick="window.location.reload()"
             class="h-8 rounded-lg bg-neutral-100 px-3.5 text-[13px] font-medium text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-white/[0.07] dark:text-fg dark:hover:bg-white/[0.12]">
-            Reset
+            {{ __('common.reset') }}
         </button>
         <button type="button" wire:click="{{ $action }}" wire:loading.attr="disabled"
             class="button-highlighted flex h-8 items-center gap-2 rounded-lg px-4 text-[13px] font-semibold transition-[transform,background-color] active:scale-[0.98]">
-            <span>Save changes</span>
+            <span>{{ __('common.save_changes') }}</span>
             <kbd
                 class="rounded border border-current/20 bg-current/10 px-1.5 py-0.5 text-[10px] leading-none font-medium text-current">Enter</kbd>
         </button>

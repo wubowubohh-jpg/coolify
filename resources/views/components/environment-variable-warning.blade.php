@@ -27,10 +27,11 @@
         if (!this.showWarning) return null;
         const config = this.problematicVars[$wire.key];
         if (!config) return null;
-        return `Recommendation: ${config.recommendation}`;
-    }
+        return this.recommendationTemplate.replace(':recommendation', config.recommendation);
+    },
+    recommendationTemplate: @js(__('common.recommendation'))
 }" x-if="showWarning">
-    <x-callout type="warning" title="Caution">
+    <x-callout type="warning" :title="__('common.caution')">
         <div class="text-sm" x-text="warningMessage"></div>
         <div class="text-sm" x-text="recommendation"></div>
     </x-callout>
