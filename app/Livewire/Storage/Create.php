@@ -123,7 +123,7 @@ class Create extends Component
             return $description;
         }
 
-        $link = '<a class="font-medium underline" href="'.e($settingsUrl).'">Set them here.</a>';
+        $link = '<a class="font-medium underline" href="'.e($settingsUrl).'">'.e(__('common.set_here')).'</a>';
 
         return str_replace(e($settingsUrl), $link, $description);
     }

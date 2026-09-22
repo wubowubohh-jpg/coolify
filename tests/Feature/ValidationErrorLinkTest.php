@@ -20,6 +20,14 @@ it('renders a trailing validation error URL as a link', function () {
         ->toContain('Set them here');
 });
 
+it('uses translated validation link copy in the shared input component', function () {
+    $view = file_get_contents(resource_path('views/components/forms/input.blade.php'));
+
+    expect($view)
+        ->toContain("{{ __('common.set_here') }}")
+        ->not->toContain('>Set them here.</a>');
+});
+
 it('uses explicit validation handling in the domain input component', function () {
     $view = file_get_contents(resource_path('views/components/forms/domain-input.blade.php'));
 

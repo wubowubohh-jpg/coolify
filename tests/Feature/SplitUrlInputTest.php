@@ -25,7 +25,8 @@ it('keeps validation errors attached to the composed endpoint', function () {
     $html = file_get_contents(resource_path('views/components/forms/domain-input.blade.php'));
 
     expect($html)
-        ->toContain('@error($errorId ?? "{$id}.host")')
+        ->toContain('@if ($errors->has($domainErrorKey))')
+        ->toContain('$message = $errors->first($domainErrorKey);')
         ->toContain('href="{{ $validationLink }}"')
-        ->toContain('Set them here.');
+        ->toContain("{{ __('common.set_here') }}");
 });
