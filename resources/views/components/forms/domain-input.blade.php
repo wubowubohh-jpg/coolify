@@ -6,6 +6,7 @@
 ])
 
 @php($hostLabel ??= __('common.domain'))
+@php($domainErrorKey = $errorId ?? "{$id}.host")
 
 <div class="grid gap-4 sm:grid-cols-[8rem_minmax(0,1fr)_8rem]">
     <div class="min-w-0">
@@ -23,8 +24,9 @@
         </div>
         <input id="{{ $id }}-host" type="text" class="input" wire:model="{{ $id }}.host"
             placeholder="{{ $hostPlaceholder }}" autocomplete="off" required />
-        @error($errorId ?? "{$id}.host")
+        @if ($errors->has($domainErrorKey))
             @php
+                $message = $errors->first($domainErrorKey);
                 preg_match('/(https?:\/\/\S+)$/', $message, $validationLinkMatches);
                 $validationLink = $validationLinkMatches[1] ?? null;
             @endphp
@@ -36,7 +38,7 @@
                     {{ $message }}
                 @endif
             </p>
-        @enderror
+        @endif
     </div>
 
     <div class="min-w-0">

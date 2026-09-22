@@ -19,3 +19,13 @@ it('renders a trailing validation error URL as a link', function () {
         ->toContain('href="'.$settingsUrl.'"')
         ->toContain('Set them here');
 });
+
+it('uses explicit validation handling in the domain input component', function () {
+    $view = file_get_contents(resource_path('views/components/forms/domain-input.blade.php'));
+
+    expect($view)
+        ->toContain('@if ($errors->has($domainErrorKey))')
+        ->toContain('$message = $errors->first($domainErrorKey);')
+        ->not->toContain('@error(')
+        ->not->toContain('@enderror');
+});
