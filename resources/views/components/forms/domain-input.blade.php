@@ -5,8 +5,17 @@
     'hostPlaceholder' => 'app.example.com',
 ])
 
-@php($hostLabel ??= __('common.domain'))
-@php($domainErrorKey = $errorId ?? "{$id}.host")
+@php
+    $hostLabel ??= __('common.domain');
+    $domainErrorKey = $errorId ?? "{$id}.host";
+    $domainError = $errors->first($domainErrorKey);
+    $validationLink = null;
+
+    if (filled($domainError)) {
+        preg_match('/(https?:\/\/\S+)$/', $domainError, $validationLinkMatches);
+        $validationLink = $validationLinkMatches[1] ?? null;
+    }
+@endphp
 
 <div class="grid gap-4 sm:grid-cols-[8rem_minmax(0,1fr)_8rem]">
     <div class="min-w-0">
@@ -24,21 +33,16 @@
         </div>
         <input id="{{ $id }}-host" type="text" class="input" wire:model="{{ $id }}.host"
             placeholder="{{ $hostPlaceholder }}" autocomplete="off" required />
-        @if ($errors->has($domainErrorKey))
-            @php
-                $message = $errors->first($domainErrorKey);
-                preg_match('/(https?:\/\/\S+)$/', $message, $validationLinkMatches);
-                $validationLink = $validationLinkMatches[1] ?? null;
-            @endphp
+        <?php if (filled($domainError)) { ?>
             <p class="mt-1 text-[12px] text-red-500">
-                @if ($validationLink)
-                    {{ str($message)->beforeLast($validationLink)->trim() }}
+                <?php if ($validationLink) { ?>
+                    {{ str($domainError)->beforeLast($validationLink)->trim() }}
                     <a class="font-medium underline" href="{{ $validationLink }}">{{ __('common.set_here') }}</a>
-                @else
-                    {{ $message }}
-                @endif
+                <?php } else { ?>
+                    {{ $domainError }}
+                <?php } ?>
             </p>
-        @endif
+        <?php } ?>
     </div>
 
     <div class="min-w-0">

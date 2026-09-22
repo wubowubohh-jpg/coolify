@@ -32,8 +32,10 @@ it('uses explicit validation handling in the domain input component', function (
     $view = file_get_contents(resource_path('views/components/forms/domain-input.blade.php'));
 
     expect($view)
-        ->toContain('@if ($errors->has($domainErrorKey))')
-        ->toContain('$message = $errors->first($domainErrorKey);')
+        ->toContain('$domainError = $errors->first($domainErrorKey);')
+        ->toContain('if (filled($domainError)) {')
+        ->not->toContain('@if')
+        ->not->toContain('@endif')
         ->not->toContain('@error(')
         ->not->toContain('@enderror');
 });

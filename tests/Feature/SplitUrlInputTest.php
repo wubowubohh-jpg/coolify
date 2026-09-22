@@ -25,8 +25,10 @@ it('keeps validation errors attached to the composed endpoint', function () {
     $html = file_get_contents(resource_path('views/components/forms/domain-input.blade.php'));
 
     expect($html)
-        ->toContain('@if ($errors->has($domainErrorKey))')
-        ->toContain('$message = $errors->first($domainErrorKey);')
+        ->toContain('$domainErrorKey = $errorId ?? "{$id}.host";')
+        ->toContain('$domainError = $errors->first($domainErrorKey);')
+        ->toContain('if (filled($domainError)) {')
         ->toContain('href="{{ $validationLink }}"')
-        ->toContain("{{ __('common.set_here') }}");
+        ->toContain("{{ __('common.set_here') }}")
+        ->not->toContain('@endif');
 });
