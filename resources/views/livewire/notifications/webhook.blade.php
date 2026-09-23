@@ -1,14 +1,14 @@
 <div>
     <x-slot:title>
-        Webhook Notifications | Coolify
+        {{ __('common.notifications') }} - {{ __('common.webhook') }} | Coolify
     </x-slot>
 
     <x-notification.settings-layout>
     <div class="application-settings-form flex flex-col gap-6">
         <form wire:submit="submit">
             <x-unsaved-bar action="submit" />
-            <x-application.settings-section title="Webhook"
-                description="Send JSON event payloads to your own HTTP endpoint.">
+            <x-application.settings-section :title="__('common.webhook')"
+                :description="__('notifications.webhook_description')">
                 <x-slot:actions>
                     <x-notification.channel-actions :enabled="$webhookEnabled" enabledProperty="webhookEnabled"
                         toggleMethod="instantSaveWebhookEnabled" :canUpdate="auth()->user()->can('update', $settings)" />
@@ -17,10 +17,12 @@
                 <div class="grid gap-4 lg:grid-cols-2">
                     <div class="lg:col-span-2">
                         @can('update', $settings)
-                            <x-forms.input type="password" required id="webhookUrl" label="Webhook URL"
-                                helper="Coolify sends POST requests to this HTTP or HTTPS endpoint." />
+                            <x-forms.input type="password" required id="webhookUrl"
+                                :label="__('notifications.webhook_url')"
+                                :helper="__('notifications.webhook_helper')" />
                         @else
-                            <x-forms.input disabled label="Webhook URL" value="Hidden (only admins can view)" />
+                            <x-forms.input disabled :label="__('notifications.webhook_url')"
+                                :value="__('common.hidden_admins_only')" />
                         @endcan
                     </div>
                 </div>

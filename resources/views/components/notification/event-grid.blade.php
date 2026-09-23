@@ -129,7 +129,7 @@
                                             canGate="update" :canResource="$settings" type="password"
                                             :id="$event['threadModel']" :label="null"
                                             :placeholder="__('common.optional')"
-                                            :aria-label="$event['label'] . ' topic ID'" />
+                                            :aria-label="__('common.topic_id_aria', ['label' => $event['label']])" />
                                     </div>
                                 @endforeach
                             </div>

@@ -92,6 +92,38 @@ it('exposes both supported locales in the appearance settings', function () {
         ->toContain('<x-theme-controls variant="full" :locale="$locale" />');
 });
 
+it('does not contain corrupted placeholder text in simplified Chinese translations', function () {
+    $translations = json_decode(
+        file_get_contents(lang_path('zh-cn.json')),
+        true,
+        512,
+        JSON_THROW_ON_ERROR,
+    );
+
+    $corruptedKeys = collect($translations)
+        ->filter(fn (mixed $value): bool => is_string($value) && preg_match('/\?{2,}/', $value) === 1)
+        ->keys()
+        ->all();
+
+    expect($corruptedKeys)->toBe([]);
+});
+
+it('keeps supported translation keys unique and aligned', function () {
+    $translations = [];
+
+    foreach (['en', 'zh-cn'] as $locale) {
+        $contents = file_get_contents(lang_path("{$locale}.json"));
+        preg_match_all('/^\s*,?\s*"([^"\\]+)"\s*:/m', $contents, $matches);
+
+        expect($matches[1])->toHaveCount(count(array_unique($matches[1])));
+
+        $translations[$locale] = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    expect(array_keys($translations['en']))
+        ->toEqual(array_keys($translations['zh-cn']));
+});
+
 it('uses translation keys across the shared frontend shell', function () {
     $views = [
         resource_path('views/components/navbar.blade.php'),

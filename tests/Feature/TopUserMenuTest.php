@@ -43,7 +43,7 @@ it('positions the account menu below the mobile trigger', function () {
         ->toContain('max-height: calc(100dvh - 4.5rem) !important;');
 });
 
-it('changes appearance from a submenu instead of navigating to a separate page', function () {
+it('offers full appearance settings from the appearance submenu', function () {
     $menu = file_get_contents(resource_path('views/components/top-user-menu.blade.php'));
 
     expect($menu)
@@ -55,6 +55,8 @@ it('changes appearance from a submenu instead of navigating to a separate page',
         ->not->toContain('@change="appearanceOpen = false; open = false"')
         ->toContain('this.appearanceOpen = false;')
         ->toContain('this.open = false;')
+        ->toContain("route('profile.appearance')")
+        ->toContain("__('nav.appearance_settings')")
         ->toContain('<div x-show="open" x-cloak @class([')
         ->not->toContain('<template x-if="open">')
         ->not->toContain('x-show.important="open"')
@@ -63,7 +65,7 @@ it('changes appearance from a submenu instead of navigating to a separate page',
         ->toContain("['value' => 'system', 'label' => 'System'")
         ->toContain("['value' => 'dark', 'label' => 'Dark'")
         ->toContain('hover:bg-neutral-200 hover:text-neutral-950')
-        ->not->toContain("route('profile.appearance')");
+        ->toContain('<x-theme-controls variant="menu" />');
 });
 
 it('offers page width controls inside the appearance menu', function () {

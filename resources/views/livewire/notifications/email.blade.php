@@ -1,6 +1,6 @@
 <div>
     <x-slot:title>
-        Notifications | Coolify
+        {{ __('common.notifications') }} - {{ __('settings.email') }} | Coolify
     </x-slot>
 
     <x-notification.settings-layout>
@@ -88,19 +88,19 @@
                                 <x-forms.listbox canGate="update" :canResource="$settings" id="smtpEnabled" :label="__('common.smtp_delivery')"
                                     onChange="submitSmtp"
                                     :disabled="!auth()->user()->can('update', $settings)" :options="[
-                                        ['value' => true, 'label' => 'Enabled'],
-                                        ['value' => false, 'label' => 'Disabled'],
+                                        ['value' => true, 'label' => __('common.enabled')],
+                                        ['value' => false, 'label' => __('common.disabled')],
                                     ]" />
                             </div>
                         </div>
                         <x-forms.input canGate="update" :canResource="$settings" required id="smtpHost"
-                            placeholder="smtp.mailgun.org" label="Host" />
+                            placeholder="smtp.mailgun.org" :label="__('common.host')" />
                         <x-forms.input canGate="update" :canResource="$settings" required id="smtpPort"
-                            type="number" placeholder="587" label="Port" />
+                            type="number" placeholder="587" :label="__('common.port')" />
                         <x-forms.listbox canGate="update" :canResource="$settings" id="smtpEncryption" :label="__('common.encryption')" required
                             :disabled="!auth()->user()->can('update', $settings)" :options="[
-                            ['value' => 'starttls', 'label' => 'StartTLS'],
-                            ['value' => 'tls', 'label' => 'TLS / SSL'],
+                            ['value' => 'starttls', 'label' => __('settings.starttls')],
+                            ['value' => 'tls', 'label' => __('settings.tls_ssl')],
                             ['value' => 'none', 'label' => __('common.none')],
                         ]" />
                         <x-forms.input canGate="update" :canResource="$settings" id="smtpUsername"
@@ -127,8 +127,8 @@
                         <x-forms.listbox canGate="update" :canResource="$settings" id="resendEnabled" :label="__('common.resend_delivery')"
                             onChange="submitResend"
                             :disabled="!auth()->user()->can('update', $settings)" :options="[
-                                ['value' => true, 'label' => 'Enabled'],
-                                ['value' => false, 'label' => 'Disabled'],
+                                        ['value' => true, 'label' => __('common.enabled')],
+                                        ['value' => false, 'label' => __('common.disabled')],
                             ]" />
                         @can('update', $settings)
                             <x-forms.input canGate="update" :canResource="$settings" :required="$resendEnabled"

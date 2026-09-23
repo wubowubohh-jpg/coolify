@@ -1,6 +1,6 @@
 @props([
-    'title' => 'Notifications',
-    'subtitle' => 'Delivery channels for team events',
+    'title' => __('common.notifications'),
+    'subtitle' => __('common.notification_description'),
     // Topbar + channel tabs identify the page at xl+; keep the H1 on tablet.
     'titleOnDesktop' => false,
 ])

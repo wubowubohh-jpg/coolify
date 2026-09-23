@@ -138,7 +138,7 @@ class Webhook extends Component
             $this->validate([
                 'webhookUrl' => 'required',
             ], [
-                'webhookUrl.required' => 'Webhook URL is required.',
+                'webhookUrl.required' => __('common.webhook_url_required'),
             ]);
             $this->saveModel();
         } catch (\Throwable $e) {
@@ -177,7 +177,7 @@ class Webhook extends Component
         $this->syncData(true);
         refreshSession();
 
-        $this->dispatch('success', 'Settings saved.');
+        $this->dispatch('success', __('common.settings_saved'));
     }
 
     public function sendTestNotification()
@@ -186,7 +186,7 @@ class Webhook extends Component
             $this->authorize('sendTest', $this->settings);
 
             $this->team->notify(new Test(channel: 'webhook'));
-            $this->dispatch('success', 'Test notification sent.');
+            $this->dispatch('success', __('common.test_notification_sent'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }

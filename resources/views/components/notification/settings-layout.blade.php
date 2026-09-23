@@ -1,19 +1,41 @@
 @php
     $notificationMenuItems = [
-        ['label' => 'Email', 'route' => 'notifications.email', 'icon' => 'mail'],
-        ['label' => 'Discord', 'route' => 'notifications.discord', 'brandIcon' => 'discord'],
-        ['label' => 'Telegram', 'route' => 'notifications.telegram', 'brandIcon' => 'telegram'],
-        ['label' => 'Slack', 'route' => 'notifications.slack', 'brandIcon' => 'slack'],
-        ['label' => 'Pushover', 'route' => 'notifications.pushover', 'brandIcon' => 'pushover'],
-        ['label' => 'Webhook', 'route' => 'notifications.webhook', 'icon' => 'destinations'],
-    ];
-    $notificationTranslations = [
-        'Email' => 'settings.email',
-        'Discord' => 'common.discord',
-        'Telegram' => 'common.telegram',
-        'Slack' => 'common.slack',
-        'Pushover' => 'common.pushover',
-        'Webhook' => 'common.webhook',
+        [
+            'key' => 'email',
+            'translation' => 'settings.email',
+            'route' => 'notifications.email',
+            'icon' => 'mail',
+        ],
+        [
+            'key' => 'discord',
+            'translation' => 'common.discord',
+            'route' => 'notifications.discord',
+            'brandIcon' => 'discord',
+        ],
+        [
+            'key' => 'telegram',
+            'translation' => 'common.telegram',
+            'route' => 'notifications.telegram',
+            'brandIcon' => 'telegram',
+        ],
+        [
+            'key' => 'slack',
+            'translation' => 'common.slack',
+            'route' => 'notifications.slack',
+            'brandIcon' => 'slack',
+        ],
+        [
+            'key' => 'pushover',
+            'translation' => 'common.pushover',
+            'route' => 'notifications.pushover',
+            'brandIcon' => 'pushover',
+        ],
+        [
+            'key' => 'webhook',
+            'translation' => 'common.webhook',
+            'route' => 'notifications.webhook',
+            'icon' => 'destinations',
+        ],
     ];
 @endphp
 
@@ -28,7 +50,7 @@
                 class="grid grid-cols-2 gap-0.5 border-y border-neutral-200 py-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-1 xl:border-y-0 xl:py-0 dark:border-white/[0.06]">
                 <div class="nav-section hidden xl:block">{{ __('common.notifications') }}</div>
                 @foreach ($notificationMenuItems as $menuItem)
-                    <a wire:key="notification-settings-{{ str($menuItem['label'])->slug() }}"
+                    <a wire:key="notification-settings-{{ $menuItem['key'] }}"
                         @class(['menu-item', 'menu-item-active' => request()->routeIs($menuItem['route'])])
                         {{ wireNavigate() }} href="{{ route($menuItem['route']) }}">
                         @if (isset($menuItem['brandIcon']))
@@ -37,7 +59,7 @@
                         @else
                             <x-reicon :name="$menuItem['icon']" class="menu-item-icon" />
                         @endif
-                        <span class="menu-item-label">{{ __($notificationTranslations[$menuItem['label']] ?? $menuItem['label']) }}</span>
+                        <span class="menu-item-label">{{ __($menuItem['translation']) }}</span>
                     </a>
                 @endforeach
             </nav>

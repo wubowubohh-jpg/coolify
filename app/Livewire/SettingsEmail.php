@@ -116,7 +116,7 @@ class SettingsEmail extends Component
             $this->authorize('update', $this->settings);
             $this->resetErrorBag();
             $this->syncData(true);
-            $this->dispatch('success', 'Transactional email settings updated.');
+            $this->dispatch('success', __('common.transactional_email_settings_updated'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }
@@ -176,13 +176,13 @@ class SettingsEmail extends Component
                 'smtpTimeout' => 'nullable|numeric',
                 'smtpEhloDomain' => ['nullable', 'string', new ValidHostname],
             ], [
-                'smtpFromAddress.required' => 'From Address is required.',
-                'smtpFromAddress.email' => 'Please enter a valid email address.',
-                'smtpFromName.required' => 'From Name is required.',
-                'smtpHost.required' => 'SMTP Host is required.',
-                'smtpPort.required' => 'SMTP Port is required.',
-                'smtpPort.numeric' => 'SMTP Port must be a number.',
-                'smtpEncryption.required' => 'Encryption type is required.',
+                'smtpFromAddress.required' => __('common.from_address_required'),
+                'smtpFromAddress.email' => __('common.valid_email_address'),
+                'smtpFromName.required' => __('common.from_name_required'),
+                'smtpHost.required' => __('common.smtp_host_required'),
+                'smtpPort.required' => __('common.smtp_port_required'),
+                'smtpPort.numeric' => __('common.smtp_port_numeric'),
+                'smtpEncryption.required' => __('common.encryption_required'),
             ]);
 
             $this->settings->smtp_enabled = $this->smtpEnabled;
@@ -198,7 +198,7 @@ class SettingsEmail extends Component
 
             $this->settings->save();
 
-            $this->dispatch('success', 'SMTP settings updated.');
+            $this->dispatch('success', __('common.smtp_settings_updated'));
         } catch (\Throwable $e) {
             $this->smtpEnabled = false;
 
@@ -216,10 +216,10 @@ class SettingsEmail extends Component
                 'smtpFromAddress' => 'required|email',
                 'smtpFromName' => 'required|string',
             ], [
-                'resendApiKey.required' => 'Resend API Key is required.',
-                'smtpFromAddress.required' => 'From Address is required.',
-                'smtpFromAddress.email' => 'Please enter a valid email address.',
-                'smtpFromName.required' => 'From Name is required.',
+                'resendApiKey.required' => __('common.resend_api_key_required'),
+                'smtpFromAddress.required' => __('common.from_address_required'),
+                'smtpFromAddress.email' => __('common.valid_email_address'),
+                'smtpFromName.required' => __('common.from_name_required'),
             ]);
 
             $this->settings->resend_enabled = $this->resendEnabled;
@@ -229,7 +229,7 @@ class SettingsEmail extends Component
 
             $this->settings->save();
 
-            $this->dispatch('success', 'Resend settings updated.');
+            $this->dispatch('success', __('common.resend_settings_updated'));
         } catch (\Throwable $e) {
             $this->resendEnabled = false;
 
@@ -246,11 +246,11 @@ class SettingsEmail extends Component
                 'smtpFromAddress' => 'required|email',
                 'smtpFromName' => 'required|string',
             ], [
-                'testEmailAddress.required' => 'Test email address is required.',
-                'testEmailAddress.email' => 'Please enter a valid email address.',
-                'smtpFromAddress.required' => 'From Address is required.',
-                'smtpFromAddress.email' => 'Please enter a valid email address.',
-                'smtpFromName.required' => 'From Name is required.',
+                'testEmailAddress.required' => __('common.test_email_address_required'),
+                'testEmailAddress.email' => __('common.valid_email_address'),
+                'smtpFromAddress.required' => __('common.from_address_required'),
+                'smtpFromAddress.email' => __('common.valid_email_address'),
+                'smtpFromName.required' => __('common.from_name_required'),
             ]);
 
             $this->settings->smtp_from_address = $this->smtpFromAddress;
@@ -262,13 +262,13 @@ class SettingsEmail extends Component
                 $perMinute = 0,
                 function () {
                     $this->team?->notifyNow(new Test($this->testEmailAddress));
-                    $this->dispatch('success', 'Test Email sent.');
+                    $this->dispatch('success', __('common.test_email_sent'));
                 },
                 $decaySeconds = 10,
             );
 
             if (! $executed) {
-                throw new \Exception('Too many messages sent!');
+                throw new \Exception(__('common.too_many_messages'));
             }
         } catch (\Throwable $e) {
             return handleError($e, $this);

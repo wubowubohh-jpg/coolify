@@ -250,8 +250,8 @@ class Telegram extends Component
                 'telegramToken' => 'required',
                 'telegramChatId' => 'required',
             ], [
-                'telegramToken.required' => 'Telegram Token is required.',
-                'telegramChatId.required' => 'Telegram Chat ID is required.',
+                'telegramToken.required' => __('common.telegram_token_required'),
+                'telegramChatId.required' => __('common.telegram_chat_id_required'),
             ]);
             $this->saveModel();
         } catch (\Throwable $e) {
@@ -269,7 +269,7 @@ class Telegram extends Component
 
         $this->syncData(true);
         refreshSession();
-        $this->dispatch('success', 'Settings saved.');
+        $this->dispatch('success', __('common.settings_saved'));
     }
 
     public function sendTestNotification()
@@ -277,7 +277,7 @@ class Telegram extends Component
         try {
             $this->authorize('sendTest', $this->settings);
             $this->team->notify(new Test(channel: 'telegram'));
-            $this->dispatch('success', 'Test notification sent.');
+            $this->dispatch('success', __('common.test_notification_sent'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }

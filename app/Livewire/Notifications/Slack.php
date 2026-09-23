@@ -142,7 +142,7 @@ class Slack extends Component
             $this->validate([
                 'slackWebhookUrl' => 'required',
             ], [
-                'slackWebhookUrl.required' => 'Slack Webhook URL is required.',
+                'slackWebhookUrl.required' => __('common.slack_webhook_required'),
             ]);
             $this->saveModel();
         } catch (\Throwable $e) {
@@ -184,7 +184,7 @@ class Slack extends Component
 
         $this->syncData(true);
         refreshSession();
-        $this->dispatch('success', 'Settings saved.');
+        $this->dispatch('success', __('common.settings_saved'));
     }
 
     public function sendTestNotification()
@@ -192,7 +192,7 @@ class Slack extends Component
         try {
             $this->authorize('sendTest', $this->settings);
             $this->team->notify(new Test(channel: 'slack'));
-            $this->dispatch('success', 'Test notification sent.');
+            $this->dispatch('success', __('common.test_notification_sent'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }

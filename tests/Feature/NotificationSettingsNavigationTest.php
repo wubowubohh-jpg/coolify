@@ -14,14 +14,16 @@ it('uses shared sidebar navigation for every notification channel', function () 
 
     expect($sidebar)
         ->toContain('application-settings-navigation')
-        ->toContain('Notification settings')
-        ->toContain("'label' => 'Email'")
+        ->toContain('aria-label="{{ __(\'common.notification_settings\') }}"')
+        ->toContain("'translation' => 'settings.email'")
+        ->toContain("'key' => 'email'")
         ->toContain("'icon' => 'mail'")
-        ->toContain("'label' => 'Discord'")
-        ->toContain("'label' => 'Telegram'")
-        ->toContain("'label' => 'Slack'")
-        ->toContain("'label' => 'Pushover'")
-        ->toContain("'label' => 'Webhook'");
+        ->toContain("'translation' => 'common.discord'")
+        ->toContain("'translation' => 'common.telegram'")
+        ->toContain("'translation' => 'common.slack'")
+        ->toContain("'translation' => 'common.pushover'")
+        ->toContain("'translation' => 'common.webhook'")
+        ->toContain("__($menuItem['translation'])");
 
     foreach (['discord', 'telegram', 'slack', 'pushover'] as $channel) {
         expect(public_path("svgs/{$channel}.svg"))->toBeFile();
@@ -51,9 +53,9 @@ it('keeps telegram forum topics separate from event multiselects', function () {
         ->toContain('channel="telegram" threaded');
 
     expect($grid)
-        ->toContain('title="Notification events"')
-        ->toContain('title="Forum topics"')
-        ->toContain('Enable one or more events above to assign forum topic IDs.')
+        ->toContain(':title="__(\'common.notification_events\')"')
+        ->toContain(':title="__(\'common.forum_topics\')"')
+        ->toContain("{{ __('common.enable_events_forum') }}")
         ->toContain('$enabledThreadEvents')
         ->not->toContain('label="{{ $event[\'label\'] }} thread ID"')
         ->not->toContain('border-l border-neutral-200 pl-3');
@@ -71,7 +73,8 @@ it('uses action buttons and browser validation for notification channel state', 
     $actions = file_get_contents(resource_path('views/components/notification/channel-actions.blade.php'));
 
     expect($actions)
-        ->toContain('{{ $enabled ? \'Disable\' : \'Enable\' }}')
+        ->toContain("{{ \$enabled ? __('common.disable') : __('common.enable') }}")
+        ->toContain("{{ __('common.send_test') }}")
         ->toContain('reportValidity()')
         // @js() must live on plain HTML (x-data), not on <x-forms.button> attributes —
         // Blade leaves @js uncompiled inside component tag attributes, which breaks Alpine.

@@ -81,6 +81,11 @@
             </svg>
         </button>
         <div x-show="appearanceOpen" x-collapse.duration.200ms class="mx-1 pb-1 pl-6">
+            <a href="{{ route('profile.appearance') }}" {{ wireNavigate() }} @click="closePanel()"
+                class="mb-1 flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-200 hover:text-neutral-950 dark:text-fg dark:hover:bg-white/[0.06] dark:hover:text-fg">
+                <x-reicon name="settings" class="size-3.5 opacity-80" />
+                {{ __('nav.appearance_settings') }}
+            </a>
             <x-theme-controls variant="menu" />
         </div>
 
