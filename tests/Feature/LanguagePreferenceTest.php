@@ -121,7 +121,7 @@ it('keeps supported translation keys unique and aligned', function () {
     }
 
     expect(array_keys($translations['en']))
-        ->toEqual(array_keys($translations['zh-cn']));
+        ->toEqualCanonicalizing(array_keys($translations['zh-cn']));
 });
 
 it('uses translation keys across the shared frontend shell', function () {

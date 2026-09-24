@@ -12,7 +12,7 @@ class CreatePage extends Component
 
     public ?string $token_uuid = null;
 
-    public string $title = 'New Server';
+    public string $title = '';
 
     public ?string $tokenProvider = null;
 
@@ -43,8 +43,8 @@ class CreatePage extends Component
             'hetzner' => 'Hetzner',
             'vultr' => 'Vultr',
             'digital-ocean' => 'DigitalOcean',
-            'manual' => 'Manual',
-            default => 'New Server',
+            'manual' => __('common.manual'),
+            default => __('common.new_server'),
         };
     }
 

@@ -68,7 +68,7 @@ class Index extends Component
         }
         $this->settings = instanceSettings();
         if (! isCloud()) {
-            $this->server = Server::findOrFail(0);
+            $this->server = Server::find(0);
         }
         $this->fqdn = $this->settings->fqdn;
         $this->is_dashboard_force_https_enabled = $this->settings->is_dashboard_force_https_enabled;

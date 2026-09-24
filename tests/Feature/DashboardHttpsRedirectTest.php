@@ -58,6 +58,25 @@ test('instance administrators can configure the dashboard HTTPS redirect', funct
     expect($settings->fresh()->is_dashboard_force_https_enabled)->toBeFalse();
 });
 
+test('instance settings can open when the local server sentinel is missing', function () {
+    config()->set('constants.coolify.self_hosted', true);
+
+    $rootTeam = Team::find(0) ?? Team::factory()->create(['id' => 0]);
+    $settings = InstanceSettings::forceCreate(['id' => 0]);
+    Once::flush();
+
+    $user = User::factory()->create();
+    $rootTeam->members()->attach($user->id, ['role' => 'admin']);
+
+    $this->actingAs($user);
+    session(['currentTeam' => ['id' => $rootTeam->id]]);
+
+    Livewire::test(Index::class)
+        ->assertSet('settings.id', $settings->id)
+        ->assertSet('server', null)
+        ->assertSee(__('settings.general'));
+});
+
 test('dashboard HTTPS redirect saves immediately when changed', function () {
     $contents = file_get_contents(resource_path('views/livewire/settings/index.blade.php'));
 

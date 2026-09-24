@@ -181,8 +181,8 @@ class ByDigitalOcean extends Component
     protected function messages(): array
     {
         return [
-            'selected_token_id.required' => 'Please select a DigitalOcean token.',
-            'selected_token_id.exists' => 'Selected token not found.',
+            'selected_token_id.required' => __('common.select_provider_token', ['provider' => 'DigitalOcean']),
+            'selected_token_id.exists' => __('common.selected_token_not_found'),
         ];
     }
 
@@ -262,7 +262,7 @@ class ByDigitalOcean extends Component
 
         if (! $token) {
             $this->loading_data = false;
-            $this->dispatch('error', 'Please select a valid DigitalOcean token.');
+            $this->dispatch('error', __('common.invalid_provider_token', ['provider' => 'DigitalOcean']));
 
             return;
         }
@@ -458,7 +458,7 @@ class ByDigitalOcean extends Component
             $this->authorize('create', Server::class);
 
             if (Team::serverLimitReached()) {
-                return $this->dispatch('error', 'You have reached the server limit for your subscription.');
+                return $this->dispatch('error', __('common.server_limit_reached'));
             }
 
             if ($this->save_cloud_init_script && ! empty($this->cloud_init_script) && ! empty($this->cloud_init_script_name)) {

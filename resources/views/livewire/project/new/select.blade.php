@@ -108,7 +108,7 @@
                     <div
                         class="application-settings-section-body grid grid-cols-1 justify-start gap-3 text-left md:grid-cols-2 xl:grid-cols-3">
                         <template x-for="application in filteredGitBasedApplications" :key="application.name">
-                            <article role="button" tabindex="0" :aria-label="'Deploy ' + application.name"
+                            <article role="button" tabindex="0" :aria-label="@js(__('common.deploy')) + ' ' + application.name"
                                 @click="setType(application.id)" @keydown.enter.self.prevent="setType(application.id)"
                                 @keydown.space.self.prevent="setType(application.id)"
                                 class="group flex min-h-48 cursor-pointer flex-col rounded-xl border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
@@ -154,7 +154,7 @@
                         </template>
 
                         <template x-for="application in filteredDockerBasedApplications" :key="application.name">
-                            <article role="button" tabindex="0" :aria-label="'Deploy ' + application.name"
+                            <article role="button" tabindex="0" :aria-label="@js(__('common.deploy')) + ' ' + application.name"
                                 @click="setType(application.id)" @keydown.enter.self.prevent="setType(application.id)"
                                 @keydown.space.self.prevent="setType(application.id)"
                                 class="group flex min-h-48 cursor-pointer flex-col rounded-xl border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
@@ -203,7 +203,7 @@
                     <div
                         class="application-settings-section-body grid grid-cols-1 justify-start gap-3 text-left md:grid-cols-2 xl:grid-cols-3">
                         <template x-for="database in filteredDatabases" :key="database.id">
-                            <article role="button" tabindex="0" :aria-label="'Deploy ' + database.name"
+                            <article role="button" tabindex="0" :aria-label="@js(__('common.deploy')) + ' ' + database.name"
                                 @click="setType(database.id)" @keydown.enter.self.prevent="setType(database.id)"
                                 @keydown.space.self.prevent="setType(database.id)"
                                 class="group flex min-h-48 cursor-pointer flex-col rounded-xl border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]">
@@ -278,7 +278,7 @@
 
                         <div class="grid grid-cols-1 justify-start gap-3 text-left md:grid-cols-2 xl:grid-cols-3">
                             <template x-for="service in filteredServices" :key="service.name">
-                                <article role="button" tabindex="0" :aria-label="'Deploy ' + service.name"
+                                <article role="button" tabindex="0" :aria-label="@js(__('common.deploy')) + ' ' + service.name"
                                     @click="setType('one-click-service-' + service.id)"
                                     @keydown.enter.self.prevent="setType('one-click-service-' + service.id)"
                                     @keydown.space.self.prevent="setType('one-click-service-' + service.id)"

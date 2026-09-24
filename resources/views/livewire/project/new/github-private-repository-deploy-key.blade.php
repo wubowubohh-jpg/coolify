@@ -48,7 +48,7 @@
                         <h2>{{ __('common.repository_configuration') }}</h2>
                         <p>{{ __('common.repository_configuration_description') }}</p>
                     </div>
-                    <x-forms.button type="submit" isHighlighted>Continue</x-forms.button>
+                    <x-forms.button type="submit" isHighlighted>{{ __('common.continue') }}</x-forms.button>
                 </div>
                 <div class="application-settings-section-body space-y-5">
                     <x-forms.input id="repository_url" required :label="__('common.repository')"

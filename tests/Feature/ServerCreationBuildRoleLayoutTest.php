@@ -7,11 +7,11 @@ test('server creation keeps private key actions together and advanced options co
         ->toContain('class="flex items-end gap-3"')
         ->toContain('<x-forms.collapsible class="mt-5 border-t border-neutral-200 pt-4 dark:border-white/[0.08]"')
         ->toContain('<x-forms.listbox id="is_build_server"')
-        ->toContain('label="Use as a dedicated build server"')
-        ->toContain("['value' => false, 'label' => 'No']")
-        ->toContain("['value' => true, 'label' => 'Yes']")
+        ->toContain(':label="__(\'common.dedicated_build_server\')"')
+        ->toContain("['value' => false, 'label' => __('common.no')]")
+        ->toContain("['value' => true, 'label' => __('common.yes')]")
         ->not->toContain('<x-forms.checkbox id="is_build_server"')
-        ->toContain('helper="Build servers compile applications but do not host deployments. Enabling this makes the server build-only."');
+        ->toContain(':helper="__(\'common.dedicated_build_server_helper\')"');
 });
 
 test('server creation places the IP address and private key before optional details', function () {

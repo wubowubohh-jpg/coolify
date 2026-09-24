@@ -100,7 +100,7 @@
                         <h2>{{ __('common.build_configuration') }}</h2>
                         <p>{{ __('common.build_strategy_description') }}</p>
                         </div>
-                        <x-forms.button type="submit" isHighlighted>Continue</x-forms.button>
+                        <x-forms.button type="submit" isHighlighted>{{ __('common.continue') }}</x-forms.button>
                     </div>
                     <div class="application-settings-section-body space-y-5">
                         <div class="grid gap-4 sm:grid-cols-2">

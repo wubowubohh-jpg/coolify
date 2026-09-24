@@ -67,21 +67,21 @@ class ByIp extends Component
     protected function messages(): array
     {
         return array_merge(ValidationPatterns::combinedMessages(), [
-            'private_key_id.integer' => 'The Private Key field must be an integer.',
-            'private_key_id.nullable' => 'The Private Key field is optional.',
-            'new_private_key_name.string' => 'The Private Key Name must be a string.',
-            'new_private_key_description.string' => 'The Private Key Description must be a string.',
-            'new_private_key_value.string' => 'The Private Key Value must be a string.',
-            'ip.required' => 'The IP Address/Domain is required.',
-            'ip.string' => 'The IP Address/Domain must be a string.',
-            'user.required' => 'The User field is required.',
-            'user.string' => 'The User field must be a string.',
+            'private_key_id.integer' => __('validation.custom.private_key_id.integer'),
+            'private_key_id.nullable' => __('validation.custom.private_key_id.nullable'),
+            'new_private_key_name.string' => __('validation.custom.new_private_key_name.string'),
+            'new_private_key_description.string' => __('validation.custom.new_private_key_description.string'),
+            'new_private_key_value.string' => __('validation.custom.new_private_key_value.string'),
+            'ip.required' => __('validation.custom.ip.required'),
+            'ip.string' => __('validation.custom.ip.string'),
+            'user.required' => __('validation.custom.user.required'),
+            'user.string' => __('validation.custom.user.string'),
             ...ValidationPatterns::serverUsernameMessages(),
-            'port.required' => 'The Port field is required.',
-            'port.integer' => 'The Port field must be an integer.',
-            'port.between' => 'The Port field must be between 1 and 65535.',
-            'is_build_server.required' => 'The Build Server field is required.',
-            'is_build_server.boolean' => 'The Build Server field must be true or false.',
+            'port.required' => __('validation.custom.port.required'),
+            'port.integer' => __('validation.custom.port.integer'),
+            'port.between' => __('validation.custom.port.between'),
+            'is_build_server.required' => __('validation.custom.is_build_server.required'),
+            'is_build_server.boolean' => __('validation.custom.is_build_server.boolean'),
         ]);
     }
 
@@ -103,7 +103,7 @@ class ByIp extends Component
             $this->authorize('create', PrivateKey::class);
 
             if (! in_array($type, ['ed25519', 'rsa'], true)) {
-                $this->dispatch('error', 'Invalid private key type.');
+                $this->dispatch('error', __('common.invalid_private_key_type'));
 
                 return;
             }
@@ -117,7 +117,7 @@ class ByIp extends Component
             ]);
 
             $this->handlePrivateKeyCreated($privateKey->id);
-            $this->dispatch('success', 'Private key created successfully.');
+            $this->dispatch('success', __('common.private_key_created_successfully'));
         } catch (\Throwable $e) {
             handleError($e, $this);
         }
@@ -143,17 +143,17 @@ class ByIp extends Component
             $foundServer = Server::whereIp($this->ip)->first();
             if ($foundServer) {
                 if ($foundServer->team_id === currentTeam()->id) {
-                    return $this->dispatch('error', 'A server with this IP/Domain already exists in your team.');
+                    return $this->dispatch('error', __('common.server_exists_team'));
                 }
 
-                return $this->dispatch('error', 'A server with this IP/Domain is already in use by another team.');
+                return $this->dispatch('error', __('common.server_exists_other_team'));
             }
 
             if (is_null($this->private_key_id)) {
-                return $this->dispatch('error', 'You must select a private key');
+                return $this->dispatch('error', __('common.select_private_key_required'));
             }
             if (Team::serverLimitReached()) {
-                return $this->dispatch('error', 'You have reached the server limit for your subscription.');
+                return $this->dispatch('error', __('common.server_limit_reached'));
             }
             $payload = [
                 'name' => $this->name,

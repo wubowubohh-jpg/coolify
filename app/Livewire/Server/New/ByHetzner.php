@@ -213,8 +213,8 @@ class ByHetzner extends Component
     protected function messages(): array
     {
         return [
-            'selected_token_id.required' => 'Please select a Hetzner token.',
-            'selected_token_id.exists' => 'Selected token not found.',
+            'selected_token_id.required' => __('common.select_provider_token', ['provider' => 'Hetzner']),
+            'selected_token_id.exists' => __('common.selected_token_not_found'),
         ];
     }
 
@@ -307,7 +307,7 @@ class ByHetzner extends Component
 
         if (! $token) {
             $this->loading_data = false;
-            $this->dispatch('error', 'Please select a valid Hetzner token.');
+            $this->dispatch('error', __('common.invalid_provider_token', ['provider' => 'Hetzner']));
 
             return;
         }
@@ -689,7 +689,7 @@ class ByHetzner extends Component
             $this->authorize('create', Server::class);
 
             if (Team::serverLimitReached()) {
-                return $this->dispatch('error', 'You have reached the server limit for your subscription.');
+                return $this->dispatch('error', __('common.server_limit_reached'));
             }
 
             // Save cloud-init script if requested
