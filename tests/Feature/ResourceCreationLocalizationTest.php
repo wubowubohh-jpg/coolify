@@ -91,3 +91,43 @@ it('localizes Git source settings and related workflows', function () {
         ->toContain("__('source.gitlab_not_connected')")
         ->not->toContain('GitLab App updated.');
 });
+
+it('localizes the application general settings page', function () {
+    $view = file_get_contents(resource_path('views/livewire/project/application/general.blade.php'));
+    $component = file_get_contents(app_path('Livewire/Project/Application/General.php'));
+    $dnsHelper = file_get_contents(base_path('bootstrap/helpers/shared.php'));
+
+    expect($view)
+        ->toContain("__('common.application_details')")
+        ->toContain("__('common.access')")
+        ->toContain("__('common.build_pipeline')")
+        ->toContain("__('common.networking')")
+        ->toContain("__('common.runtime')")
+        ->toContain("__('common.security')")
+        ->toContain("__('common.deployment_lifecycle')")
+        ->toContain("__('common.container_labels')")
+        ->toContain("__('common.port_mappings')")
+        ->not->toContain('title="Application details"')
+        ->not->toContain('title="Access"')
+        ->not->toContain('>Public access<')
+        ->not->toContain('title="Build pipeline"')
+        ->not->toContain('title="Networking"')
+        ->not->toContain('title="Runtime"')
+        ->not->toContain('title="Security"')
+        ->not->toContain('title="Deployment lifecycle"')
+        ->not->toContain('title="Container labels"')
+        ->not->toContain('label="Image"')
+        ->not->toContain('label="Tag"');
+
+    expect($component)
+        ->toContain("__('common.compose_parse_failed')")
+        ->toContain("__('common.docker_compose_loaded')")
+        ->toContain("__('common.application_settings_updated')")
+        ->not->toContain("'Settings saved.'")
+        ->not->toContain("'Docker compose file loaded.'")
+        ->not->toContain("'Domain generated.'");
+
+    expect($dnsHelper)
+        ->toContain("__('common.required_dns_record'")
+        ->not->toContain('Required DNS record type {$recordType} pointing to {$address}');
+});

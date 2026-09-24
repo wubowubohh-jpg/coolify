@@ -2108,12 +2108,12 @@ function dnsMismatchGuidanceMessage(?string $targetLabel, ?string $ipForRecordTy
         ?? dnsGuidanceTargetAddress($targetLabel);
 
     if ($address === null) {
-        return 'DNS validation failed. Check your DNS records.';
+        return __('common.dns_records_invalid');
     }
 
     $recordType = dnsRecordTypeForIp($address);
 
-    return "Required DNS record type {$recordType} pointing to {$address}";
+    return __('common.required_dns_record', ['type' => $recordType, 'address' => $address]);
 }
 
 function validateDNSEntry(string $fqdn, Server $server)

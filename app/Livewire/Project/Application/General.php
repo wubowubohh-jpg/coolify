@@ -284,7 +284,7 @@ class General extends Component
         try {
             $this->parsedServices = $this->application->parse();
             if (is_null($this->parsedServices) || empty($this->parsedServices)) {
-                $this->dispatch('error', 'Failed to parse your docker-compose file. Please check the syntax and try again.');
+                $this->dispatch('error', __('common.compose_parse_failed'));
                 // Still sync data even if parse fails, so form fields are populated
                 $this->syncData();
 
@@ -467,7 +467,7 @@ class General extends Component
                 $this->application->save();
             }
 
-            $this->dispatch('success', 'Settings saved.');
+            $this->dispatch('success', __('common.settings_saved'));
             $this->application->refresh();
 
             $this->syncData();
@@ -507,7 +507,7 @@ class General extends Component
 
             ['parsedServices' => $this->parsedServices, 'initialDockerComposeLocation' => $this->initialDockerComposeLocation] = $this->application->loadComposeFile($isInit, $restoreBaseDirectory, $restoreDockerComposeLocation);
             if (is_null($this->parsedServices)) {
-                $showToast && $this->dispatch('error', 'Failed to parse your docker-compose file. Please check the syntax and try again.');
+                $showToast && $this->dispatch('error', __('common.compose_parse_failed'));
 
                 return;
             }
@@ -523,7 +523,7 @@ class General extends Component
             // Convert service names with dots and dashes to use underscores for HTML form binding
             $this->parsedServiceDomains = $this->sanitizeParsedServiceDomainsForForm($this->parsedServiceDomains);
 
-            $showToast && $this->dispatch('success', 'Docker compose file loaded.');
+            $showToast && $this->dispatch('success', __('common.docker_compose_loaded'));
             $this->dispatch('compose_loaded');
             $this->dispatch('storageCountsChanged')->to(Storage::class);
             $this->dispatch('refreshEnvs');
@@ -560,7 +560,7 @@ class General extends Component
 
             $this->application->docker_compose_domains = json_encode($originalDomains);
             $this->application->save();
-            $this->dispatch('success', 'Domain generated.');
+            $this->dispatch('success', __('common.domain_generated'));
             if ($this->application->build_pack === 'dockercompose') {
                 $this->loadComposeFile(showToast: false);
             }
@@ -631,7 +631,7 @@ class General extends Component
                 $this->application->refresh();
                 $this->syncData();
                 $this->resetDefaultLabels();
-                $this->dispatch('success', 'Wildcard domain generated.');
+                $this->dispatch('success', __('common.wildcard_domain_generated'));
             }
         } catch (\Throwable $e) {
             return handleError($e, $this);
@@ -648,7 +648,7 @@ class General extends Component
             $this->application->save();
             $this->application->refresh();
             $this->syncData();
-            $this->dispatch('success', 'Nginx configuration generated.');
+            $this->dispatch('success', __('common.nginx_configuration_generated'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }
@@ -686,7 +686,7 @@ class General extends Component
                         $server = $this->application->destination->server;
                         $target = serverDnsTargetIp($server) ?? $server->ip;
                         $guidance = dnsMismatchGuidanceMessage($target, $target);
-                        $showToaster && $this->dispatch('error', 'Validating DNS failed.', "{$guidance}<br><br>Check this <a target='_blank' class='underline dark:text-white' href='https://coolify.io/docs/knowledge-base/dns-configuration'>documentation</a> for further help.");
+                        $showToaster && $this->dispatch('error', __('common.dns_validation_failed'), "{$guidance}<br><br>Check this <a target='_blank' class='underline dark:text-white' href='https://coolify.io/docs/knowledge-base/dns-configuration'>" . __('common.documentation') . '</a> for further help.');
                     }
                 }
             }
@@ -731,13 +731,13 @@ class General extends Component
                 $server = $this->application->destination?->server;
                 $target = $server ? (serverDnsTargetIp($server) ?? $server->ip) : null;
                 $dnsHint = dnsMismatchGuidanceMessage($target, $target);
-                $this->dispatch('error', "You want to redirect to www, but you do not have a www domain set.<br><br>Please add www to your domain list ({$dnsHint}).");
+                $this->dispatch('error', __('common.redirect_www_missing', ['hint' => $dnsHint]));
 
                 return;
             }
             $this->application->save();
             $this->resetDefaultLabels();
-            $this->dispatch('success', 'Redirect updated.');
+            $this->dispatch('success', __('common.redirect_updated'));
         } catch (\Throwable $e) {
             return handleError($e, $this);
         }
@@ -862,7 +862,7 @@ class General extends Component
                                 $server = $this->application->destination->server;
                                 $target = serverDnsTargetIp($server) ?? $server->ip;
                                 $guidance = dnsMismatchGuidanceMessage($target, $target);
-                                $showToaster && $this->dispatch('error', 'Validating DNS failed.', "{$guidance}<br><br>Check this <a target='_blank' class='underline dark:text-white' href='https://coolify.io/docs/knowledge-base/dns-configuration'>documentation</a> for further help.");
+                                $showToaster && $this->dispatch('error', __('common.dns_validation_failed'), "{$guidance}<br><br>Check this <a target='_blank' class='underline dark:text-white' href='https://coolify.io/docs/knowledge-base/dns-configuration'>" . __('common.documentation') . '</a> for further help.');
                             }
                         }
                     }
@@ -891,7 +891,7 @@ class General extends Component
             if ($oldPortsExposes !== $this->portsExposes) {
                 $this->dispatch('applicationNetworkingUpdated')->to(InternalAccess::class);
             }
-            $showToaster && ! $warning && $this->dispatch('success', 'Application settings updated!');
+            $showToaster && ! $warning && $this->dispatch('success', __('common.application_settings_updated'));
         } catch (\Throwable $e) {
             $this->application->refresh();
             $this->syncData();
