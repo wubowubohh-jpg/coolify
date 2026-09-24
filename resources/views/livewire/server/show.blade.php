@@ -63,8 +63,8 @@
                     <x-unsaved-bar action="submit"
                         targets="name,description,ip,user,port,connectionTimeout,serverTimezone,wildcardDomain" />
 
-                    <x-application.settings-section id="server-overview-section" title="Server overview"
-                        helper="Connection health, provider state, operating system, and hardware details.">
+                    <x-application.settings-section id="server-overview-section" :title="__('common.server_overview')"
+                        :helper="__('common.server_overview_helper')">
                         <x-slot:actions>
                             @if ($provider)
                                 <x-status-badge :label="$provider . ($providerStatus ? ' · ' . ucfirst($providerStatus) : '')"
@@ -91,14 +91,14 @@
                             @endif
                             @if ($server->server_metadata)
                                 <x-forms.button type="button" class="size-8! px-0!"
-                                    wire:click="refreshServerMetadata" title="Refresh server details">
+                                    wire:click="refreshServerMetadata" :title="__('common.refresh_server_details')">
                                     <x-reicon name="refresh" class="size-3.5" />
                                 </x-forms.button>
                             @endif
                             @if ($server->isTransferredAway())
-                                <x-status-badge label="Transferred away" type="warning" />
+                                <x-status-badge :label="__('common.transferred_away')" type="warning" />
                             @else
-                                <x-status-badge :label="$server->isFunctional() ? 'Ready' : 'Validation required'"
+                                <x-status-badge :label="$server->isFunctional() ? __('common.ready') : __('common.validation_required')"
                                     :type="$server->isFunctional() ? 'success' : 'warning'" />
                             @endif
                         </x-slot:actions>
@@ -114,11 +114,11 @@
                                 </p>
                                 <p class="mt-1 text-xs leading-5 text-neutral-500 dark:text-fg-dim">
                                     @if ($server->isTransferredAway())
-                                        This server was migrated away from this Coolify instance and cannot be managed here.
+                                        {{ __('common.server_transferred_away_description') }}
                                     @elseif ($server->isFunctional())
-                                        The server is reachable, validated, and ready to host resources.
+                                        {{ __('common.server_ready_description') }}
                                     @else
-                                        Validate the SSH connection before using this server.
+                                        {{ __('common.validate_ssh_connection_description') }}
                                     @endif
                                 </p>
                             </div>
@@ -130,20 +130,20 @@
                             <div class="mt-4 border-t border-neutral-200 pt-4 dark:border-white/[0.08]">
                                 <x-forms.button type="button" wire:click="refreshServerMetadata">
                                     <x-reicon name="refresh" class="size-3.5" />
-                                    Fetch server details
+                                    {{ __('common.fetch_server_details') }}
                                 </x-forms.button>
                             </div>
                         @endif
                     </x-application.settings-section>
 
-                    <x-application.settings-section id="server-connection-section" title="Connection"
-                        helper="Configure how Coolify identifies, reaches, and validates this server.">
+                    <x-application.settings-section id="server-connection-section" :title="__('common.connection')"
+                        :helper="__('common.server_connection_helper')">
                         <x-slot:actions>
                             @if ($hasLinkableCloudProviders)
                                 <div x-data="{ open: false }" class="relative" @click.outside="open = false">
                                     <button type="button" class="button" @click="open = !open">
                                         <x-reicon name="plus" class="size-3.5" />
-                                        Link provider
+                                        {{ __('common.link_provider') }}
                                     </button>
                                     <div x-cloak x-show="open" x-transition.origin.top.right
                                         class="absolute top-9 right-0 z-50 w-56 rounded-lg border border-neutral-200 bg-white p-1 shadow-dropdown dark:border-white/[0.1] dark:bg-raised">
@@ -185,7 +185,7 @@
                             @endif
 
                             <x-process-dialog closeWithX mobileFullscreen size="xl" :open="$isValidating">
-                                <x-slot:title>Validate and configure</x-slot:title>
+                                <x-slot:title>{{ __('common.validate_and_configure') }}</x-slot:title>
                                 <x-slot:content>
                                     <livewire:server.validate-and-install :server="$server"
                                         :ask="$server->isFunctional() && ! $isValidating" />
@@ -193,7 +193,7 @@
                                 <x-forms.button type="button" :isHighlighted="! $server->isFunctional()"
                                     @click="processDialogOpen = true" wire:click.prevent="validateServer">
                                     <x-reicon :name="$server->isFunctional() ? 'refresh' : 'alert-circle'" class="size-3.5" />
-                                    {{ $server->isFunctional() ? 'Revalidate connection' : 'Validate connection' }}
+                                    {{ $server->isFunctional() ? __('common.revalidate_connection') : __('common.validate_connection') }}
                                 </x-forms.button>
                             </x-process-dialog>
                         </x-slot:actions>
@@ -220,39 +220,41 @@
                         @endif
 
                         <div class="grid gap-4 sm:grid-cols-2">
-                            <x-forms.input canGate="update" :canResource="$server" id="name" label="Name"
+                            <x-forms.input canGate="update" :canResource="$server" id="name" :label="__('common.name')"
                                 required :disabled="$isValidating" />
                             <x-forms.input canGate="update" :canResource="$server" id="description"
-                                label="Description" :disabled="$isValidating" />
+                                :label="__('common.description')" :disabled="$isValidating" />
                         </div>
 
                         <div class="mt-4 grid gap-4 lg:grid-cols-3">
                             <x-forms.input canGate="update" :canResource="$server" type="password" id="ip"
-                                label="IP address or domain"
-                                helper="Enter a hostname or IP address without http:// or https://."
+                                :label="__('common.ip_address_or_domain')"
+                                :helper="__('common.ip_address_or_domain_helper')"
                                 required :disabled="$isValidating" />
-                            <x-forms.input canGate="update" :canResource="$server" id="user" label="SSH user"
+                            <x-forms.input canGate="update" :canResource="$server" id="user" :label="__('common.ssh_user')"
                                 required :disabled="$isValidating" />
                             <x-forms.input canGate="update" :canResource="$server" type="number" id="port"
-                                label="SSH port" required :disabled="$isValidating" />
+                                :label="__('common.ssh_port')" required :disabled="$isValidating" />
                         </div>
 
                         <div class="mt-4 grid gap-4 lg:grid-cols-3">
                             <x-forms.input canGate="update" :canResource="$server" type="number"
-                                id="connectionTimeout" label="Connection timeout"
-                                helper="Seconds to wait before an SSH connection fails." min="1" max="300"
+                                id="connectionTimeout" :label="__('common.connection_timeout')"
+                                :helper="__('common.connection_timeout_helper')" min="1" max="300"
                                 required :disabled="$isValidating" />
-                            <x-forms.searchable-listbox id="serverTimezone" label="Server timezone"
-                                helper="Used for backups, cron jobs, and displayed timestamps."
-                                searchPlaceholder="Search timezones" emptyText="No matching timezone"
+                            <x-forms.searchable-listbox id="serverTimezone" :label="__('common.server_timezone')"
+                                :helper="__('common.server_timezone_helper')"
+                                :searchPlaceholder="__('settings.search_timezones')"
+                                :emptyText="__('settings.no_matching_timezone')"
                                 :options="collect($this->timezones)->map(fn ($timezone) => [
                                     'value' => $timezone,
                                     'label' => $timezone,
                                 ])->all()" :disabled="$isValidating || !auth()->user()->can('update', $server)" />
                             @if (!$isSwarmWorker && !$isBuildServer)
                                 <x-forms.input canGate="update" :canResource="$server"
-                                    placeholder="https://example.com" id="wildcardDomain" label="Wildcard domain"
-                                    helper="New resources can receive generated subdomains from this domain."
+                                    placeholder="https://example.com" id="wildcardDomain"
+                                    :label="__('common.wildcard_domain')"
+                                    :helper="__('common.wildcard_domain_helper')"
                                     :disabled="$isValidating" />
                             @endif
                         </div>
