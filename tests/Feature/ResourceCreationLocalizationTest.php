@@ -54,3 +54,40 @@ it('localizes the server general settings views', function () {
         ->not->toContain("'Operating system'")
         ->not->toContain("'Docker version'");
 });
+
+it('localizes Git source settings and related workflows', function () {
+    $views = [
+        resource_path('views/livewire/source/github/change.blade.php'),
+        resource_path('views/livewire/source/github/create.blade.php'),
+        resource_path('views/livewire/source/github/permissions.blade.php'),
+        resource_path('views/livewire/source/github/resources.blade.php'),
+        resource_path('views/livewire/source/gitlab/change.blade.php'),
+        resource_path('views/livewire/source/gitlab/create.blade.php'),
+        resource_path('views/source/all.blade.php'),
+        resource_path('views/livewire/project/application/source.blade.php'),
+        resource_path('views/livewire/project/shared/webhooks.blade.php'),
+    ];
+
+    $contents = implode("\n", array_map(fn (string $view): string => file_get_contents($view), $views));
+
+    expect($contents)
+        ->toContain("__('source.automated_installation')")
+        ->toContain("__('source.manual_installation')")
+        ->toContain("__('source.oauth_credentials')")
+        ->toContain("__('source.step_create_oauth_app')")
+        ->toContain("__('source.manual_git_webhooks')")
+        ->not->toContain('>Automated installation<')
+        ->not->toContain('>Manual installation<')
+        ->not->toContain('>Register with GitHub<')
+        ->not->toContain('Repository settings');
+
+    expect(file_get_contents(app_path('Livewire/Source/Github/Change.php')))
+        ->toContain("__('source.github_app_updated')")
+        ->toContain("__('source.private_key_format_not_supported')")
+        ->not->toContain('Github App updated.');
+
+    expect(file_get_contents(app_path('Livewire/Source/Gitlab/Change.php')))
+        ->toContain("__('source.gitlab_app_updated')")
+        ->toContain("__('source.gitlab_not_connected')")
+        ->not->toContain('GitLab App updated.');
+});

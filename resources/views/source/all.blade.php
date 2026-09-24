@@ -59,7 +59,7 @@
                     $isGithub = $source->getMorphClass() === 'App\\Models\\GithubApp';
                     return [
                         'name' => $source->name,
-                        'provider' => $isGithub ? 'GitHub' : 'GitLab',
+                        'provider' => $isGithub ? __('source.github_source') : __('source.gitlab_source'),
                         'organization' => $isGithub ? $source->organization : $source->group_name,
                         'status' => $source->isConnected() ? __('common.connected') : __('common.setup_incomplete'),
                     ];
@@ -75,7 +75,7 @@
             <div x-cloak x-show="viewMode === 'grid'" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($sources as $source)
                     @if ($source->getMorphClass() === 'App\Models\GithubApp')
-                        <a x-show="matches(@js([$source->name, 'GitHub', $source->organization, $source->isConnected() ? __('common.connected') : __('common.setup_incomplete')]))" class="group flex min-h-28 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:no-underline hover:shadow-md dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]"
+                        <a x-show="matches(@js([$source->name, __('source.github_source'), $source->organization, $source->isConnected() ? __('common.connected') : __('common.setup_incomplete')]))" class="group flex min-h-28 flex-col rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition-all hover:-translate-y-px hover:border-neutral-300 hover:no-underline hover:shadow-md dark:border-white/[0.08] dark:bg-white/[0.05] dark:hover:border-white/[0.14]"
                             {{ wireNavigate() }}
                             href="{{ route('source.github.show', ['github_app_uuid' => data_get($source, 'uuid')]) }}">
                             <div class="flex items-start gap-3">
@@ -88,7 +88,7 @@
                                         {{ $source->name }}
                                     </h2>
                                     <p class="mt-0.5 truncate text-[11px] text-neutral-500 dark:text-fg-faint">
-                                        {{ $source->organization ? "GitHub · {$source->organization}" : 'GitHub' }}
+                                        {{ $source->organization ? __('source.github_source_for', ['organization' => $source->organization]) : __('source.github_source') }}
                                     </p>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                                         {{ $source->name }}
                                     </h2>
                                     <p class="mt-0.5 truncate text-[11px] text-neutral-500 dark:text-fg-faint">
-                                        {{ $source->group_name ? "GitLab · {$source->group_name}" : 'GitLab' }}
+                                        {{ $source->group_name ? __('source.gitlab_source_for', ['group' => $source->group_name]) : __('source.gitlab_source') }}
                                     </p>
                                 </div>
                             </div>
@@ -136,13 +136,13 @@
                 @foreach ($sources as $source)
                     @php
                         $isGithub = $source->getMorphClass() === 'App\\Models\\GithubApp';
-                        $provider = $isGithub ? 'GitHub' : 'GitLab';
+                        $provider = $isGithub ? __('source.github_source') : __('source.gitlab_source');
                         $organization = $isGithub ? $source->organization : $source->group_name;
                         $href = $isGithub ? route('source.github.show', ['github_app_uuid' => $source->uuid]) : route('source.gitlab.show', ['gitlab_app_uuid' => $source->uuid]);
                     @endphp
                     <a x-show="matches(@js([$source->name, $provider, $organization, $source->isConnected() ? __('common.connected') : __('common.setup_incomplete')]))" {{ wireNavigate() }} href="{{ $href }}" class="grid min-h-14 min-w-[620px] grid-cols-[minmax(0,1fr)_minmax(10rem,.7fr)_9rem] items-center border-b border-neutral-200 px-4 py-2.5 text-[12px] transition-colors last:border-b-0 hover:bg-neutral-50 hover:no-underline dark:border-white/[0.07] dark:hover:bg-white/[0.025]">
                         <div class="truncate font-semibold text-black dark:text-fg">{{ $source->name }}</div>
-                        <div class="truncate text-neutral-500 dark:text-fg-dim">{{ $organization ? "{$provider} · {$organization}" : $provider }}</div>
+                        <div class="truncate text-neutral-500 dark:text-fg-dim">{{ $organization ? ($isGithub ? __('source.github_source_for', ['organization' => $organization]) : __('source.gitlab_source_for', ['group' => $organization])) : $provider }}</div>
                         <div><x-status-badge :label="$source->isConnected() ? __('common.connected') : __('common.setup_incomplete')" :type="$source->isConnected() ? 'success' : 'warning'" /></div>
                     </a>
                 @endforeach

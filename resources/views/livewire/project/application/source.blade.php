@@ -75,11 +75,11 @@
                 $currentSourceIsGithub = $currentSourceMorph === \App\Models\GithubApp::class;
                 $currentSourceIsGitlab = $currentSourceMorph === \App\Models\GitlabApp::class;
                 $currentSourceSubtitle = match (true) {
-                    $currentSourceIsGithub && filled(data_get($currentSource, 'organization')) => 'GitHub · '.$currentSource->organization,
-                    $currentSourceIsGithub => data_get($currentSource, 'is_public') ? 'Public GitHub' : 'GitHub · Personal account',
-                    $currentSourceIsGitlab && filled(data_get($currentSource, 'group_name')) => 'GitLab · '.$currentSource->group_name,
-                    $currentSourceIsGitlab => 'GitLab · Personal account',
-                    default => 'Connected source',
+                    $currentSourceIsGithub && filled(data_get($currentSource, 'organization')) => __('source.github_source_for', ['organization' => $currentSource->organization]),
+                    $currentSourceIsGithub => data_get($currentSource, 'is_public') ? __('common.public_github') : __('source.personal_github_source'),
+                    $currentSourceIsGitlab && filled(data_get($currentSource, 'group_name')) => __('source.gitlab_source_for', ['group' => $currentSource->group_name]),
+                    $currentSourceIsGitlab => __('source.personal_gitlab_source'),
+                    default => __('common.connected_source'),
                 };
             @endphp
             <x-application.settings-section :title="__('common.git_source')"
@@ -114,11 +114,11 @@
                             $sourceIsGithub = $sourceMorph === \App\Models\GithubApp::class;
                             $sourceIsGitlab = $sourceMorph === \App\Models\GitlabApp::class;
                             $sourceSubtitle = match (true) {
-                                $sourceIsGithub && filled($source->organization) => 'GitHub · '.$source->organization,
-                                $sourceIsGithub => data_get($source, 'is_public') ? 'Public GitHub' : 'GitHub · Personal account',
-                                $sourceIsGitlab && filled($source->group_name) => 'GitLab · '.$source->group_name,
-                                $sourceIsGitlab => 'GitLab · Personal account',
-                                default => 'Git source',
+                                $sourceIsGithub && filled($source->organization) => __('source.github_source_for', ['organization' => $source->organization]),
+                                $sourceIsGithub => data_get($source, 'is_public') ? __('common.public_github') : __('source.personal_github_source'),
+                                $sourceIsGitlab && filled($source->group_name) => __('source.gitlab_source_for', ['group' => $source->group_name]),
+                                $sourceIsGitlab => __('source.personal_gitlab_source'),
+                                default => __('common.git_source'),
                             };
                         @endphp
                         <x-modal-confirmation :title="__('common.change_git_source')"
