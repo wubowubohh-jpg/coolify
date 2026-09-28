@@ -6,6 +6,7 @@ use App\Services\AvatarStorageService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -18,6 +19,8 @@ class Index extends Component
     public int $userId;
 
     public string $email;
+
+    public string $locale;
 
     public string $current_password;
 
@@ -74,12 +77,30 @@ class Index extends Component
         $this->userId = Auth::id();
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $locale = Auth::user()->locale ?: app()->getLocale();
+        $this->locale = array_key_exists($locale, config('app.supported_locales', []))
+            ? $locale
+            : config('app.locale');
 
         // Check if there's a pending email change
         if (Auth::user()->hasEmailChangeRequest()) {
             $this->new_email = Auth::user()->pending_email;
             $this->show_verification = true;
         }
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
+        $this->validate([
+            'locale' => ['required', Rule::in(array_keys(config('app.supported_locales', [])))],
+        ]);
+
+        Auth::user()->update(['locale' => $this->locale]);
+        app()->setLocale($this->locale);
+        cookie()->queue(cookie(config('app.locale_cookie'), $this->locale, 60 * 24 * 365 * 5));
+
+        $this->redirect(route('profile'), navigate: true);
     }
 
     public function submit()

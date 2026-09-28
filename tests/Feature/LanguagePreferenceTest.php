@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Middleware\SetLocale;
-use App\Livewire\Profile\Appearance;
+use App\Livewire\Profile\Index;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -18,14 +18,14 @@ afterEach(function () {
     App::setLocale('en');
 });
 
-it('persists the selected locale on the account and redirects back to appearance', function () {
+it('persists the selected locale on the account and redirects back to profile', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    Livewire::test(Appearance::class)
+    Livewire::test(Index::class)
         ->call('setLocale', 'zh-cn')
-        ->assertRedirect(route('profile.appearance'));
+        ->assertRedirect(route('profile'));
 
     expect($user->fresh()->locale)->toBe('zh-cn')
         ->and(App::getLocale())->toBe('zh-cn');
@@ -36,7 +36,7 @@ it('rejects unsupported locales', function () {
 
     $this->actingAs($user);
 
-    Livewire::test(Appearance::class)
+    Livewire::test(Index::class)
         ->call('setLocale', 'fr')
         ->assertHasErrors(['locale' => 'in']);
 
@@ -74,11 +74,11 @@ it('uses the browser cookie when the account locale is no longer supported', fun
     expect(App::getLocale())->toBe('zh-cn');
 });
 
-it('exposes both supported locales in the appearance settings', function () {
-    $appearance = file_get_contents(resource_path('views/components/theme-controls.blade.php'));
+it('exposes both supported locales in the profile settings', function () {
+    $profile = file_get_contents(resource_path('views/livewire/profile/index.blade.php'));
     $application = file_get_contents(config_path('app.php'));
 
-    expect($appearance)
+    expect($profile)
         ->toContain('wire:click="setLocale')
         ->toContain("config('app.supported_locales', [])")
         ->toContain("__('settings.language')")
@@ -89,7 +89,10 @@ it('exposes both supported locales in the appearance settings', function () {
         ->toContain("'zh-cn' => 'settings.language.chinese'");
 
     expect(file_get_contents(resource_path('views/livewire/profile/appearance.blade.php')))
-        ->toContain('<x-theme-controls variant="full" :locale="$locale" />');
+        ->toContain('<x-theme-controls variant="full" />');
+
+    expect(file_get_contents(resource_path('views/components/theme-controls.blade.php')))
+        ->not->toContain('wire:click="setLocale');
 });
 
 it('does not contain corrupted placeholder text in simplified Chinese translations', function () {

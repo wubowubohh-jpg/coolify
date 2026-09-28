@@ -4,8 +4,48 @@
     shouldDisable() {
         return this.initLoadingCompose || !this.canUpdate;
     }
-}">
+    }">
     <form wire:submit='submit' class="application-settings-form flex flex-col">
+        @php
+            $buildPackOptions = [
+                ['value' => 'railpack', 'label' => __('common.railpack')],
+                ['value' => 'nixpacks', 'label' => __('common.nixpacks')],
+                ['value' => 'static', 'label' => __('common.static')],
+                ['value' => 'dockerfile', 'label' => __('common.dockerfile_build_pack')],
+                ['value' => 'dockercompose', 'label' => __('common.docker_compose_build_pack')],
+            ];
+            $siteTypeOptions = [
+                ['value' => 'dynamic', 'label' => __('common.dynamic_site')],
+                ['value' => 'static', 'label' => __('common.static')],
+                ['value' => 'spa', 'label' => __('common.single_page_application')],
+            ];
+            $httpBasicAuthOptions = [
+                ['value' => false, 'label' => __('common.none')],
+                ['value' => true, 'label' => __('common.http_basic_authentication')],
+            ];
+            $labelManagementOptions = [
+                ['value' => true, 'label' => __('common.managed_labels_auto')],
+                ['value' => false, 'label' => __('common.managed_labels_manual')],
+            ];
+            $labelEscapeOptions = [
+                ['value' => true, 'label' => __('common.escape_special_characters_enabled')],
+                ['value' => false, 'label' => __('common.escape_special_characters_disabled')],
+            ];
+            $nginxConfigurationActions = [
+                __('common.nginx_overwrite_action'),
+                __('common.nginx_default_action', ['type' => $application->settings->is_spa ? 'SPA' : __('common.static')]),
+            ];
+            $labelResetActions = [
+                __('common.custom_proxy_labels_lost'),
+                __('common.proxy_labels_reset'),
+            ];
+            $dockerComposeLocationHelper = __('common.docker_compose_location_helper', ['path' => Str::start($baseDirectory . $dockerComposeLocation, '/')]);
+            $composeBuildCommandHelper = __('common.compose_custom_command_helper', ['command' => 'docker compose build']);
+            $composeStartCommandHelper = __('common.compose_custom_command_helper', ['command' => 'docker compose up -d']);
+            $dockerfileLocationHelper = __('common.dockerfile_location_helper', ['path' => Str::start($application->base_directory . $application->dockerfile_location, '/')]);
+            $commandFile = $buildPack === 'railpack' ? 'railpack.json' : 'nixpacks.toml';
+            $commandFileHelper = __('common.command_file_helper', ['file' => $commandFile]);
+        @endphp
         <x-unsaved-bar action="submit"
             targets="name,description,buildPack,staticImage,baseDirectory,dockerComposeLocation,dockerComposeCustomBuildCommand,dockerComposeCustomStartCommand,watchPaths,dockerfileLocation,dockerfileTargetBuild,publishDirectory,installCommand,buildCommand,startCommand,customNginxConfiguration,dockerfile,dockerRegistryImageName,dockerRegistryImageTag,portsExposes,portsMappings,customNetworkAliases,customDockerRunOptions,httpBasicAuthUsername,httpBasicAuthPassword,preDeploymentCommand,preDeploymentCommandContainer,postDeploymentCommand,postDeploymentCommandContainer,isContainerLabelReadonlyEnabled,isContainerLabelEscapeEnabled,customLabels" />
         <div class="application-settings-grid flex flex-col gap-6">
@@ -107,13 +147,8 @@
             @if (!$application->dockerfile && $application->build_pack !== 'dockerimage')
                 <div class="application-build-pack-options mb-5 border-b border-neutral-200 pb-5 dark:border-white/[0.07]">
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <x-forms.listbox id="buildPack" :label="__('common.build_strategy')" live :options="[
-                            ['value' => 'railpack', 'label' => __('common.railpack')],
-                            ['value' => 'nixpacks', 'label' => __('common.nixpacks')],
-                            ['value' => 'static', 'label' => __('common.static')],
-                            ['value' => 'dockerfile', 'label' => __('common.dockerfile_build_pack')],
-                            ['value' => 'dockercompose', 'label' => __('common.docker_compose_build_pack')],
-                        ]" x-bind:disabled="shouldDisable()" />
+                        <x-forms.listbox id="buildPack" :label="__('common.build_strategy')" live :options="$buildPackOptions"
+                            x-bind:disabled="shouldDisable()" />
                         @if ($isStatic || $buildPack === 'static')
                             <x-forms.listbox id="staticImage" :label="__('common.web_server')" required :options="[
                                 ['value' => 'nginx:alpine', 'label' => 'nginx:alpine'],
@@ -126,11 +161,7 @@
             @if ($application->could_set_build_commands() || ($isStatic && $buildPack !== 'static'))
                 <div class="mb-5 w-full border-b border-neutral-200 pb-5 dark:border-white/[0.07]">
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <x-forms.listbox id="siteType" :label="__('common.site_type')" onChange="setSiteType" :options="[
-                            ['value' => 'dynamic', 'label' => __('common.dynamic_site')],
-                            ['value' => 'static', 'label' => __('common.static')],
-                            ['value' => 'spa', 'label' => __('common.single_page_application')],
-                        ]"
+                        <x-forms.listbox id="siteType" :label="__('common.site_type')" onChange="setSiteType" :options="$siteTypeOptions"
                             :helper="__('common.site_type_helper')"
                             x-bind:disabled="!canUpdate" />
                     </div>
@@ -169,7 +200,7 @@
                                     <x-forms.input x-bind:disabled="shouldDisable()"
                                         placeholder="/docker-compose.yaml"
                                         :label="__('common.docker_compose_location')"
-                                        :helper="__('common.docker_compose_location_helper', ['path' => Str::start($baseDirectory . $dockerComposeLocation, '/')])"
+                                        :helper="$dockerComposeLocationHelper"
                                         x-model="composeLocation" @blur="normalizeComposeLocation()" />
                                 </div>
                                 <div class="w-full sm:w-96">
@@ -182,11 +213,11 @@
                                         <div class="grid gap-4 lg:grid-cols-2">
                                             <x-forms.input x-bind:disabled="shouldDisable()"
                                                 placeholder="docker compose build" id="dockerComposeCustomBuildCommand"
-                                                 :helper="__('common.compose_custom_command_helper', ['command' => 'docker compose build'])"
+                                                 :helper="$composeBuildCommandHelper"
                                                 :label="__('common.custom_build_command')" />
                                             <x-forms.input x-bind:disabled="shouldDisable()"
                                                 placeholder="docker compose up -d" id="dockerComposeCustomStartCommand"
-                                                 :helper="__('common.compose_custom_command_helper', ['command' => 'docker compose up -d'])"
+                                                 :helper="$composeStartCommandHelper"
                                                 :label="__('common.custom_start_command')" />
                                         </div>
                                         @if ($this->dockerComposeCustomBuildCommand)
@@ -239,7 +270,7 @@
                                 @if ($buildPack === 'dockerfile' && !$application->dockerfile)
                                     <x-forms.input placeholder="/Dockerfile"
                                         :label="__('common.dockerfile_location')"
-                                        :helper="__('common.dockerfile_location_helper', ['path' => Str::start($application->base_directory . $application->dockerfile_location, '/')])"
+                                        :helper="$dockerfileLocationHelper"
                                         x-bind:disabled="!canUpdate" x-model="dockerfileLocation"
                                         @blur="normalizeDockerfileLocation()" />
                                 @endif
@@ -270,11 +301,11 @@
                             @endif
                             @if ($application->could_set_build_commands() && ($buildPack === 'nixpacks' || $buildPack === 'railpack'))
                                 <div class="grid gap-4 lg:grid-cols-3">
-                                     <x-forms.input :helper="__('common.command_file_helper', ['file' => $buildPack === 'railpack' ? 'railpack.json' : 'nixpacks.toml'])"
+                                     <x-forms.input :helper="$commandFileHelper"
                                          id="installCommand" :label="__('common.install_command')" x-bind:disabled="!canUpdate" />
-                                     <x-forms.input :helper="__('common.command_file_helper', ['file' => $buildPack === 'railpack' ? 'railpack.json' : 'nixpacks.toml'])"
+                                     <x-forms.input :helper="$commandFileHelper"
                                          id="buildCommand" :label="__('common.build_command')" x-bind:disabled="!canUpdate" />
-                                     <x-forms.input :helper="__('common.command_file_helper', ['file' => $buildPack === 'railpack' ? 'railpack.json' : 'nixpacks.toml'])"
+                                     <x-forms.input :helper="$commandFileHelper"
                                          id="startCommand" :label="__('common.start_command')" x-bind:disabled="!canUpdate" />
                                 </div>
                             @endif
@@ -310,10 +341,7 @@
                             <x-modal-confirmation :title="__('common.confirm_nginx_generation')"
                                 :buttonTitle="__('common.generate_default')"
                                 submitAction="generateNginxConfiguration('{{ $application->settings->is_spa ? 'spa' : 'static' }}')"
-                                :actions="[
-                                    __('common.nginx_overwrite_action'),
-                                    __('common.nginx_default_action', ['type' => $application->settings->is_spa ? 'SPA' : __('common.static')]),
-                                ]" />
+                                :actions="$nginxConfigurationActions" />
                         @endcan
                     </div>
                     <x-forms.textarea id="customNginxConfiguration"
@@ -326,8 +354,10 @@
                     <div class="mb-2 flex items-center justify-between gap-4">
                         <h3>{{ __('common.docker_compose') }}</h3>
                         <x-forms.button x-show="{{ $application->settings->is_raw_compose_deployment_enabled ? 'false' : 'true' }}"
-                            @click.prevent="showRaw = !showRaw"
-                            x-text="showRaw ? @js(__('common.show_deployable_compose')) : @js(__('common.show_raw_compose'))"></x-forms.button>
+                            @click.prevent="showRaw = !showRaw">
+                            <span x-show="showRaw">{{ __('common.show_deployable_compose') }}</span>
+                            <span x-show="!showRaw">{{ __('common.show_raw_compose') }}</span>
+                        </x-forms.button>
                     </div>
                     @if ($application->settings->is_raw_compose_deployment_enabled)
                         <x-forms.textarea rows="10" readonly id="dockerComposeRaw"
@@ -424,6 +454,8 @@
                         'application_uuid' => $application->uuid,
                     ]);
                     $portsExposesDomainHint = __('common.domains_internal_port_hint', ['url' => $applicationDomainsUrl]);
+                    $portsExposesReadonlyHelper = __('common.ports_exposes_readonly_helper', ['domains' => $portsExposesDomainHint]);
+                    $portsExposesHelper = __('common.ports_exposes_helper', ['domains' => $portsExposesDomainHint]);
                 @endphp
                 <x-application.settings-section id="networking-section" :title="__('common.networking')" :helper="__('common.networking_helper')">
                 @if ($this->detectedPortInfo)
@@ -483,12 +515,12 @@
                     @else
                         @if ($application->settings->is_container_label_readonly_enabled === false)
                             <x-forms.input placeholder="3000,3001" id="portsExposes" :label="__('common.ports_exposes')" readonly
-                                :helper="__('common.ports_exposes_readonly_helper', ['domains' => $portsExposesDomainHint])"
+                                :helper="$portsExposesReadonlyHelper"
                                 canGate="update" :canResource="$application"
                                 x-bind:disabled="!canUpdate" />
                         @else
                             <x-forms.input placeholder="3000,3001" id="portsExposes" :label="__('common.ports_exposes')"
-                                :helper="__('common.ports_exposes_helper', ['domains' => $portsExposesDomainHint])"
+                                :helper="$portsExposesHelper"
                                 canGate="update" :canResource="$application"
                                 x-bind:disabled="!canUpdate" />
                         @endif
@@ -532,10 +564,7 @@
                     @else
                     <x-forms.listbox id="isHttpBasicAuthEnabled" :label="__('common.authentication')" onChange="instantSave"
                         :helper="__('common.http_basic_auth_helper')"
-                        :options="[
-                            ['value' => false, 'label' => __('common.none')],
-                            ['value' => true, 'label' => __('common.http_basic_authentication')],
-                        ]" x-bind:disabled="!canUpdate" />
+                        :options="$httpBasicAuthOptions" x-bind:disabled="!canUpdate" />
                     @if ($isHttpBasicAuthEnabled)
                         <div class="mt-5 grid w-full gap-4 border-t border-neutral-200 pt-5 sm:grid-cols-2 dark:border-white/[0.07]">
                             <x-forms.input id="httpBasicAuthUsername" :label="__('common.username')" required
@@ -579,17 +608,11 @@
                     <x-forms.listbox id="isContainerLabelReadonlyEnabled" :label="__('common.label_management')"
                         onChange="instantSave"
                         :helper="__('common.label_management_helper')"
-                        :options="[
-                            ['value' => true, 'label' => __('common.managed_labels_auto')],
-                            ['value' => false, 'label' => __('common.managed_labels_manual')],
-                        ]" x-bind:disabled="!canUpdate" />
+                        :options="$labelManagementOptions" x-bind:disabled="!canUpdate" />
                     <x-forms.listbox id="isContainerLabelEscapeEnabled" :label="__('common.special_characters')"
                         onChange="instantSave"
                         :helper="__('common.escape_special_characters_helper')"
-                        :options="[
-                            ['value' => true, 'label' => __('common.escape_special_characters_enabled')],
-                            ['value' => false, 'label' => __('common.escape_special_characters_disabled')],
-                        ]" x-bind:disabled="!canUpdate" />
+                        :options="$labelEscapeOptions" x-bind:disabled="!canUpdate" />
                 </div>
                 <div class="mt-5 border-t border-neutral-200 pt-5 dark:border-white/[0.07]">
                     <div class="mb-1.5 flex items-center justify-between gap-3">
@@ -597,10 +620,7 @@
                         @can('update', $application)
                             <x-modal-confirmation :title="__('common.confirm_labels_reset')"
                                 :buttonTitle="__('common.reset_to_defaults')" submitAction="resetDefaultLabels(true)"
-                                :actions="[
-                                    __('common.custom_proxy_labels_lost'),
-                                    __('common.proxy_labels_reset'),
-                                ]" confirmationText="{{ $application->fqdn . '/' }}"
+                                :actions="$labelResetActions" confirmationText="{{ $application->fqdn . '/' }}"
                                 :confirmationLabel="__('common.confirm_application_url')"
                                 :shortConfirmationLabel="__('common.application_url')" :confirmWithPassword="false"
                                 :step2ButtonText="__('common.permanently_reset_labels')" />

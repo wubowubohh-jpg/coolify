@@ -142,6 +142,31 @@
             </section>
         </form>
 
+        <section class="application-settings-section">
+            <div class="application-settings-section-header">
+                <div>
+                    <h2>{{ __('settings.language') }}</h2>
+                    <p>{{ __('settings.language.description') }}</p>
+                </div>
+            </div>
+            <div class="application-settings-section-body grid gap-3 sm:grid-cols-2">
+                @foreach (config('app.supported_locales', []) as $value => $label)
+                    <button type="button" wire:click="setLocale('{{ $value }}')" wire:loading.attr="disabled"
+                        class="group flex min-h-20 items-center justify-between gap-3 rounded-[10px] border border-neutral-200 bg-white px-4 text-left transition-[border-color,box-shadow] hover:border-neutral-300 hover:shadow-sm dark:border-white/[0.07] dark:bg-white/[0.05] dark:hover:bg-white/[0.12]"
+                        @class([
+                            'ring-1 ring-coollabs/30 border-coollabs/40 dark:ring-warning/30 dark:border-warning/40' => $locale === $value,
+                        ])>
+                        <span class="min-w-0">
+                            <span class="block text-sm font-semibold text-black dark:text-fg">{{ __($label) }}</span>
+                            <span class="mt-1 block text-xs text-neutral-500 dark:text-fg-dim">{{ $value }}</span>
+                        </span>
+                        <x-reicon name="check-circle" class="size-4 shrink-0 text-coollabs dark:text-warning"
+                            @class(['hidden' => $locale !== $value]) />
+                    </button>
+                @endforeach
+            </div>
+        </section>
+
         <template x-teleport="body">
             <div x-show="emailModalOpen" x-cloak
                 class="fixed inset-0 z-99 flex h-screen w-screen items-center justify-center p-4">
